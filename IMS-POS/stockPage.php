@@ -13,6 +13,7 @@
             </div>
         </div>
     </div>
+
     <div class="container date-selector" style="margin-bottom: 20px;">
         <ul class="nav nav-underline">
             <li class="nav-item">
@@ -26,7 +27,8 @@
             </li>
         </ul>
     </div>
-    <div class="container data-summary">
+
+    <div class="container data-summary" style="margin-bottom: 20px;">
         <div class="row">
             <div class="col">
                 <div class="card">
@@ -75,15 +77,159 @@
             </div>
         </div>
     </div>
+
+    <div class="container charts" style="margin-bottom: 20px;">
+        <div class="row rows=cols-2">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Stock Analytics</h5>
+                        <div id="stock-bar-Container">
+                            <canvas id="stockAnalyticsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="doughnutContainer">
+                            <div class="chartDetails">
+                                <ul>
+                                    <li>
+                                        <div style="display: flex; flex-direction:column;">
+                                            <span class="stockLabel" style="font-size: 15px; font-weight:bold">Remaining Stock Budget</span>
+                                            <span style="font-size: 40px; font-weight:bold">20%</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div style="display: flex; flex-direction:column">
+                                            <span class="stockLabel" style="font-size: 15px; font-weight:bold">Total Expenses</span>
+                                            <span style="font-size: 40px; font-weight:bold">70%</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div style="display: flex; flex-direction:column">
+                                            <span class="stockLabel" style="font-size: 15px; font-weight:bold">Total Items In Stock</span>
+                                            <span style="font-size: 40px; font-weight:bold">100%</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div id="doughnut-chart-Container">
+                                <canvas id="stockdoughnutChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container stockTable">
+        <div class="card" style="padding: 5px;">
+            <table id="stockTable" class="display">
+                <thead>
+                    <tr>
+                        <th>Stock Items</th>
+                        <th>Date Purchased</th>
+                        <th>Employee Assigned</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </main>
 
 <?php include 'footer.php' ?>
 
 <script>
+    /*************Date Picker Set Up Start****************/
     document.addEventListener("DOMContentLoaded", function(){
         flatpickr(".flatpickr input", {
             enableTime: false,
-            dateFormat: "Y-m-d",
+            dateFormat: "Y-M-D",
         });
     });
+    /*************Date Picker Set Up End****************/
+
+    
+    const stockChart = document.getElementById('stockAnalyticsChart')
+    const stockDoughnutChart = document.getElementById('stockdoughnutChart')
+
+    
+    /*************Bar Chart Set Up Start****************/
+    new Chart( stockChart,
+        {
+            type: 'bar',
+            data:{
+                labels: [
+                    'Mon', 
+                    'Tue', 
+                    'Wed', 
+                    'Thu', 
+                    'Fri', 
+                    'Sat', 
+                    'Sun'
+                ],
+                datasets: [{
+                    label: 'Daily Expenses',
+                    data: [1000, 3000, 5000, 7000, 10000, 500, 600],
+                    borderWidth: 1
+                }]
+            }
+        }
+    )
+    /*************Bart Chart Set Up End****************/
+
+    
+    /*************Doughnut Chart Set Up Start****************/
+    const doughnutChartData = {
+        labels: [
+            'Remaining Stock Budget',
+            'Total Expenses',
+            'Total Items in Stock'
+        ],
+        data: [
+            20,
+            70,
+            100
+        ],
+    }
+
+    new Chart(stockDoughnutChart, {
+    type: 'doughnut',
+    data: {
+        labels: doughnutChartData.labels,
+        datasets: [
+            {
+                data: doughnutChartData.data
+            }
+        ]
+    },
+    options: {
+        borderRadius: 2,
+        hoverBorderWidth: 0,
+        plugins:{
+            legend:{
+                display: false
+            }
+        },
+        spacing: 5, 
+        weight: 1,
+        cutout: '80%'
+    }
+});
+    /*************Doughnut Chart Set Up End****************/
+
+    
+    /*************Stock Table Set up Start****************/
+    let table = new DataTable('#stockTable', {
+        responsive: true
+    })
 </script>

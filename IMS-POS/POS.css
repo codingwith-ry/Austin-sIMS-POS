@@ -10,3 +10,24 @@
 .nav-link.active {
   color: black;
 }
+
+.charts .col {
+  display: flex;
+  flex-direction: column;
+}
+
+.charts .card {
+  flex: 1; /* Make all cards equal height */
+}
+
+#doughnut-chart-Container {
+  width: 300px;
+  height: auto;
+}
+
+.doughnutContainer {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  width: fit-content;
+}
