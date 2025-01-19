@@ -1,0 +1,12 @@
+.dateInputField {
+  border-radius: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+}
+
+.nav-link,
+.nav-link:hover,
+.nav-link.active {
+  color: black;
+}
