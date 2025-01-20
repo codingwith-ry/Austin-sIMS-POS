@@ -1,6 +1,7 @@
 <?php include 'verticalNav.php'?>
-<main>
-    <h1>Main Page</h1>
-    
-</main>
+
+<div id="mainContent">
+    <h1>hello</h1>
+</div>
+   
 <?php include 'footer.php' ?>
