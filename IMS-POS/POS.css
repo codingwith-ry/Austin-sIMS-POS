@@ -32,9 +32,13 @@
   width: fit-content;
 }
 
-#mainContent{
+#mainContent {
   position: relative;
   height: 100vh;
   width: calc(100% - 200px);
   left: 200px;
+}
+
+.form-group {
+  margin-bottom: 10px;
 }
