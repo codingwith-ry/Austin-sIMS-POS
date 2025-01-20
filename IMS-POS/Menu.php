@@ -1,15 +1,7 @@
 <?php include 'verticalNav.php'?>
 
-<div class="col" style="margin-left: 200px;">
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <p>Hello</p>
-            </div>
-        </div>
-    </div>
-</div>
-
+<div id="mainContent">
+    <h1>hello</h1>
 </div>
    
 <?php include 'footer.php' ?>

@@ -1,6 +1,6 @@
 <?php include 'verticalNav.php' ?>
 
-<main style="margin-left: 200px;">
+<main id="mainContent">
     <div class="container title">
         <div class="row">
             <div class="col-md-10"><h1>Stock List Overview</h1></div>
