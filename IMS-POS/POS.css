@@ -17,7 +17,7 @@
 }
 
 .charts .card {
-  flex: 1; /* Make all cards equal height */
+  flex: 1;
 }
 
 #doughnut-chart-Container {
