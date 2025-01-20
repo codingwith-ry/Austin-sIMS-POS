@@ -1,6 +1,6 @@
 <?php include 'verticalNav.php' ?>
 
-<main style="margin-left: 200px;">
+<main id="mainContent">
     <div class="container title">
         <div class="row">
             <div class="col-md-10"><h1>Stock List Overview</h1></div>
@@ -79,7 +79,7 @@
     </div>
 
     <div class="container charts" style="margin-bottom: 20px;">
-        <div class="row rows=cols-2">
+        <div class="row">
             <div class="col">
                 <div class="card">
                     <div class="card-body">
