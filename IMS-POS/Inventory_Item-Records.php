@@ -1,5 +1,5 @@
 <?php include 'verticalNav.php' ?>
-<main>
+<main id="mainContent">
 <div class="container title">
     <div class="row">
         <div><h1>Inventory</h1></div>

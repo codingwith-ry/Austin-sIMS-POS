@@ -79,7 +79,7 @@
     </div>
 
     <div class="container charts" style="margin-bottom: 20px;">
-        <div class="row rows=cols-2">
+        <div class="row">
             <div class="col">
                 <div class="card">
                     <div class="card-body">
