@@ -12,14 +12,14 @@
 <form>
   <!-- Email input -->
   <div data-mdb-input-init class="form-outline mb-4">
-    <input type="email" id="form2Example1" class="form-control" />
     <label class="form-label" for="form2Example1">Email address</label>
+    <input type="email" id="form2Example1" class="form-control" />
   </div>
 
   <!-- Password input -->
   <div data-mdb-input-init class="form-outline mb-4">
+  <label class="form-label" for="form2Example2">Password</label>
     <input type="password" id="form2Example2" class="form-control" />
-    <label class="form-label" for="form2Example2">Password</label>
   </div>
 
   <!-- 2 column grid layout for inline styling -->
