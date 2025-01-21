@@ -45,7 +45,34 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="Items-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-
+            <div class="card">
+                    <div class="card-body">
+                        <table id="inventoryItems" class="display nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Inventory Name</th>
+                                    <th>Item Quantity</th>
+                                    <th>Purchase Date</th>
+                                    <th>Employee Assigned</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Condense</td>
+                                    <td>20</td>
+                                    <td>5/22/2024</td>
+                                    <td>Dominic Adino</td>
+                                </tr>
+                                <tr>
+                                    <td>Egg</td>
+                                    <td>25</td>
+                                    <td>11/12/2024</td>
+                                    <td>Owen Trinidad</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -55,22 +82,19 @@
 <?php include 'footer.php' ?>
 
 <script>
+    /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
     new DataTable('#itemRecords', {
         layout: {
-            topStart: {
-                pageLength: true
-            },
+            lengthMenu: false,
             topEnd: {
                 search: {
                     placeholder: 'Search Item'
                 }
             },
-            top2Start: {
-                buttons: [
-                    'copy',
-                    'csv',
+            topStart:{
+                buttons:[
+                    
                     'excel',
-                    'pdf',
                     'print',
                     {
                         text: 'Add Item',
@@ -78,7 +102,7 @@
                             var addItemHTML =
                                 `
                             <div class="modal" id="addItemForm">
-                                <div class="modal-dialog modal-xl modal-dialog-centered">
+                                <div class="modal-dialog modal-dialog-centered modal-l modal-dialog-scrollable">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title">Add Item</h5>
@@ -86,14 +110,14 @@
                                     <div class="modal-body">
                                         <form id="myForm">
                                             <div class="form-group" style="display:flex">
-                                                <span class="col-sm-2 control-label">Item Name</span>
-                                                <div class="col-sm-10">
+                                                <span class="col-sm-4 control-label">Item Name</span>
+                                                <div class="col-sm-8">
                                                     <input class="form-control" id="focusedInput" type="text" placeholder="Name">
                                                 </div>
                                             </div>
                                             <div class="form-group" style="display:flex">
-                                                <span class="col-sm-2 control-label">Category</span>
-                                                <div class="col-sm-10">
+                                                <span class="col-sm-4 control-label">Category</span>
+                                                <div class="col-sm-8">
                                                     <select class="form-select">
                                                         <option selected>Select Category</option>
                                                         <option value="1">One</option>
@@ -103,10 +127,39 @@
                                                 </div>
                                             </div>
                                             <div class="form-group" style="display:flex">
-                                                <span class="col-sm-2 control-label">Units(Units of Measurement)</span>
-                                                <div class="col-sm-10">
+                                                <span class="col-sm-4 control-label">Units</span>
+                                                <div class="col-sm-8">
                                                     <select class="form-select">
-                                                        <option selected>Select unit</option>
+                                                        <option selected>Select unit of measurement</option>
+                                                        <option value="1">One</option>
+                                                        <option value="2">Two</option>
+                                                        <option value="3">Three</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style="display:flex">
+                                                <span class="col-sm-4 control-label">Unit Sales Price</span>
+                                                <div class="col-sm-8">
+                                                    <input class="form-control" id="focusedInput" type="text" placeholder="0.00">
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style="display:flex">
+                                                <span class="col-sm-4 control-label">Purchase Date</span>
+                                                <div class="flatpickr col-sm-8">
+                                                    <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField">
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style="display:flex">
+                                                <span class="col-sm-4 control-label">Expiration Date</span>
+                                                <div class="flatpickr col-sm-8">
+                                                    <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField">
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style="display:flex">
+                                                <span class="col-sm-4 control-label">Employee Assigned</span>
+                                                <div class="col-sm-8">
+                                                    <select class="form-select">
+                                                        <option selected>Select Employee</option>
                                                         <option value="1">One</option>
                                                         <option value="2">Two</option>
                                                         <option value="3">Three</option>
@@ -124,6 +177,12 @@
                             </div>
                             `;
                             $('body').append(addItemHTML);
+
+                            flatpickr(".flatpickr", {
+                                enableTime: false,
+                                dateFormat: "Y-M-D",
+                            });
+
                             var myModal = new bootstrap.Modal(document.getElementById('addItemForm'));
                             myModal.show();
                         }
@@ -131,5 +190,13 @@
                 ]
             }
         },
+    });
+    /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
+    
+    /***************************INITIALIZATION OF INVENTORY ITEMS TABLE********************************/
+    new DataTable('#inventoryItems', {
+        layout:{
+            topStart: null,
+        }
     });
 </script>
