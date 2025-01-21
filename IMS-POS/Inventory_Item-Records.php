@@ -1,13 +1,13 @@
 <?php include 'verticalNav.php' ?>
-<main id="mainContent">
-    <div class="container title">
+<main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
+    <div class="title">
         <div class="row">
             <div>
                 <h1>Inventory</h1>
             </div>
         </div>
-        <div class="row container" style="margin-bottom: 20px;">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <div class="row" style="margin-bottom: 20px;">
+            <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding-left: 12px;">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#Records-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">
                         Records
@@ -84,8 +84,8 @@
 <script>
     /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
     new DataTable('#itemRecords', {
+        responsive: true,
         layout: {
-            lengthMenu: false,
             topEnd: {
                 search: {
                     placeholder: 'Search Item'
@@ -188,13 +188,14 @@
                         }
                     }
                 ]
-            }
+            },
         },
     });
     /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
     
     /***************************INITIALIZATION OF INVENTORY ITEMS TABLE********************************/
     new DataTable('#inventoryItems', {
+        responsive: true,
         layout:{
             topStart: null,
         }

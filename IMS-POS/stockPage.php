@@ -1,7 +1,6 @@
 <?php include 'verticalNav.php' ?>
 
-<main id="mainContent">
-    <div class="container title">
+<main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
         <div class="row">
             <div class="col-md-10"><h1>Stock List Overview</h1></div>
             <div class="col-md-2">
@@ -12,9 +11,8 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="container date-selector" style="margin-bottom: 20px;">
+    <div class="date-selector" style="margin-bottom: 20px;">
         <ul class="nav nav-underline">
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page">Weekly</a>
@@ -28,12 +26,12 @@
         </ul>
     </div>
 
-    <div class="container data-summary" style="margin-bottom: 20px;">
+    <div class="data-summary" style="margin-bottom: 20px;">
         <div class="row">
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <div style="display: flex; gap:20px">
+                        <div style="display: flex; gap:10px">
                             <div style="margin-top: 10px;">
                                 <i class="fa-solid fa-chart-line fa-3x"></i>
                             </div>
@@ -78,7 +76,7 @@
         </div>
     </div>
 
-    <div class="container charts" style="margin-bottom: 20px;">
+    <div class="charts" style="margin-bottom: 20px;">
         <div class="row">
             <div class="col">
                 <div class="card">
@@ -127,7 +125,7 @@
         </div>
     </div>
 
-    <div class="container stockTable">
+    <div class="stockTable">
         <div class="card" style="padding: 5px;">
             <table id="stockTable" class="display">
                 <thead>
