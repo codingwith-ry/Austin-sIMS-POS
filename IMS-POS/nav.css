@@ -4,6 +4,7 @@
     width: 200px;
 }
 
-#navCol{
-    width: 200px;
+#nav2{
+    position:fixed;
+    width: 300px;
 }
