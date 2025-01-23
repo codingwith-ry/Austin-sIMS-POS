@@ -27,64 +27,185 @@
                         <table id="itemRecords" class="display nowrap">
                             <thead>
                                 <tr>
-                                    <th>Inventory Name</th>
+                                    <th></th>
+                                    <th>Inventory ID</th>
                                     <th>Purchase Date</th>
                                     <th>Employee Assigned</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!----Test niyo kung gagana yung pag export pati print ng data lagay kayo mga data !------>
-                                <tr>
-                                    <td>Inventory Gagu</td>
-                                    <td>Ba malay ko Kailan to na purchase</td>
-                                    <td>Wala employee</td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="Items-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-            <div class="card">
-                    <div class="card-body">
-                        <table id="inventoryItems" class="display nowrap">
-                            <thead>
-                                <tr>
-                                    <th>Inventory Name</th>
-                                    <th>Item Quantity</th>
-                                    <th>Purchase Date</th>
-                                    <th>Employee Assigned</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Condense</td>
-                                    <td>20</td>
-                                    <td>5/22/2024</td>
-                                    <td>Dominic Adino</td>
-                                </tr>
-                                <tr>
-                                    <td>Egg</td>
-                                    <td>25</td>
-                                    <td>11/12/2024</td>
-                                    <td>Owen Trinidad</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
-
 </main>
 
 <?php include 'footer.php' ?>
-
 <script>
     /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
-    new DataTable('#itemRecords', {
+function format(d) {
+    return (
+        '<div>' +
+            // Image Section
+            '<div class="row row-cols-6" style="align-items:center;">'+
+            '<div class="col">' +
+                '<img src="images/milk.jpg" class="rounded border" style="width: 50px; height: auto;" />' +
+            '</div>' +
+                // Product Info
+                '<div class="col">' +
+                    '<div style="font-weight: bold;">Fresh Milk</div>' +
+                    '<div>1000mL</div>' +
+                '</div>' +
+
+                '<div class="col">' +
+                    '<div style="font-weight: bold;">Category</div>' +
+                    '<div>Dairy</div>' +
+                '</div>' +
+
+                // Quantity Info
+                '<div class="col">' +
+                    '<div style="font-weight: bold;">Quantity</div>' +
+                    '<div>10 cartons</div>' +
+                '</div>' +
+
+                // Expiration Date
+                '<div class="col">' +
+                    '<div style="font-weight: bold;">Expiration Date</div>' +
+                    '<div>10/24/2026</div>' +
+                '</div>' +
+
+                // Price Info
+                '<div class="col">' +
+                    '<div style="font-weight: bold;">Price/unit</div>' +
+                    '<div>120.00</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>'+
+        '<hr />'+
+        '<div>' +
+            // Image Section
+            '<div class="row row-cols-6" style="align-items:center;">'+
+            '<div class="col">' +
+                '<img src="images/milk.jpg" class="rounded border" style="width: 50px; height: auto;" />' +
+            '</div>' +
+                // Product Info
+                '<div class="col">' +
+                    '<div style="font-weight: bold;">Fresh Milk</div>' +
+                    '<div>1000mL</div>' +
+                '</div>' +
+
+                '<div class="col">' +
+                    '<div style="font-weight: bold;">Category</div>' +
+                    '<div>Dairy</div>' +
+                '</div>' +
+
+                // Quantity Info
+                '<div class="col">' +
+                    '<div style="font-weight: bold;">Quantity</div>' +
+                    '<div>10 cartons</div>' +
+                '</div>' +
+
+                // Expiration Date
+                '<div class="col">' +
+                    '<div style="font-weight: bold;">Expiration Date</div>' +
+                    '<div>10/24/2026</div>' +
+                '</div>' +
+
+                // Price Info
+                '<div class="col">' +
+                    '<div style="font-weight: bold;">Price/unit</div>' +
+                    '<div>120.00</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>'
+    );
+}
+
+
+    let itemRecords = new DataTable('#itemRecords', {
         responsive: true,
+        data:[
+            {
+                Inventory_ID: '1',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Owen Trinidaddy'
+            },
+            {
+                Inventory_ID: '2',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Daryl Tuminang'
+            },
+            {
+                Inventory_ID: '2',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Dominican Adino'
+            },
+            {
+                Inventory_ID: '1',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Owen Trinidaddy'
+            },
+            {
+                Inventory_ID: '2',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Daryl Tuminang'
+            },
+            {
+                Inventory_ID: '2',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Dominican Adino'
+            },
+            {
+                Inventory_ID: '1',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Owen Trinidaddy'
+            },
+            {
+                Inventory_ID: '2',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Daryl Tuminang'
+            },
+            {
+                Inventory_ID: '2',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Dominican Adino'
+            },
+            {
+                Inventory_ID: '1',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Owen Trinidaddy'
+            },
+            {
+                Inventory_ID: '2',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Daryl Tuminang'
+            },
+            {
+                Inventory_ID: '2',
+                Purchase_Date: '12/10/2022',
+                Employee_Assigned: 'Dominican Adino'
+            }
+        ],
+        columns:[
+            {
+                className: 'dt-control',
+                orderable: false,
+                data: null,
+                defaultContent: ''
+            },
+            {data: 'Inventory_ID'},
+            {data: 'Purchase_Date'},
+            {data: 'Employee_Assigned'}
+    
+    ],
         layout: {
             topEnd: {
                 search: {
@@ -93,7 +214,6 @@
             },
             topStart:{
                 buttons:[
-                    
                     'excel',
                     'print',
                     {
@@ -191,13 +311,17 @@
             },
         },
     });
-    /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
-    
-    /***************************INITIALIZATION OF INVENTORY ITEMS TABLE********************************/
-    new DataTable('#inventoryItems', {
-        responsive: true,
-        layout:{
-            topStart: null,
+
+    itemRecords.on('click', 'td.dt-control', function(e){
+        let tr = e.target.closest('tr');
+        let row = itemRecords.row(tr);
+
+        if(row.child.isShown()){
+            row.child.hide();
+        }
+        else{
+            row.child(format(row.data())).show();    
         }
     });
+    /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
 </script>
