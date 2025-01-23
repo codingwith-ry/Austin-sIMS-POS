@@ -10,22 +10,24 @@
 <body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-<form>
-  <!-- New password input -->
-  <div data-mdb-input-init class="form-outline mb-4">
-    <input type="password" id="form2Example1" class="form-control" />
-    <label class="form-label" for="form2Example1">New Password</label>
-  </div>
+<div class="setpass-container">
+    <form action="/Austin-sIMS-POS/Login/otp.php" method="POST">
+        <!-- New password input -->
+        <div data-mdb-input-init class="form-outline mb-4">
+            <label class="form-label" for="form2Example1">New Password</label>
+            <input type="password" id="form2Example1" name="new_password" class="form-control" required />
+        </div>
 
-  <!-- Confirm password input -->
-  <div data-mdb-input-init class="form-outline mb-4">
-    <input type="password" id="form2Example2" class="form-control" />
-    <label class="form-label" for="form2Example2">Confirm Password</label>
-  </div>
+        <!-- Confirm password input -->
+        <div data-mdb-input-init class="form-outline mb-4">
+            <label class="form-label" for="form2Example2">Confirm Password</label>
+            <input type="password" id="form2Example2" name="confirm_password" class="form-control" required />
+        </div>
 
-  <!-- Submit button -->
-  <button type="submit" class="btn btn-primary btn-block mb-4">Set Password</button>
-</form>
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Set Password</button>
+    </form>
+</div>
 
 </body>
 </html>
