@@ -24,7 +24,7 @@
   </div>
 
   <!-- Submit button -->
-  <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
+  <button href= "/Austin'sIMS-POS/Login/otp.php" type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
 </form>
 
 </body>

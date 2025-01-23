@@ -24,7 +24,7 @@
 
   <!-- 2 column grid layout for inline styling -->
   <div class="row mb-4">
-    <div class="col d-flex justify-content-center">
+    <div class="col d-flex justify-content-center align-items-center">
       <!-- Checkbox -->
       <div class="form-check">
         <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
@@ -34,7 +34,7 @@
 
     <div class="col">
       <!-- Simple link -->
-      <a href="#!">Forgot password?</a>
+      <a href="/Austin'sIMS-POS/Login/forgotpass.php">Forgot password?</a>
     </div>
   </div>
 

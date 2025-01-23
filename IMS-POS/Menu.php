@@ -166,10 +166,10 @@
                 <a class="nav-link active" aria-current="page" href="#">Coffee Menu</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Gastro Pub Menu</a>
+                <a class="btn btn-outline-primary nav-link" href="#">Gastro Pub Menu</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Party Tray Menu</a>
+                <a class="btn btn-outline-primary nav-link" href="#">Party Tray Menu</a>
             </li>
         </ul>
         <br />

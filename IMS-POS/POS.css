@@ -35,8 +35,8 @@
 #mainContent {
   position: relative;
   height: 100vh;
-  width: calc(100% - 200px);
-  left: 200px;
+  width: calc(100% - 15%);
+  left: 15%;
   padding: 10px;
 }
 
