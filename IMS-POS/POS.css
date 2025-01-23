@@ -17,7 +17,7 @@
 }
 
 .charts .card {
-  flex: 1; /* Make all cards equal height */
+  flex: 1;
 }
 
 #doughnut-chart-Container {
@@ -32,10 +32,10 @@
   width: fit-content;
 }
 
-#mainContent{
+#mainContent {
   position: relative;
   height: 100vh;
-  width: calc(100% - 500px);
+  width: calc(100% - 200px);
   left: 200px;
   right: 300px;
   padding: 10px;
@@ -112,4 +112,8 @@
 #productName{
   font-size: 16px;
   font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 10px;
 }
