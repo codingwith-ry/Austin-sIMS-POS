@@ -37,6 +37,14 @@
   height: 100vh;
   width: calc(100% - 200px);
   left: 200px;
+  padding: 10px;
+}
+
+#mainPOS {
+  position: relative;
+  height: 100vh;
+  width: calc(100% - 500px);
+  left: 200px;
   right: 300px;
   padding: 10px;
 }

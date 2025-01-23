@@ -142,7 +142,7 @@
         </div>
     </div>
 
-<div id="mainContent">
+<div id="mainPOS">
     <div class="container mt-3"> 
         <div class="row"> 
             <div class="col"> 
