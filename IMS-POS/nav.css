@@ -1,9 +1,10 @@
 
 #nav{
     position:fixed;
-    width: 200px;
+    width: 15%;
 }
 
-#navCol{
-    width: 200px;
+#nav2{
+    position:fixed;
+    width: 20%;
 }
