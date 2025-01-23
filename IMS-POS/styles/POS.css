@@ -1,0 +1,95 @@
+#mainContent {
+  position: relative;
+  height: 100vh;
+  width: calc(100% - 15%);
+  left: 15%;
+  padding: 10px;
+}
+
+#mainPOS {
+  position: relative;
+  height: 100vh;
+  width: calc(100% - 35%);
+  left: 15%;
+  right: 20%;
+  padding: 10px;
+}
+
+#addon-wrapping {
+  background-color: white;
+  border-right: 0px;
+}
+
+#categoryIcon {
+  font-size: 30px;
+}
+
+#orderNum {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+#imgFood {
+  width: 100%;
+  height: 100%;
+}
+
+#foodCol {
+  padding: 10px;
+}
+
+#foodName {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#foodQuantity,
+#foodPrice,
+#foodAddon {
+  font-size: 14px;
+}
+
+#foodPrice {
+  font-weight: bold;
+  color: green;
+}
+
+#orderTotal1 {
+  background-color: #f4f4f4;
+}
+
+#totalDetails1,
+#totalDetails2,
+#totalDetails3,
+#totalValue1,
+#totalValue2,
+#totalValue3 {
+  font-size: 14px;
+  font-weight: lighter;
+  color: #6a6a6a;
+}
+
+#btnEdit {
+  font-size: 14px;
+  text-decoration: none;
+  padding: 0px;
+  padding-left: 12px;
+}
+
+#productImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+#productBody {
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 5px;
+  padding-bottom: 0px;
+}
+
+#productName {
+  font-size: 16px;
+  font-weight: bold;
+}

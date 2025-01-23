@@ -1,0 +1,45 @@
+.dateInputField {
+  border-radius: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+}
+
+.nav-link,
+.nav-link:hover,
+.nav-link.active {
+  color: black;
+}
+
+.charts .col {
+  display: flex;
+  flex-direction: column;
+}
+
+.charts .card {
+  flex: 1;
+}
+
+#doughnut-chart-Container {
+  width: 300px;
+  height: auto;
+}
+
+.doughnutContainer {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  width: fit-content;
+}
+
+#mainContent {
+  position: relative;
+  height: 100vh;
+  width: calc(100% - 15%);
+  left: 15%;
+  padding: 10px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
