@@ -25,7 +25,7 @@
     <title>Document</title>
 </head>
 <body style="font-family: Inter, sans-serif;">
-    <div class="offcanvas offcanvas-start show" id="sideNav" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" aria-labelledby="sideNavLabel" style="width: 240px;">
+    <div class="offcanvas offcanvas-start show" id="nav" data-bs-scroll="true">
         <div class="offcanvas-header border-bottom">
             <div class="d-flex align-items-center">
                 <img src="logo.png" alt="Logo" style="width: 40px; height: 40px; border-radius: 50%;">
@@ -59,4 +59,3 @@
             </a>
         </div>
     </div>
-</body>
