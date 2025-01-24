@@ -27,10 +27,15 @@
                         <table id="itemRecords" class="display nowrap">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="select-all" type="checkbox">
+                                        </div>
+                                    </th>
                                     <th>Inventory ID</th>
                                     <th>Purchase Date</th>
                                     <th>Employee Assigned</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>

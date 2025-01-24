@@ -135,14 +135,24 @@ let itemRecords = new DataTable("#itemRecords", {
   ],
   columns: [
     {
-      className: "dt-control",
-      orderable: false,
       data: null,
-      defaultContent: "",
+      orderable: false,
+      className: `dt-checkbox-column`,
+      render: function (data, type, row, meta) {
+        return `<div class="form-check">
+                  <input class="form-check-input row-checkbox" type="checkbox" value="${row.Inventory_ID}">
+                </div>`;
+      },
     },
     { data: "Inventory_ID" },
     { data: "Purchase_Date" },
     { data: "Employee_Assigned" },
+    {
+      className: "dt-control",
+      orderable: false,
+      data: null,
+      defaultContent: '<i class="fa-solid fa-circle-chevron-down"></i>',
+    },
   ],
   layout: {
     topEnd: {
@@ -150,10 +160,30 @@ let itemRecords = new DataTable("#itemRecords", {
         placeholder: "Search Item",
       },
     },
+    dom: '<"top"f>rt<"bottom"lp><"clear">',
     topStart: {
       buttons: [
-        "excel",
-        "print",
+        {
+          extend: "collection",
+          text: "Export",
+          buttons: [
+            {
+              extend: "pdfHtml5",
+              text: '<div><span><i class="bi bi-file-earmark-pdf-fill" style="color: red; font-size: 20px; margin-right: 5%;""></i>Export PDF</span></div>',
+              titleAttr: "PDF",
+            },
+            {
+              extend: "excelHtml5",
+              text: '<div><span><i class="bi bi-file-earmark-excel-fill" style="color: green; font-size: 20px; margin-right: 5%;"></i>Export Excel</span></div>',
+              titleAttr: "Excel",
+            },
+            {
+              extend: "print",
+              text: '<div><span><i class="bi bi-printer-fill" style="font-size: 20px; margin-right: 5%;"></i>Print Document</span></div>',
+              titleAttr: "Print",
+            },
+          ],
+        },
         {
           text: "Add Item",
           action: function (e, dt, node, config, cb) {
@@ -254,11 +284,17 @@ let itemRecords = new DataTable("#itemRecords", {
 itemRecords.on("click", "td.dt-control", function (e) {
   let tr = e.target.closest("tr");
   let row = itemRecords.row(tr);
+  let icon = $(this).find("i");
 
   if (row.child.isShown()) {
     row.child.hide();
   } else {
     row.child(format(row.data())).show();
   }
+});
+
+$("#select-all").on("change", function () {
+  const isChecked = $(this).is(":checked");
+  $(".row-checkbox").prop("checked", isChecked);
 });
 /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
