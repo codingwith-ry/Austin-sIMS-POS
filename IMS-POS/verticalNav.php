@@ -18,25 +18,45 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.bootstrap5.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="styles/nav.css">
+    <link rel="stylesheet" href="styles/nav.css">
     <link href="styles/POS.css" rel="stylesheet">
     <link href="styles/IMS.CSS" rel="stylesheet">
     
     <title>Document</title>
 </head>
 <body style="font-family: Inter, sans-serif;">
-    <div class="offcanvas offcanvas-start show" id="nav" data-bs-scroll="true" data-bs-backdrop="false" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Nav</h5>
+    <div class="offcanvas offcanvas-start show" id="sideNav" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" aria-labelledby="sideNavLabel" style="width: 240px;">
+        <div class="offcanvas-header border-bottom">
+            <div class="d-flex align-items-center">
+                <img src="logo.png" alt="Logo" style="width: 40px; height: 40px; border-radius: 50%;">
+                <h5 class="ms-2 mb-0" id="sideNavLabel">Austin's Cafe & Gastro Pub IMS-POS</h5>
+            </div>
         </div>
-        <div class="offcanvas-body">
+        <div class="offcanvas-body p-0">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">Dashboard </li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">A third item</li>
-                <li class="list-group-item">A fourth item</li>
-                <li class="list-group-item">And a fifth one</li>
-            </ul>    
+                <li class="list-group-item border-0 py-3 active d-flex align-items-center">
+                    <i class="fi fi-tr-utensils" style="font-size: large;"></i>
+                    <span class="ms-2">Menu</span> 
+                </li>
+                <li class="list-group-item border-0 py-3 d-flex align-items-center">
+                    <i class="bi bi-journal-text"></i>
+                    <span class="ms-2">Orders</span>
+                </li>
+                <li class="list-group-item border-0 py-3 d-flex align-items-center text-muted">
+                    <i class="bi bi-box"></i>
+                    <span class="ms-2">Stocks</span>
+                </li>
+                <li class="list-group-item border-0 py-3 d-flex align-items-center text-muted">
+                    <i class="bi bi-clipboard"></i>
+                    <span class="ms-2">Inventory</span>
+                </li>
+            </ul>
+        </div>
+        <div class="offcanvas-footer border-top p-3">
+            <a href="#" class="d-flex align-items-center text-danger text-decoration-none">
+                <i class="bi bi-box-arrow-left"></i>
+                <span class="ms-2">Logout</span>
+            </a>
         </div>
     </div>
+</body>
