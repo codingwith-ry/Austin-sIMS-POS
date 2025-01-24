@@ -122,3 +122,13 @@ a:hover {
     color: #6a4413;
     font-size: 0.9rem; 
 }
+
+.otp-input {
+    width: 3rem;
+    text-align: center;
+    margin-right: 0.5rem;
+}
+
+.otp-input:last-child {
+    margin-right: 0;
+}
