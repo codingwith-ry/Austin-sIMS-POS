@@ -50,7 +50,9 @@
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
         $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
-    
+
+
+        //TODO: change to PDO
         if(empty($email) || empty($password)){
             echo "Please fill in all fields";
         } else {
