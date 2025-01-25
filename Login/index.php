@@ -18,11 +18,11 @@
     <p style=" padding-bottom:20px; color:#6a4413; font-size:25px">Inventory Management - Point of Sale System</p>
       <div class="card text-bg-light mb-6" style="justify-content: center; width: 25rem;">
         <div style="padding: 40px;">
-            <form action="login.php" method="POST">
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                 <!-- Email input -->
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">@</span>
-                    <input type="text" class="form-control" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1">
+                    <input type="text" name="email" class="form-control" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1">
                 </div>
 
                 <!-- Password input -->
@@ -30,7 +30,7 @@
                         <span class="input-group-text" id="basic-addon1">
                             <i class="bi bi-lock"></i>
                         </span>
-                    <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="password" name="password" required />
+                    <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="password" required />
                     <a href="/Austin-sIMS-POS/Login/forgotpass.php" class="d-block text-end mt-2" style="padding-left: 180px">Forgot password?</a>
                 </div>
 
@@ -43,3 +43,34 @@
   </center>
 </body>
 </html>
+
+<?php 
+    include("database.php");
+
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
+    
+        if(empty($email) || empty($password)){
+            echo "Please fill in all fields";
+        } else {
+            $user = null;
+            try{
+                $stmt = $conn->prepare("SELECT * FROM employees WHERE Employee_Email = ? AND Employee_PassKey = ?");
+                $stmt->bind_param("ss", $email, $password);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $user = $result->fetch_assoc();
+            } catch(mysqli_sql_exception $e) {
+                echo "Please enter a valid email and password";
+            }
+    
+            if ($user) {
+                header("Location: /Austin-sIMS-POS-main/IMS-POS/Menu.php");
+                exit();
+            } else {
+                echo "Invalid email or password";
+            }
+        }
+    }
+?>
