@@ -34,6 +34,8 @@
                 <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="password" name="password" required />
             </div>
 
+            <!--test-->
+
                     <!-- Submit button -->
             <button type="submit" class="btn btn-primary btn-block">Continue</button>
         </form>
