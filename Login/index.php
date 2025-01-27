@@ -1,3 +1,38 @@
+<?php 
+include("database.php");
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
+
+    if (empty($email) || empty($password)) {
+        echo "Please fill in all fields";
+    } else {
+        $user = null;
+
+        try {
+            $stmt = $conn->prepare("SELECT Employee_PassKey FROM employees WHERE Employee_Email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->bind_result($stored_password);
+            $stmt->fetch();
+            $stmt->close();
+
+            if ($password === $stored_password) {
+                // Password is correct
+                header("Location: /Austin-sIMS-POS-main/IMS-POS/Menu.php");
+                exit();
+            } else {
+                // Invalid password
+                echo "Invalid email or password";
+            }
+        } catch (mysqli_sql_exception $e) {
+            echo "Please enter a valid email and password";
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +66,7 @@
                             <i class="bi bi-lock"></i>
                         </span>
                     <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="password" required />
-                    <a href="/Austin-sIMS-POS/Login/forgotpass.php" class="d-block text-end mt-2" style="padding-left: 180px">Forgot password?</a>
+                    <a href="/Austin-sIMS-POS-main/Login/forgotpass.php" class="d-block text-end mt-2" style="padding-left: 180px">Forgot password?</a>
                 </div>
 
                 <!-- Submit button -->
@@ -43,36 +78,3 @@
   </center>
 </body>
 </html>
-
-<?php 
-    include("database.php");
-
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
-
-
-        //TODO: change to PDO
-        if(empty($email) || empty($password)){
-            echo "Please fill in all fields";
-        } else {
-            $user = null;
-            try{
-                $stmt = $conn->prepare("SELECT * FROM employees WHERE Employee_Email = ? AND Employee_PassKey = ?");
-                $stmt->bind_param("ss", $email, $password);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $user = $result->fetch_assoc();
-            } catch(mysqli_sql_exception $e) {
-                echo "Please enter a valid email and password";
-            }
-    
-            if ($user) {
-                header("Location: /Austin-sIMS-POS-main/IMS-POS/Menu.php");
-                exit();
-            } else {
-                echo "Invalid email or password";
-            }
-        }
-    }
-?>

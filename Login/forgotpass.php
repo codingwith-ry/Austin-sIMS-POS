@@ -16,11 +16,11 @@
 <img src="logo.png" alt="Austin's Logo" >
 <p style=" padding-bottom:20px; color:#6a4413; font-size:25px">Inventory Management - Point of Sale System</p>
     <div class="card text-bg-light mb-6" style="justify-content: center; width: 25rem; padding:30px">
-        <form action="/Austin-sIMS-POS/Login/otp.php" method="POST">
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
             <!-- Email input -->
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">@</span>
-                <input type="text" class="form-control" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1">
+                <input name="email" type="text" class="form-control" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1">
             </div>
 
             <!-- Submit button -->
@@ -31,3 +31,52 @@
 </center>
 </body>
 </html>
+
+<?php
+include("database.php");
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require __DIR__ . "/../vendor/autoload.php";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST["email"];
+    $otp = rand(100000, 999999); // Generate a 6-digit OTP
+    $reset_token_hash = hash("sha256", $otp);
+    $reset_token_expires_at = date("Y-m-d H:i:s", time() + 60 * 30);
+
+    $sql = "UPDATE employees SET reset_token_hash = ?, reset_token_expires_at = ? WHERE Employee_Email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $reset_token_hash, $reset_token_expires_at, $email);
+
+    if ($stmt->execute()) {
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = "smtp.gmail.com";
+            $mail->SMTPAuth = true;
+            $mail->Username = "dominicadino23@gmail.com";
+            $mail->Password = "jhbg fslz imgr egmx";
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            $mail->setFrom("noreply@example.com");
+            $mail->addAddress($email);
+            $mail->Subject = "Your OTP Code";
+            $mail->Body = "Your OTP code is: $otp";
+
+            $mail->send();
+            echo "OTP sent successfully.";
+            header("Location: otp.php?email=" . urlencode($email));
+            exit();
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+    } else {
+        echo "Execute failed: " . htmlspecialchars($stmt->error);
+    }
+} else {
+    echo "Form not submitted.";
+}
+?>
