@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Jan 25, 2025 at 09:19 AM
+-- Generation Time: Jan 27, 2025 at 12:22 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,15 +33,17 @@ CREATE TABLE `employees` (
   `Employee_Name` text NOT NULL,
   `Employee_Email` varchar(255) NOT NULL,
   `Employee_PassKey` varchar(6) NOT NULL,
-  `Employee_PhoneNumber` bigint(11) NOT NULL
+  `Employee_PhoneNumber` bigint(11) NOT NULL,
+  `reset_token_hash` varchar(64) DEFAULT NULL,
+  `reset_token_expires_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `employees`
 --
 
-INSERT INTO `employees` (`Employee_ID`, `Employee_Role`, `Employee_Name`, `Employee_Email`, `Employee_PassKey`, `Employee_PhoneNumber`) VALUES
-('123456789', 'Inventory Manager', 'Dominic Xandy Adino', 'dominicadino23@gmail.com', '123456', 9257717724);
+INSERT INTO `employees` (`Employee_ID`, `Employee_Role`, `Employee_Name`, `Employee_Email`, `Employee_PassKey`, `Employee_PhoneNumber`, `reset_token_hash`, `reset_token_expires_at`) VALUES
+('123456789', 'Inventory Manager', 'Dominic Xandy Adino', 'dominicadino23@gmail.com', '123456', 9257717724, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -52,7 +54,8 @@ INSERT INTO `employees` (`Employee_ID`, `Employee_Role`, `Employee_Name`, `Emplo
 --
 ALTER TABLE `employees`
   ADD PRIMARY KEY (`Employee_ID`),
-  ADD UNIQUE KEY `Employee_Email` (`Employee_Email`);
+  ADD UNIQUE KEY `Employee_Email` (`Employee_Email`),
+  ADD UNIQUE KEY `reset_token_hash` (`reset_token_hash`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
