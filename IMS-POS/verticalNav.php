@@ -38,7 +38,7 @@ if ($page == "orderQueue_History.php") {
     <title>Document</title>
 </head>
 <body style="font-family: Inter, sans-serif;">
-    <div class="offcanvas offcanvas-start show" id="nav" data-bs-scroll="true">
+    <div class="offcanvas offcanvas-start show" id="nav" data-bs-backdrop="false" data-bs-scroll="true">
         <div class="offcanvas-header border-bottom">
             <div class="d-flex align-items-center">
                 <img src="logo.png" alt="Logo" style="width: 40px; height: 40px; border-radius: 50%;">
