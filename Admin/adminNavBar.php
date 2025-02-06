@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-    <?php include 'link.php'; ?>
-    <title>Document</title>
-</head>
-<body style="font-family: Inter, sans-serif;">
-    <div class="offcanvas offcanvas-start show" id="nav" data-bs-scroll="true" data-bs-backdrop="false" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+<div class="offcanvas offcanvas-start show" id="nav" data-bs-scroll="true" data-bs-backdrop="false" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Austin's Cafe and Gastro Pub <IMS-POS></IMS-POS></h5>
         </div>
