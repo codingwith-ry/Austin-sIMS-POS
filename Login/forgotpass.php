@@ -76,7 +76,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "Execute failed: " . htmlspecialchars($stmt->error);
     }
-} else {
-    echo "Form not submitted.";
 }
 ?>
