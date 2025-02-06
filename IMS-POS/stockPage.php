@@ -1,5 +1,4 @@
 <?php include 'verticalNav.php' ?>
-
 <main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
         <div class="row">
             <div class="col-md-10"><h1>Stock List Overview</h1></div>

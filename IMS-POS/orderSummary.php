@@ -1,7 +1,7 @@
 <?php include 'verticalNav.php'?>
 
-<div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="bg-white p-4 rounded shadow-sm" style="width: 800px;">
+<div id="mainContent">
+        <div class="bg-white p-4 rounded shadow-sm" style="width: 100%;">
             <div class="mb-3">
                 <h4 class="fw-bold">Order Summary</h4>
             </div>
@@ -18,7 +18,7 @@
             </div>
 
             <div class="row">
-                <div class="col-6">
+                <div class="col-6 p-2">
                     <h6 class="fw-bold mb-3">Order Details</h6>
                     <div class="d-flex justify-content-between mb-2">
                         <p>2 × Iced Matcha Latte</p>

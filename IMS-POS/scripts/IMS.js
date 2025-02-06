@@ -1,7 +1,7 @@
 /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
 function format(d) {
   return (
-    "<div>" +
+    "<div style'align-items:center;'>" +
     // Image Section
     '<div class="row row-cols-6" style="align-items:center;">' +
     '<div class="col">' +
