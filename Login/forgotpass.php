@@ -5,23 +5,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
     <title>Forgot Password</title>
 </head>
-<body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<body style="font-family: 'Rubik', sans-serif;">
+<center>
+<div>
+<img src="logo.png" alt="Austin's Logo" >
+<p style=" padding-bottom:20px; color:#6a4413; font-size:25px">Inventory Management - Point of Sale System</p>
+    <div class="card text-bg-light mb-6" style="justify-content: center; width: 25rem; padding:30px">
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+            <!-- Email input -->
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">@</span>
+                <input name="email" type="text" class="form-control" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1">
+            </div>
 
-<div class="forgotpass-container">
-    <form action="/Austin-sIMS-POS/Login/otp.php" method="POST">
-        <!-- Email input -->
-        <div data-mdb-input-init class="form-outline mb-4">
-            <label class="form-label" for="form2Example1">Enter your email address</label></br></br>
-            <input type="email" id="form2Example1" name="email" class="form-control" required />
-        </div>
-
-        <!-- Submit button -->
-        <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
-    </form>
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
+        </form>
+    </div>
 </div>
-
+</center>
 </body>
 </html>
+
+<?php
+include("database.php");
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require __DIR__ . "/../vendor/autoload.php";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST["email"];
+    $otp = rand(100000, 999999); // Generate a 6-digit OTP
+    $reset_token_hash = hash("sha256", $otp);
+    $reset_token_expires_at = date("Y-m-d H:i:s", time() + 60 * 30);
+
+    $sql = "UPDATE employees SET reset_token_hash = ?, reset_token_expires_at = ? WHERE Employee_Email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $reset_token_hash, $reset_token_expires_at, $email);
+
+    if ($stmt->execute()) {
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = "smtp.gmail.com";
+            $mail->SMTPAuth = true;
+            $mail->Username = "dominicadino23@gmail.com";
+            $mail->Password = "jhbg fslz imgr egmx";
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            $mail->setFrom("noreply@example.com");
+            $mail->addAddress($email);
+            $mail->Subject = "Your OTP Code";
+            $mail->Body = "Your OTP code is: $otp";
+
+            $mail->send();
+            echo "OTP sent successfully.";
+            header("Location: otp.php?email=" . urlencode($email));
+            exit();
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+    } else {
+        echo "Execute failed: " . htmlspecialchars($stmt->error);
+    }
+} else {
+    echo "Form not submitted.";
+}
+?>
