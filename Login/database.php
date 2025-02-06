@@ -11,7 +11,7 @@
         echo "Could not connect <br>";
     }
 
-    if($conn){
-        echo "DB Connected Successfully <br>";
-    }
+    // if($conn){
+    //     echo "DB Connected Successfully <br>";
+    // }
 ?>
