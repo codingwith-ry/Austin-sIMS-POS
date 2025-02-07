@@ -3,7 +3,7 @@
     $db_user = "root";
     $db_pass = '';
     $db_name = "austingastropub";
-    $db_port = 3306;
+    $db_port = 3307;
 
     try{
         $conn = mysqli_connect($db_server, $db_user, $db_pass, $db_name, $db_port);
@@ -11,7 +11,7 @@
         echo "Could not connect <br>";
     }
 
-    // if($conn){
-    //     echo "DB Connected Successfully <br>";
-    // }
+    if($conn){
+        echo "DB Connected Successfully <br>";
+    }
 ?>
