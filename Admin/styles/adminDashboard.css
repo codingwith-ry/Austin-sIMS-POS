@@ -1,0 +1,44 @@
+#adminContent {
+  position: relative;
+  height: 100vh;
+  width: calc(100% - 15%);
+  left: 15%;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+#dataChartsContainer {
+  padding: 20px;
+}
+
+.nav-link,
+.nav-link:hover,
+.nav-link.active {
+  color: black;
+}
+
+#accountDropdownBtn {
+  border-radius: 100px;
+}
+
+#topSellingProductsContainer {
+  padding-right: 5px;
+  padding-left: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+#sales-line-container,
+#totalOrdersContainer {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+canvas {
+  width: 100 !important;
+  height: 100% !important;
+  max-width: 100%;
+  max-height: 100%;
+}
