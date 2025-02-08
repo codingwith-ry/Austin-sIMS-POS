@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if ($password === $stored_password) {
                 // Password is correct
-                header("Location: /Austin-sIMS-POS-main/IMS-POS/Menu.php");
+                header("Location: /Austin-sIMS-POS/IMS-POS/Menu.php");
                 exit();
             } else {
                 // Invalid password
@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <i class="bi bi-lock"></i>
                         </span>
                     <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="password" required />
-                    <a href="/Austin-sIMS-POS-main/Login/forgotpass.php" class="d-block text-end mt-2" style="padding-left: 180px">Forgot password?</a>
+                    <a href="/Austin-sIMS-POS/Login/forgotpass.php" class="d-block text-end mt-2" style="padding-left: 180px">Forgot password?</a>
                 </div>
 
                 <!-- Submit button -->
