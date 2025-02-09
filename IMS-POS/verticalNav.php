@@ -1,3 +1,16 @@
+<?php
+$page = basename($_SERVER['PHP_SELF']);
+if ($page == "orderQueue_History.php") {
+    echo '<link rel="stylesheet" href="styles/orderQH.css">';
+} elseif ($page == "Menu.php") {
+    echo '<link rel="stylesheet" href="styles/POS.css">';
+} elseif ($page == "stockPage.php") {
+    echo '<link rel="stylesheet" href="styles/IMS.CSS">';
+} elseif ($page == "Inventory_Item-Records.php") {
+    echo '<link rel="stylesheet" href="styles/IMS.CSS">';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

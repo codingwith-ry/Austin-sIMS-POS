@@ -1,0 +1,32 @@
+#nav {
+  position: fixed;
+  width: 15%;
+}
+
+#nav2 {
+  position: fixed;
+  width: 20%;
+}
+
+.list-group-item {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.list-group-item.active {
+  background-color: #d0e7ff; /* Highlight color */
+  color: #0056b3; /* Text color when active */
+  border-radius: 50px; /* Oblong shape */
+  font-weight: bold;
+}
+
+.list-group-item:hover {
+  background-color: #e3f2fd; /* Slightly lighter color */
+  border-radius: 50px; /* Matches active shape */
+}
+
+.text-muted {
+  color: #b0b0b0 !important;
+}

@@ -1,33 +1,73 @@
+<?php
+include("database.php");
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST["email"];
+    $new_password = $_POST["password"];
+    $reset_token_hash = $_POST["reset_token_hash"];
+
+   
+    $new_password_unhashed = $new_password;
+
+   
+    $sql = "UPDATE employees SET Employee_PassKey = ?, reset_token_hash = NULL, reset_token_expires_at = NULL WHERE Employee_Email = ? AND reset_token_hash = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $new_password_unhashed, $email, $reset_token_hash);
+
+    if ($stmt->execute()) {
+        echo "Password reset successfully.";
+        header("Location: index.php");
+        exit();
+    } else {
+        echo "Error updating password: " . htmlspecialchars($stmt->error);
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
     <title>Set New Password</title>
 </head>
-<body>
+<body style="font-family: 'Rubik', sans-serif;">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<center>
+<div>
+    <img src="logo.png" alt="Austin's Logo" >
+    <p style=" padding-bottom:20px; color:#6a4413; font-size:25px">Inventory Management - Point of Sale System</p>
+    <div class="card text-bg-light mb-6" style="justify-content: center; width: 25rem; padding:30px">
+        <h5>Set Password</h5></br>
+        <form action="setpass.php" method="POST">
+            <!-- Email input -->
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">@</span>
+                <input name="email" type="text" class="form-control" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1" value="<?php echo htmlspecialchars($_GET['email']); ?>" readonly>
+            </div>
 
-<div class="setpass-container">
-    <form action="/Austin-sIMS-POS/Login/otp.php" method="POST">
-        <!-- New password input -->
-        <div data-mdb-input-init class="form-outline mb-4">
-            <label class="form-label" for="form2Example1">New Password</label>
-            <input type="password" id="form2Example1" name="new_password" class="form-control" required />
-        </div>
+            <!-- Password input -->
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">
+                    <i class="bi bi-lock"></i>
+                </span>
+                <input name="password" type="password" class="form-control" placeholder="New Password" aria-label="Password" aria-describedby="basic-addon1" id="password" required />
+            </div>
 
-        <!-- Confirm password input -->
-        <div data-mdb-input-init class="form-outline mb-4">
-            <label class="form-label" for="form2Example2">Confirm Password</label>
-            <input type="password" id="form2Example2" name="confirm_password" class="form-control" required />
-        </div>
+            <!-- Hidden input for reset token hash -->
+            <input type="hidden" name="reset_token_hash" value="<?php echo htmlspecialchars($_GET['reset_token_hash']); ?>" />
 
-        <!-- Submit button -->
-        <button type="submit" class="btn btn-primary btn-block mb-4">Set Password</button>
-    </form>
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary btn-block">Continue</button>
+        </form>
+    </div>
 </div>
-
+</center>
 </body>
 </html>

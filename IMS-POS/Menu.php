@@ -28,8 +28,8 @@
             </div>
             <div class="card mb-3 mt-3 flex-shrink-0">
                 <div class="row g-0">
-                <div class="col-6" id="foodCol" style="justify-content: center; display: flex;">
-                    <img src="resources/nachos.jpg" id = "imgFood"class="img-fluid rounded-start rounded-end">
+                <div class="col-6 flex-shrink-0" id="foodCol" style="justify-content: center; display: flex;">
+                    <img src="resources/nachos.jpg" id = "imgFood"class="img-fluid rounded-start rounded-end ">
                     </div>
                     <div class="col-6" id="foodCol" style="padding-left: 5px; ">
                         <div class="row">
@@ -138,7 +138,7 @@
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Proceed to Payment</button>
+            <button type="button" class="btn btn-primary" id="btnProceed" style="width: 100%; margin-top: 10px;">Proceed to Payment</button>
         </div>
     </div>
 
@@ -174,26 +174,23 @@
         </ul>
         <br />
         <div class="d-flex flex-row flex-nowrap overflow-x-scroll">
-            <div class="card me-3 flex-shrink-0 bg-primary text-white" style="width: 12rem;"> 
-                <div class="card-body"> 
+            <button class="btn btn-primary flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding-left:15px;">
                     <span>
                         <i class="fi fi-ss-apps" id="categoryIcon"></i>
 					</span>
                     <br />
                     <br />
-                    <p class="card-text fw-bold" >All</p> 
-                </div> 
-            </div>
-            <div class="card me-3 flex-shrink-0" style="width: 12rem;"> 
-                <div class="card-body"> 
+                    <p class="card-text fw-bold " >All</p> 
+            </button>
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding-left:15px;">
                     <span>
                         <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
 					</span>
                     <br />
                     <br />
-                    <p class="card-text">Coffees</p> 
-                </div> 
-            </div>
+                    <p class="card-text">Coffees</p>
+            </button>
+
             <div class="card me-3 flex-shrink-0" style="width: 12rem;"> 
                 <div class="card-body"> 
                     <span>
@@ -293,7 +290,7 @@
                             </div>
                             
                             <span id="foodPrice">₱120.00</span>
-                            <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
                         </div>
                     </div>
                 </div>
@@ -312,7 +309,7 @@
                             </div>
                             
                             <span id="foodPrice">₱280.00</span>
-                            <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
                         </div>
                     </div>
                 </div>
@@ -331,13 +328,40 @@
                             </div>
                             
                             <span id="foodPrice">₱280.00</span>
-                            <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Recipient:</label>
+                            <input type="text" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Message:</label>
+                            <textarea class="form-control" id="message-text"></textarea>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Send message</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-   
+
+<script type="text/javascript" src="scripts/POS.js"></script>
 <?php include 'footer.php' ?>
