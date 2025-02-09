@@ -25,11 +25,17 @@
     <title>Document</title>
 </head>
 <body style="font-family: Inter, sans-serif;">
-    <div class="offcanvas offcanvas-start show" id="nav" data-bs-scroll="true">
-        <div class="offcanvas-header border-bottom">
-            <div class="d-flex align-items-center">
-                <img src="logo.png" alt="Logo" style="width: 40px; height: 40px; border-radius: 50%;">
-                <h5 class="ms-2 mb-0" id="sideNavLabel">Austin's Cafe & Gastro Pub IMS-POS</h5>
+    <div class="offcanvas offcanvas-start show" id="nav" tabindex="1" data-bs-scroll="true" data-bs-backdrop="false">
+        <div class="offcanvas-header ">
+            <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-lg-4 p-0">
+                    <img src="resources/logo.png" alt="Logo" style="width: 65px; height: 65px; object-fit: cover;" class="rounded-circle">
+                </div>
+                <div class="col-md-8 col-lg-8 p-0">
+                    <span id="offcanvasScrollingLabel" class="flex-grow-1 w-75 fs-6" style="font-size: 0.875rem;"><b>Austin's Cafe & Gastro Pub IMS-POS</b></span>
+                </div>
+            </div>
             </div>
         </div>
         <div class="offcanvas-body p-0">
