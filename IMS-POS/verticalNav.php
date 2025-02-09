@@ -2,13 +2,7 @@
 $page = basename($_SERVER['PHP_SELF']);
 if ($page == "orderQueue_History.php") {
     echo '<link rel="stylesheet" href="styles/orderQH.css">';
-} elseif ($page == "Menu.php") {
-    echo '<link rel="stylesheet" href="styles/POS.css">';
-} elseif ($page == "stockPage.php") {
-    echo '<link rel="stylesheet" href="styles/IMS.CSS">';
-} elseif ($page == "Inventory_Item-Records.php") {
-    echo '<link rel="stylesheet" href="styles/IMS.CSS">';
-}
+} 
 ?>
 
 <!DOCTYPE html>
@@ -34,6 +28,7 @@ if ($page == "orderQueue_History.php") {
     <link rel="stylesheet" href="styles/nav.css">
     <link href="styles/POS.css" rel="stylesheet">
     <link href="styles/IMS.CSS" rel="stylesheet">
+    <link href="styles/orderCollapse.css" rel="stylesheet">
     
     <title>Document</title>
 </head>
