@@ -276,62 +276,98 @@
         <br />
         <div class="products">
             <div class="row">
-                <div class="col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                    <div class="card" style="width: 100%; padding: 15px;">
+                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                    <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
                         <img src="resources/nachos.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
                         <div class="card-body" id="productBody">
                             <div class="row">
-                                <div class="col-10">
-                                    <span id="productName">Nachos</span>
+                                <div class="col-8 flex-shrink-0 pe-0">
+                                    <span id="productName">Roast Beef with Mashed Potato</span>
                                 </div>
-                                <div class="col-2" style="justify-content: right; display: flex;">
+                                <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
                                     <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Starters</span>
                                 </div>
                             </div>
                             
-                            <span id="foodPrice">₱120.00</span>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                            <div class="row">
+                                <div class="col-12">
+                                    <span id="foodPrice">₱280.00</span>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                    <div class="card" style="width: 100%; padding: 15px;">
+                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                    <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
                         <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
                         <div class="card-body" id="productBody">
                             <div class="row">
-                                <div class="col-10">
+                                <div class="col-8 flex-shrink-0 pe-0">
                                     <span id="productName">Creamy Chicken Alfredo Pasta</span>
                                 </div>
-                                <div class="col-2" style="justify-content: right; display: flex;">
+                                <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
                                     <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
                                 </div>
                             </div>
                             
-                            <span id="foodPrice">₱280.00</span>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                            <div class="row">
+                                <div class="col-12">
+                                    <span id="foodPrice">₱280.00</span>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                    <div class="card" style="width: 100%; padding: 15px;">
+                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                    <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
                         <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
                         <div class="card-body" id="productBody">
                             <div class="row">
-                                <div class="col-10">
+                                <div class="col-8 flex-shrink-0 pe-0">
                                     <span id="productName">Creamy Chicken Alfredo Pasta</span>
                                 </div>
-                                <div class="col-2" style="justify-content: right; display: flex;">
+                                <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
                                     <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
                                 </div>
                             </div>
                             
-                            <span id="foodPrice">₱280.00</span>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                            <div class="row">
+                                <div class="col-12">
+                                    <span id="foodPrice">₱280.00</span>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                    <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
+                        <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
+                        <div class="card-body" id="productBody">
+                            <div class="row">
+                                <div class="col-8 flex-shrink-0 pe-0">
+                                    <span id="productName">Creamy Chicken Alfredo Pasta</span>
+                                </div>
+                                <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
+                                    <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    <span id="foodPrice">₱280.00</span>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
