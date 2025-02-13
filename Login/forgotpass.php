@@ -34,10 +34,7 @@
 
 <?php
 include("database.php");
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require __DIR__ . "/vendor/autoload.php";
+require __DIR__ . "/mailer.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
@@ -50,26 +47,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("sss", $reset_token_hash, $reset_token_expires_at, $email);
 
     if ($stmt->execute()) {
-        $mail = new PHPMailer(true);
+        $mail = require __DIR__ . "/mailer.php";
 
         try {
-            $mail->isSMTP();
-            $mail->Host = "smtp.gmail.com";
-            $mail->SMTPAuth = true;
-            $mail->Username = "dominicadino23@gmail.com";
-            $mail->Password = "jhbg fslz imgr egmx";
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
-
-            $mail->setFrom("noreply@example.com");
             $mail->addAddress($email);
             $mail->Subject = "Your OTP Code";
             $mail->Body = "Your OTP code is: $otp";
 
-            $mail->send();
-            echo "OTP sent successfully.";
-            header("Location: otp.php?email=" . urlencode($email));
-            exit();
+            if ($mail->send()) {
+                echo "OTP sent successfully.";
+                header("Location: otp.php?email=" . urlencode($email));
+                exit();
+            } else {
+                echo "Mailer Error: " . $mail->ErrorInfo;
+            }
         } catch (Exception $e) {
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
