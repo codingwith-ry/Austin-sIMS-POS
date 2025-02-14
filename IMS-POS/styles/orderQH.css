@@ -1,3 +1,4 @@
+/* Responsive Design */
 @media (max-width: 768px) {
     .table-container {
         overflow-x: scroll !important;
@@ -82,17 +83,19 @@ body, html {
     overflow-x: scroll; 
 }
 
-.table.order-table {
+.table.order-table,
+.table.order-history-table {
     width: 100%;
     color: #212529;
     border-collapse: collapse;
     overflow: hidden;
-    background-color: #EBEBEB;
+    background-color: #CACACA !important;
 }
 
 /* Table Headers */
-.table.order-table th {
-    background-color: #cacaca;
+.table.order-table th,
+.table.order-history-table th {
+    background-color: #cacaca !important;
     padding: 8px; 
     text-align: center; 
     height: 60px; 
@@ -100,36 +103,42 @@ body, html {
     font-size: 16px; 
 }
 
-.table.order-table th.queue-header {
+.table.order-table th.queue-header,
+.table.order-history-table th.history-header {
     padding-left: 30px !important;
 }
 
 /* Table Data Cells */
-.table.order-table td {
+.table.order-table td,
+.table.order-history-table td {
     padding: 10px;
     text-align: center; 
     border-bottom: 1px solid #ddd;
     background-color: #ebebeb; 
 }
 
-.table.order-table td.queue-number {
+.table.order-table td.queue-number,
+.table.order-history-table td.history-number {
     text-align: center;
     padding-left: 30px;
 }
 
-.table.order-table tr.highlight td {
+.table.order-table tr.highlight td,
+.table.order-history-table tr.highlight td {
     background-color: #d9d9d9;
 }
 
 /* Order Row */
-.order-row td {
+.order-row td,
+.history-row td {
     padding: 8px;
     height: 50px; 
     vertical-align: middle;
 }
 
 /* Order Row Hover Effect */
-.order-row:hover {
+.order-row:hover,
+.history-row:hover {
     background-color: #d9d9d9;
     cursor: pointer;
 }
@@ -191,17 +200,21 @@ body, html {
     display: table-row;
 }
 
-.order-table .collapse-row td {
+.order-table .collapse-row td,
+.order-history-table .collapse-row td {
     padding: 0;
     border-top: none;
 }
 
 .order-table tr th,
-.order-table tr td {
+.order-table tr td,
+.order-history-table tr th,
+.order-history-table tr td {
     border-top: none;
 }
 
-.order-row.highlight td {
+.order-row.highlight td,
+.history-row.highlight td {
     background-color: #d9d9d9;
 }
 
@@ -209,3 +222,43 @@ body, html {
     margin-top: 10px; 
 }
 
+/* Search and Settings bar */
+.d-flex {
+    display: flex !important;
+}
+
+.justify-content-between {
+    justify-content: space-between !important;
+}
+
+.align-items-center {
+    align-items: center !important;
+}
+
+.form-control {
+    width: 80%;
+    display: inline-block;
+}
+
+.fi {
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.ml-2 {
+    margin-left: 10px !important;
+}
+
+/* Side Section for Collapse Content */
+#historyCollapseContainer {
+    background-color: #EBEBEB;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 10px;
+    display: none;
+}
+
+#historyCollapseContainer.show {
+    display: block;
+}

@@ -29,6 +29,7 @@ if ($page == "orderQueue_History.php") {
     <link href="styles/POS.css" rel="stylesheet">
     <link href="styles/IMS.CSS" rel="stylesheet">
     <link href="styles/orderCollapse.css" rel="stylesheet">
+    <link href="styles/popupSidebar.css" rel="stylesheet">
     
     <title>Document</title>
 </head>

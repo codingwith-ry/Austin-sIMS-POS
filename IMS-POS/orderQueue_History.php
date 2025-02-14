@@ -56,14 +56,57 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-                <!-- History content -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center">
+                        <input type="text" id="searchBox" class="form-control mr-2" placeholder="Search...">
+                        <i class="fi fi-rr-settings-sliders" style="border-radius: 8px; padding: 8px; background-color: #EBEBEB;"></i>
+                    </div>
+                </div>
+                <div class="table-container mt-3">
+                    <table class="table order-history-table">
+                        <thead>
+                            <tr>
+                                <th>Order Number</th>
+                                <th>Receipt Number</th>
+                                <th>Employee ID</th>
+                                <th>Date Purchased</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- History Row -->
+                            <tr class="history-row">
+                                <td class="history-number">1</td>
+                                <td>003468</td>
+                                <td>EMP001</td>
+                                <td>10:00:00 AM</td>
+                            </tr>
+                            <!-- Additional history rows as needed -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination -->
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center mt-3">
+                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
+                <!-- Popup Sidebar Section -->
+                <div id="popupSidebar" class="popup-sidebar">
+                    <?php include 'popupSidebar.php'; ?>
+                </div>
             </div>
         </div>
     </main>
 </div>
 
+<!-- Include jQuery and Bootstrap JS just before closing body tag -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
 <!-- Custom JS -->
 <script>
@@ -81,12 +124,28 @@
             collapseElement.collapse('toggle');
         });
 
+        $('.history-row').on('click', function() {
+            $('#popupSidebar').show();
+        });
+
         $(document).on('change', '.item-checkbox', function() {
             if(this.checked) {
                 $(this).parent().addClass('completed');
             } else {
                 $(this).parent().removeClass('completed');
             }
+        });
+
+        // Initialize DataTable without "Show entries" and pagination
+        $('.order-history-table').DataTable({
+            "dom": 'rt',
+            "paging": true
+        });
+
+        // Custom Search Functionality
+        $('#searchBox').on('keyup', function() {
+            var table = $('.order-history-table').DataTable();
+            table.search(this.value).draw();
         });
     });
 </script>
