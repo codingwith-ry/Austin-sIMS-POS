@@ -29,6 +29,12 @@
                     <span class="material-symbols-outlined">
                         settings
                     </span>
+                    <span class="ms-2">Products</span>
+                </li>
+                <li class="list-group-item border-0 py-3 d-flex align-items-center text-muted">
+                    <span class="material-symbols-outlined">
+                        settings
+                    </span>
                     <span class="ms-2">Settings</span>
                 </li>
             </ul>
