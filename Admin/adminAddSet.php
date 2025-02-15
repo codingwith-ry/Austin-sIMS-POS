@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New User</title>
+    <title>Account Settings</title>
     <?php include 'adminCDN.php'; ?>
-    <link rel="stylesheet" href="adminAddUser.css">
+    <link rel="stylesheet" href="adminAddSet.css">
     <link rel="stylesheet" href="adminNav.css">
 </head>
 <body>
     <?php include 'adminNavBar.php'; ?>
     <div id="adminContent">
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <h1 class="h4">Add New User</h1>
+            <h1 class="h4">Account Settings</h1>
             <div class="dropdown">
                 <div class="profile-dropdown d-flex align-items-center admin-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="profile-pic.png" alt="Profile Picture" class="admin-avatar me-2">
@@ -27,8 +27,13 @@
             </div>
         </div>
         <div class="card p-4">
-            <h2 class="text-center h4 fw-bold">Please fill in information</h2>
-            <p class="text-center text-muted">Enter details to get going.</p>
+            <div class="d-flex align-items-center mb-3">
+                <img src="profile-pic.png" alt="Profile Picture" class="admin-avatar me-3">
+                <div>
+                    <h2 class="fw-bold mb-0">John Doe</h2>
+                    <p class="text-muted mb-0">johndoe@gmail.com</p>
+                </div>
+            </div>
             <form>
                 <div class="row mb-4">
                     <div class="col-md-12">

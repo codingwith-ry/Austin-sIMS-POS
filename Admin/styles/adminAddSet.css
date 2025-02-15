@@ -11,7 +11,7 @@ body {
     left: 15%;
     padding: 20px;
     overflow-x: hidden;
-    background-color: #EBEBEB !important;
+    background-color: #CACACA; 
 }
 
 .profile-dropdown {
@@ -42,8 +42,7 @@ body {
 
 h1.h4 {
     color: #7E7E7E;
-    margin-left: 20px; 
-    margin-bottom: -10px !important;
+    margin-left: 20px;
 }
 
 .section-title {
