@@ -1,3 +1,125 @@
+/****************Number Of Employees Chart Initialization****************/
+const employeeGraph = document.getElementById("employeeChart");
+
+const employeeData = {
+  labals: ["Total Employees", "Available Employees"],
+  datasets: [
+    {
+      data: [60, 100],
+      backgroundColor: ["#686D76"],
+    },
+  ],
+};
+
+new Chart(employeeGraph, {
+  type: "doughnut",
+  data: employeeData,
+  options: {
+    layout: {
+      padding: 40,
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+  },
+});
+
+/****************Number Of POS Employees Chart Initialization****************/
+
+const posEmployeesGraph = document.getElementById("No_POS_Employees_Chart");
+
+const posEmployeeData = {
+  labels: ["Total Employees", "POS Employees"],
+  datasets: [
+    {
+      data: [20, 100],
+      backgroundColor: ["#686D76"],
+    },
+  ],
+};
+
+new Chart(posEmployeesGraph, {
+  type: "doughnut",
+  data: posEmployeeData,
+  options: {
+    layout: {
+      padding: 40,
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+  },
+});
+
+/****************Number Of IMS Employees Chart Initialization****************/
+
+const imsEmployeeGraph = document.getElementById("No_IMS_Employees_Chart");
+
+const imsEmployeeData = {
+  labals: ["Total Employees", "IMS Employees"],
+  datasets: [
+    {
+      data: [50, 100],
+      backgroundColor: ["#686D76"],
+    },
+  ],
+};
+
+new Chart(imsEmployeeGraph, {
+  type: "doughnut",
+  data: imsEmployeeData,
+  options: {
+    layout: {
+      padding: 40,
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+  },
+});
+
+/****************Number Of Administrator Chart Initialization****************/
+
+const adminGraph = document.getElementById("Admin_Chart");
+const adminData = {
+  labels: ["Total Employees", "Admin"],
+  datasets: [
+    {
+      data: [2, 100],
+      backgroundColor: ["#686D76"],
+    },
+  ],
+};
+
+new Chart(adminGraph, {
+  type: "doughnut",
+  data: adminData,
+  options: {
+    layout: {
+      padding: 40,
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+  },
+});
+
 /****************Sales Data Chart Initialization****************/
 const saleGraph = document.getElementById("salesDataChart");
 
@@ -116,18 +238,12 @@ const statisticsData = {
     ],
     datasets: [
       {
-        label: "Sales",
-        data: [55, 60, 40, 25, 79, 80, 90],
-        backgroundColor: "rgb(75, 192, 192)",
-        borderRadius: Number.MAX_VALUE,
-        borderSkipped: false,
-      },
-      {
         label: "Orders",
-        data: [80, 40, 30, 50, 60, 85, 95],
+        data: [1000, 2000, 3000, 4000, 6000, 7500, 3500],
         backgroundColor: "rgb(255, 99, 132)",
-        borderRadius: Number.MAX_VALUE,
+        borderRadius: 10,
         borderSkipped: false,
+        barThickness: 40,
       },
     ],
   },
@@ -143,9 +259,9 @@ const chartOptions = {
     y: {
       beginAtZero: true,
       min: 0,
-      max: 100,
+      max: 9000,
       ticks: {
-        stepSize: 25,
+        stepSize: 1000,
       },
       grid: {
         display: false,
