@@ -40,7 +40,7 @@
             </form>
         </div>
         </div>
-        <div class="row">
+        <div class="row align-items-stretch">
             <div class="d-flex justify-content-between">
                 <div style="padding-left: 10px;">
                     <h1>Dashboard</h1>
@@ -62,9 +62,63 @@
                 </div>
             </div>
         </div>
+        <div class="row" style="padding-left: 10px;">
+            <div class="col-3 d-flex align-items-stretch">
+                <div class="card h-100">
+                    <div class="card-body" style="display: flex; align-items:center">
+                        <div>
+                            <strong>Total Number<br />of Employees</strong>
+                            <h1>12</h1>
+                        </div>
+                        <div id="totalNumberOfEmployeesContainer">
+                            <canvas id="employeeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 d-flex align-items-stretch">
+                <div class="card h-100">
+                    <div class="card-body" style="display: flex; align-items:center">
+                        <div>
+                            <strong>POS<br />Employees</strong>
+                            <h1>20</h1>
+                        </div>
+                        <div id="posEmployees_ChartContainer">
+                            <canvas id="No_POS_Employees_Chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 d-flex align-items-stretch">
+                <div class="card h-100">
+                    <div class="card-body" style="display: flex; align-items:center">
+                        <div> 
+                            <strong>Inventory<br />Employees</strong>
+                            <h1>20</h1>
+                        </div>
+                        <div id="imsEmployees_ChartContainer">
+                            <canvas id="No_IMS_Employees_Chart"></canvas>
+                        </div>
+                    </div>
+                </div>            
+            </div>
+            <div class="col-3 d-flex align-items-stretch">
+                <div class="card h-100">
+                    <div class="card-body" style="display: flex; align-items:center">
+                        <div>
+                            <strong>Administrator</strong>
+                            <h1>2</h1>
+                        </div>
+                        <div id="admin_ChartContainer">
+                            <canvas id="Admin_Chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row align-items-stretch">
-            <div id="dataChartsContainer" class="col col-7">
-            <div class="card h-100" style="width: 100%;">
+            <div id="dataChartsContainer" class="col-7">
+            <div class="card" style="max-height: 100%;">
                 <div class="card-body d-flex flex-column">
                 <div class="card-title d-flex align-items-center justify-content-between">
                     <div>
@@ -74,106 +128,16 @@
                         <button class="btn btn-secondary">View Report</button>
                     </div>
                 </div>
-                   <div id="sales-line-container" class="flex-grow-1 d-flex align-items-center justify-content-center">
-                        <canvas id="salesDataChart" style="width: 100%; height: 90%"></canvas>
+                   <div id="sales-line-container">
+                        <canvas id="salesDataChart"></canvas>
                    </div>
                 </div>
             </div>
             </div>
 
-            <div id="dataChartsContainer" class="col-3">
-            <div class="card h-100" style="width: 100%;">
-                <div class="card-body">
-                <div class="card-title">
-                    <div>
-                        <strong style="font-size: 20px;">Total Orders</strong>
-                    </div>
-                </div>   
-                <div id="totalOrdersContainer" class="flex-grow-1 d-flex align-items-center justify-content-center">
-                    <canvas id="totalOrderChart"></canvas>
-                </div>
-                </div>
-            </div>
-            </div>
-
-            <div id="dataChartsContainer" class="col-2 d-flex flex-column h-150 gap-3">
-            <div class="row flex-grow-1">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-title">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <div style="font-size: 20px;">    
-                                        <strong>Total Products<br />Sold</strong>
-                                    </div>
-                                <div>
-                                    <span style="opacity: 0.5;">-2.3%</span>
-                                </div>
-                                </div>
-                                <div style="font-size: 30px;">
-                                    <span class="mdi mdi-invoice-list-outline"></span>
-                                </div>
-                            </div>
-                        </div>   
-                        <div style="font-size: 30px;">
-                            <strong>1,274</strong>
-                        </div>
-                        <div class="progress" role="progressbar" aria-label="Example 1px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 2px">
-                            <div class="progress-bar" style="width: 25%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row flex-grow-1">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-title">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <div style="font-size: 20px;">    
-                                        <strong>Total Products<br />Sold</strong>
-                                    </div>
-                                <div>
-                                    <span style="opacity: 0.5;">-2.3%</span>
-                                </div>
-                                </div>
-                                <div style="font-size: 30px;">
-                                    <span class="mdi mdi-invoice-list-outline"></span>
-                                </div>
-                            </div>
-                        </div>   
-                        <div style="font-size: 30px;">
-                            <strong>1,274</strong>
-                        </div>
-                        <div class="progress" role="progressbar" aria-label="Example 1px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 2px">
-                            <div class="progress-bar" style="width: 25%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-
-            <div class="row gx-0 align-items-stretch">
-            <div id="dataChartsContainer" class="col-7">
-                <div class="card h-100">
-                <div class="card-body">
-                    <div class="card-title">
-                        <div>
-                            <strong style="font-size: 20px;">Statistics</strong>
-                        </div>
-                        <div>
-                            <span>Total Sales and purchases</span>
-                        </div>
-                    </div>   
-                        <div id="statisticsChartContainer">
-                            <canvas id="statisticsBarChart" style="width: 100%;"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div id="topSellingProductsContainer" class="col-5">
             <div class="card h-100">
-                    <div class="card-body overflow-y-auto" style="max-height: 500px;">
+                    <div class="card-body overflow-y-auto">
                         <div class="card-title">
                             <div>
                                 <div>
@@ -273,6 +237,100 @@
                     </div>
                 </div>
                 </div>
+
+            <div class="row gx-0 justify-content-center align-item-center">
+                <div></div>
+            <div id="dataChartsContainer" class="col-7">
+                <div class="card h-100">
+                <div class="card-body">
+                    <div class="card-title">
+                        <div>
+                            <strong style="font-size: 20px;">Statistics</strong>
+                        </div>
+                        <div>
+                            <span>Total Sales and purchases</span>
+                        </div>
+                    </div>   
+                        <div id="statisticsChartContainer" style="margin-top: 5%;">
+                            <canvas id="statisticsBarChart" width="20px" height="6px"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div id="dataChartsContainer" class="col-3">
+            <div class="card h-100" style="width: 100%;">
+                <div class="card-body">
+                <div class="card-title">
+                    <div>
+                        <strong style="font-size: 20px;">Total Orders</strong>
+                    </div>
+                </div>   
+                <div id="totalOrdersContainer" class="flex-grow-1 d-flex align-items-center justify-content-center">
+                    <canvas id="totalOrderChart"></canvas>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <div id="dataChartsContainer" class="col-2 d-flex flex-column h-150 gap-3">
+            <div class="row flex-grow-1">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div style="font-size: 20px;">    
+                                        <strong>Total Products<br />Sold</strong>
+                                    </div>
+                                <div>
+                                    <span style="opacity: 0.5;">-2.3%</span>
+                                </div>
+                                </div>
+                                <div style="font-size: 30px;">
+                                    <span class="mdi mdi-invoice-list-outline"></span>
+                                </div>
+                            </div>
+                        </div>   
+                        <div style="font-size: 30px;">
+                            <strong>1,274</strong>
+                        </div>
+                        <div class="progress" role="progressbar" aria-label="Example 1px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 2px">
+                            <div class="progress-bar" style="width: 25%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row flex-grow-1">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div style="font-size: 20px;">    
+                                        <strong>Total Products<br />Sold</strong>
+                                    </div>
+                                <div>
+                                    <span style="opacity: 0.5;">-2.3%</span>
+                                </div>
+                                </div>
+                                <div style="font-size: 30px;">
+                                    <span class="mdi mdi-invoice-list-outline"></span>
+                                </div>
+                            </div>
+                        </div>   
+                        <div style="font-size: 30px;">
+                            <strong>1,274</strong>
+                        </div>
+                        <div class="progress" role="progressbar" aria-label="Example 1px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 2px">
+                            <div class="progress-bar" style="width: 25%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            
             </div>
         </div>
     </main>
