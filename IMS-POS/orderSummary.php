@@ -2,11 +2,11 @@
 
 <div id="mainContent">
         <div class="bg-white p-4 rounded shadow-sm" style="width: 100%;">
-            <div class="mb-3">
+            <div class="mb-1">
                 <h4 class="fw-bold">Order Summary</h4>
             </div>
-
-            <div class="d-flex justify-content-between align-items-start mb-4">
+            <hr />
+            <div class="d-flex justify-content-between align-items-start mb-1">
                 <div>
                     <p class="mb-1">Order No.:</p>
                     <h2 class="fw-bold">004827</h2>
@@ -18,7 +18,7 @@
             </div>
 
             <div class="row">
-                <div class="col-6 p-2">
+                <div class="col-6 p-3">
                     <h6 class="fw-bold mb-3">Order Details</h6>
                     <div class="d-flex justify-content-between mb-2">
                         <p>2 × Iced Matcha Latte</p>
@@ -57,7 +57,7 @@
                 </div>
 
                 <!-- Payment Section -->
-                <div class="col-6">
+                <div class="col-6 p-3">
                     <h6 class="fw-bold mb-3">Select a payment method</h6>
                     <select class="form-select mb-4">
                         <option selected>Cash</option>
@@ -84,7 +84,7 @@
                             <div class="col-4"><button class="btn btn-danger border">&larr;</button></div>
                         </div>
                     </div>
-                    <button class="btn btn-secondary mt-4 w-100">Pay Now</button>
+                    <button class="btn btn-success mt-4 w-100">Pay Now</button>
                 </div>
             </div>
         </div>
