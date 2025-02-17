@@ -17,15 +17,14 @@
         <br>
         <hr />
         <div class="offcanvas-body overflow-y-auto" style="padding-top: 0px;">
-            
-            <div class="row flex-shrink-0">
-                <div class="col" style=" padding-right: 1px">
-                    <button type="button" class="btn btn-primary" style="width: 100%;">Dine In</button>
-                </div>
-                <div class="col" style=" padding-left: 1px">
-                    <button type="button" class="btn btn-outline-primary" style="width: 100%;">Take Out</button>
-                </div>
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="width: 100%;">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" style="width: 100%;" checked>
+                <label class="btn btn-outline-primary" for="btnradio1">Dine In</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" style="width: 100%;" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio2">Take Out</label>
             </div>
+            
             <div class="card mb-3 mt-3 flex-shrink-0">
                 <div class="row g-0">
                 <div class="col-6 flex-shrink-0" id="foodCol" style="justify-content: center; display: flex;">
@@ -93,10 +92,13 @@
             </div>
             
             <div class="form-check mb-3 flex-shrink-0">
-                <label class="form-check-label" for="flexCheckDefault">
+                <label class="form-check-label mt-1 ms-1" for="flexCheckDefault">
                     Senior Citizen/PWD
                 </label>
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">  
+            </div>
+            <div class="mb-3 flex-shrink-0">
+                <input class="form-control form-control" type="text" placeholder="Voucher" id="flexCheckDefault">  
             </div>
 
             <div class="card" id="orderTotal1 flex-shrink-0">
@@ -161,28 +163,31 @@
 
     <br />
     <div class="container">
-        <ul class="nav nav-pills">
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Coffee Menu</a>
+        <ul class="nav nav-pills" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="coffeeMenu" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Coffee Menu</button>
             </li>
-            <li class="nav-item">
-                <a class="btn btn-outline-primary nav-link" href="#">Gastro Pub Menu</a>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="gastropubMenu" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Gastro Pub Menu</button>
             </li>
-            <li class="nav-item">
-                <a class="btn btn-outline-primary nav-link" href="#">Party Tray Menu</a>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="partytrayMenu" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Party Tray Menu</button>
             </li>
         </ul>
+
         <br />
+
+
         <div class="d-flex flex-row flex-nowrap overflow-x-scroll">
-            <button class="btn btn-primary flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding-left:15px;">
+            <button class="btn btn-primary flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
                     <span>
                         <i class="fi fi-ss-apps" id="categoryIcon"></i>
 					</span>
                     <br />
                     <br />
-                    <p class="card-text fw-bold " >All</p> 
+                    <p class="card-text fw-bold" >All</p> 
             </button>
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding-left:15px;">
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
                     <span>
                         <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
 					</span>
@@ -191,87 +196,93 @@
                     <p class="card-text">Coffees</p>
             </button>
 
-            <div class="card me-3 flex-shrink-0" style="width: 12rem;"> 
-                <div class="card-body"> 
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
                     <span>
-                        <i class="fi fi-rr-french-fries" id="categoryIcon"></i>
+                        <i class="fi fi-ss-apps" id="categoryIcon"></i>
 					</span>
                     <br />
                     <br />
-                    <p class="card-text">Starters</p> 
-                </div> 
-            </div>
-            <div class="card me-3 flex-shrink-0" style="width: 12rem;"> 
-                <div class="card-body"> 
+                    <p class="card-text fw-bold" >All</p> 
+            </button>
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
                     <span>
-                        <i class="fi fi-rr-salad" id="categoryIcon"></i>
+                        <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
 					</span>
                     <br />
                     <br />
-                    <p class="card-text">Chicken</p> 
-                </div> 
-            </div>
-            <div class="card me-3 flex-shrink-0" style="width: 12rem;"> 
-                <div class="card-body"> 
+                    <p class="card-text">Coffees</p>
+            </button>
+
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
                     <span>
-                        <i class="fi fi-rr-bowl-rice" id="categoryIcon"></i>
+                        <i class="fi fi-ss-apps" id="categoryIcon"></i>
 					</span>
                     <br />
                     <br />
-                    <p class="card-text">Pork</p> 
-                </div> 
-            </div>
-            <div class="card me-3 flex-shrink-0" style="width: 12rem;"> 
-                <div class="card-body"> 
+                    <p class="card-text fw-bold" >All</p> 
+            </button>
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
                     <span>
-                    <i class="fi fi-rr-fork-spaghetti" id="categoryIcon"></i>
+                        <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
 					</span>
                     <br />
                     <br />
-                    <p class="card-text">Beef</p> 
-                </div> 
-            </div>
+                    <p class="card-text">Coffees</p>
+            </button>
+
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                    <span>
+                        <i class="fi fi-ss-apps" id="categoryIcon"></i>
+					</span>
+                    <br />
+                    <br />
+                    <p class="card-text fw-bold" >All</p> 
+            </button>
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                    <span>
+                        <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
+					</span>
+                    <br />
+                    <br />
+                    <p class="card-text">Coffees</p>
+            </button>
+
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                    <span>
+                        <i class="fi fi-ss-apps" id="categoryIcon"></i>
+					</span>
+                    <br />
+                    <br />
+                    <p class="card-text fw-bold" >All</p> 
+            </button>
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                    <span>
+                        <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
+					</span>
+                    <br />
+                    <br />
+                    <p class="card-text">Coffees</p>
+            </button>
+
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                    <span>
+                        <i class="fi fi-ss-apps" id="categoryIcon"></i>
+					</span>
+                    <br />
+                    <br />
+                    <p class="card-text fw-bold" >All</p> 
+            </button>
+            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                    <span>
+                        <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
+					</span>
+                    <br />
+                    <br />
+                    <p class="card-text">Coffees</p>
+            </button>
             
-            <div class="card me-3 flex-shrink-0" style="width: 12rem;"> 
-                <div class="card-body"> 
-                    <span>
-                        <i class="fi fi-rr-cup-straw-swoosh" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text">Seafoods</p> 
-                </div> 
-            </div>
-            <div class="card me-3 flex-shrink-0" style="width: 12rem;"> 
-                <div class="card-body"> 
-                    <span>
-                        <i class="fi fi-rr-cup-straw-swoosh" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text">Rice and Noodles</p> 
-                </div> 
-            </div>
-            <div class="card me-3 flex-shrink-0" style="width: 12rem;"> 
-                <div class="card-body"> 
-                    <span>
-                        <i class="fi fi-rr-cup-straw-swoosh" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text">Vegetables</p> 
-                </div> 
-            </div>
-            <div class="card me-3 flex-shrink-0" style="width: 12rem;"> 
-                <div class="card-body"> 
-                    <span>
-                    <i class="fi fi-rr-cupcake-alt" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text">Desserts</p> 
-                </div> 
-            </div>
+
+            
         </div>
         <br />
         <div class="products">
@@ -374,24 +385,84 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                        <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">Add to Order</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form>
-                        <div class="mb-3">
-                            <label for="recipient-name" class="col-form-label">Recipient:</label>
-                            <input type="text" class="form-control" id="recipient-name">
-                        </div>
-                        <div class="mb-3">
-                            <label for="message-text" class="col-form-label">Message:</label>
-                            <textarea class="form-control" id="message-text"></textarea>
-                        </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <img src="resources/nachos.jpg" class="card-img-top img-fluid rounded-start rounded-end mb-2" id="productImage" alt="...">
+                                </div>
+                                <div class="col-8">
+                                    <h4 class="modal-title fs-5 fw-bold" id="exampleModalLabel">Nachos</h4>
+                                    <span class="text-success" style="font-size: 12px;"><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Starters</span>
+                                    <br />
+                                    <span id="foodPrice">₱280.00</span>
+                                    <br />
+                                    <br />
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination align-items-center">
+                                            <li class="page-item">
+                                                <button class="page-link btn-sm rounded-circle border-0 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; padding: 0;" >
+                                                    −
+                                                </button>
+                                            </li>
+                                            <li class="page-item mx-2">
+                                                <span class="fw-bold">1</span>
+                                            </li>
+                                            <li class="page-item">
+                                                <button class="page-link btn-sm rounded-circle border-0 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; padding: 0;">
+                                                    +
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>  
+                            </div>
+                            <hr />
+                            <span style="font-weight: bold; font-size: 18px;">Addons</span>
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-4 col-md-4">
+                                    <input class="form-check-input" type="checkbox" value="" id="item3">
+                                    <label class="form-check-label mt-1" for="item3">
+                                        Cheese
+                                        <br />
+                                        <span id="foodPrice">+ ₱50.00</span>
+                                    </label>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-4">
+                                    <input class="form-check-input" type="checkbox" value="" id="item3">
+                                    <label class="form-check-label mt-1" for="item3">
+                                        Sauce
+                                        <br />
+                                        <span id="foodPrice">+ ₱50.00</span>
+                                    </label>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-4">
+                                    <input class="form-check-input" type="checkbox" value="" id="item3">
+                                    <label class="form-check-label mt-1" for="item3">
+                                        Meat
+                                        <br />
+                                        <span id="foodPrice">+ ₱50.00</span>
+                                    </label>
+                                </div>
+                                </label>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col">
+                                    <span style="font-weight: bold; font-size: 16px;">Total Amount</span>
+                                </div>
+                                <div class="col" style="text-align: right;">
+                                    ₱280.00
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Send message</button>
+                        <button type="button" class="btn btn-primary">Add to Order</button>
                     </div>
                 </div>
             </div>

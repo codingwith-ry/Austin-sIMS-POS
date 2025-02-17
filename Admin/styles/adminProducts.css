@@ -16,7 +16,7 @@
     --bs-gradient: none;
   }
 
-  .nav-item:hover .nav-link {
+  .nav-item:hover .nav-link{
     background-color: #0d6efd;
     color: white;
   }
@@ -24,3 +24,42 @@
     font-size: 30px;
   }
   
+.nav-link.active {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+#productCard{
+  height: 100%;
+  width: 100%;
+}
+#productCard .card-body {
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#productImage {
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+}
+
+
+#productBody {
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 5px;
+  padding-bottom: 0px;
+}
+
+#productName {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#foodPrice {
+  font-weight: bold;
+  color: green;
+}
