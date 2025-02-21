@@ -165,7 +165,7 @@
     <div class="container">
         <ul class="nav nav-pills" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="coffeeMenu" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Coffee Menu</button>
+                <button class="nav-link active" id="coffeeMenuTab" data-bs-toggle="pill" data-bs-target="#coffeeMenu" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Coffee Menu</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="gastropubMenu" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Gastro Pub Menu</button>
@@ -176,211 +176,214 @@
         </ul>
 
         <br />
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="coffeeMenu" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+                <div class="d-flex flex-row flex-nowrap overflow-x-scroll">
+                    <button class="btn btn-primary flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-ss-apps" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text fw-bold" >All</p> 
+                    </button>
+                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text">Coffees</p>
+                    </button>
 
+                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-ss-apps" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text fw-bold" >All</p> 
+                    </button>
+                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text">Coffees</p>
+                    </button>
 
-        <div class="d-flex flex-row flex-nowrap overflow-x-scroll">
-            <button class="btn btn-primary flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-ss-apps" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text fw-bold" >All</p> 
-            </button>
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text">Coffees</p>
-            </button>
+                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-ss-apps" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text fw-bold" >All</p> 
+                    </button>
+                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text">Coffees</p>
+                    </button>
 
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-ss-apps" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text fw-bold" >All</p> 
-            </button>
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text">Coffees</p>
-            </button>
+                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-ss-apps" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text fw-bold" >All</p> 
+                    </button>
+                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text">Coffees</p>
+                    </button>
 
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-ss-apps" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text fw-bold" >All</p> 
-            </button>
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text">Coffees</p>
-            </button>
+                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-ss-apps" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text fw-bold" >All</p> 
+                    </button>
+                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text">Coffees</p>
+                    </button>
 
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-ss-apps" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text fw-bold" >All</p> 
-            </button>
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text">Coffees</p>
-            </button>
+                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-ss-apps" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text fw-bold" >All</p> 
+                    </button>
+                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
+                            <span>
+                                <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
+                            </span>
+                            <br />
+                            <br />
+                            <p class="card-text">Coffees</p>
+                    </button>
+                    
 
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-ss-apps" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text fw-bold" >All</p> 
-            </button>
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text">Coffees</p>
-            </button>
-
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-ss-apps" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text fw-bold" >All</p> 
-            </button>
-            <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                    <span>
-                        <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-					</span>
-                    <br />
-                    <br />
-                    <p class="card-text">Coffees</p>
-            </button>
-            
-
-            
-        </div>
-        <br />
-        <div class="products">
-            <div class="row">
-                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                    <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                        <img src="resources/nachos.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                        <div class="card-body" id="productBody">
-                            <div class="row">
-                                <div class="col-8 flex-shrink-0 pe-0">
-                                    <span id="productName">Roast Beef with Mashed Potato</span>
-                                </div>
-                                <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
-                                    <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Starters</span>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-12">
-                                    <span id="foodPrice">₱280.00</span>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                    
+                </div>
+                <br />
+                <div class="products">
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                            <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
+                                <img src="resources/nachos.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
+                                <div class="card-body" id="productBody">
+                                    <div class="row">
+                                        <div class="col-8 flex-shrink-0 pe-0">
+                                            <span id="productName">Roast Beef with Mashed Potato</span>
+                                        </div>
+                                        <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
+                                            <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Starters</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span id="foodPrice">₱280.00</span>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                    <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                        <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                        <div class="card-body" id="productBody">
-                            <div class="row">
-                                <div class="col-8 flex-shrink-0 pe-0">
-                                    <span id="productName">Creamy Chicken Alfredo Pasta</span>
-                                </div>
-                                <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
-                                    <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-12">
-                                    <span id="foodPrice">₱280.00</span>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                        <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                            <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
+                                <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
+                                <div class="card-body" id="productBody">
+                                    <div class="row">
+                                        <div class="col-8 flex-shrink-0 pe-0">
+                                            <span id="productName">Creamy Chicken Alfredo Pasta</span>
+                                        </div>
+                                        <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
+                                            <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span id="foodPrice">₱280.00</span>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                    <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                        <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                        <div class="card-body" id="productBody">
-                            <div class="row">
-                                <div class="col-8 flex-shrink-0 pe-0">
-                                    <span id="productName">Creamy Chicken Alfredo Pasta</span>
-                                </div>
-                                <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
-                                    <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-12">
-                                    <span id="foodPrice">₱280.00</span>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                        <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                            <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
+                                <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
+                                <div class="card-body" id="productBody">
+                                    <div class="row">
+                                        <div class="col-8 flex-shrink-0 pe-0">
+                                            <span id="productName">Creamy Chicken Alfredo Pasta</span>
+                                        </div>
+                                        <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
+                                            <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span id="foodPrice">₱280.00</span>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                    <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                        <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                        <div class="card-body" id="productBody">
-                            <div class="row">
-                                <div class="col-8 flex-shrink-0 pe-0">
-                                    <span id="productName">Creamy Chicken Alfredo Pasta</span>
-                                </div>
-                                <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
-                                    <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-12">
-                                    <span id="foodPrice">₱280.00</span>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                        <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                            <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
+                                <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
+                                <div class="card-body" id="productBody">
+                                    <div class="row">
+                                        <div class="col-8 flex-shrink-0 pe-0">
+                                            <span id="productName">Creamy Chicken Alfredo Pasta</span>
+                                        </div>
+                                        <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
+                                            <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span id="foodPrice">₱280.00</span>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
-                
             </div>
         </div>
+        
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -404,7 +407,7 @@
                                     <nav aria-label="Page navigation example">
                                         <ul class="pagination align-items-center">
                                             <li class="page-item">
-                                                <button class="page-link btn-sm rounded-circle border-0 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; padding: 0;" >
+                                                <button type="button" class="btn-sm rounded-circle border-0 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; padding: 0;" >
                                                     −
                                                 </button>
                                             </li>
@@ -412,7 +415,7 @@
                                                 <span class="fw-bold">1</span>
                                             </li>
                                             <li class="page-item">
-                                                <button class="page-link btn-sm rounded-circle border-0 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; padding: 0;">
+                                                <button type="button" class="btn-sm rounded-circle border-0 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; padding: 0;">
                                                     +
                                                 </button>
                                             </li>
