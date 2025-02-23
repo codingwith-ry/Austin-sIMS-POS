@@ -16,11 +16,11 @@
 <img src="logo.png" alt="Austin's Logo" >
 <p style=" padding-bottom:20px; color:#6a4413; font-size:25px">Inventory Management - Point of Sale System</p>
     <div class="card text-bg-light mb-6" style="justify-content: center; width: 25rem; padding:30px">
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+        <form id="forgotPassForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
             <!-- Email input -->
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">@</span>
-                <input name="email" type="text" class="form-control" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1">
+                <input name="email" type="email" class="form-control" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1" required>
             </div>
 
             <!-- Submit button -->
@@ -29,43 +29,71 @@
     </div>
 </div>
 </center>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const forgotPassForm = document.getElementById('forgotPassForm');
+
+    forgotPassForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const email = forgotPassForm.email.value;
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpiresAt = new Date().getTime() + 30 * 60 * 1000; // 30 minutes from now
+
+        localStorage.setItem('otp', otp);
+        localStorage.setItem('otpExpiresAt', otpExpiresAt);
+
+        console.log('Email:', email); 
+        console.log('OTP:', otp); 
+        console.log('OTP Expires At:', otpExpiresAt); 
+
+        fetch('sendOtp.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email, otp: otp })
+        }).then(response => {
+            console.log('Fetch response status:', response.status); 
+            return response.json();
+        }).then(data => {
+            console.log('Response:', data); 
+            if (data.success) {
+                alert('OTP sent successfully.');
+                window.location.href = `otp.php?email=${encodeURIComponent(email)}`;
+            } else {
+                alert('Error sending OTP: ' + data.message);
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while sending the OTP.');
+        });
+    });
+});
+</script>
 </body>
 </html>
 
 <?php
-include("database.php");
-require __DIR__ . "/mailer.php";
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
-    $otp = rand(100000, 999999); // Generate a 6-digit OTP
-    $reset_token_hash = hash("sha256", $otp);
-    $reset_token_expires_at = date("Y-m-d H:i:s", time() + 60 * 30);
+    $otp = rand(100000, 999999); 
 
-    $sql = "UPDATE employees SET reset_token_hash = ?, reset_token_expires_at = ? WHERE Employee_Email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sss", $reset_token_hash, $reset_token_expires_at, $email);
+    $mail = require __DIR__ . "/mailer.php";
 
-    if ($stmt->execute()) {
-        $mail = require __DIR__ . "/mailer.php";
+    try {
+        $mail->addAddress($email);
+        $mail->Subject = "Your OTP Code";
+        $mail->Body = "Your OTP code is: $otp";
 
-        try {
-            $mail->addAddress($email);
-            $mail->Subject = "Your OTP Code";
-            $mail->Body = "Your OTP code is: $otp";
-
-            if ($mail->send()) {
-                echo "OTP sent successfully.";
-                header("Location: otp.php?email=" . urlencode($email));
-                exit();
-            } else {
-                echo "Mailer Error: " . $mail->ErrorInfo;
-            }
-        } catch (Exception $e) {
-            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        if ($mail->send()) {
+            echo "OTP sent successfully.";
+        } else {
+            echo "Mailer Error: " . $mail->ErrorInfo;
         }
-    } else {
-        echo "Execute failed: " . htmlspecialchars($stmt->error);
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
 }
 ?>

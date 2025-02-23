@@ -1,29 +1,3 @@
-<?php
-include("database.php");
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_GET["email"];
-    $otp = implode("", $_POST["otp"]); // Combine the OTP inputs
-    $reset_token_hash = hash("sha256", $otp);
-
-    $sql = "SELECT reset_token_hash, reset_token_expires_at FROM employees WHERE Employee_Email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->bind_result($stored_reset_token_hash, $reset_token_expires_at);
-    $stmt->fetch();
-    $stmt->close();
-
-    if ($reset_token_hash === $stored_reset_token_hash && strtotime($reset_token_expires_at) > time()) {
-        echo "OTP verified successfully.";
-        header("Location: setpass.php?email=" . urlencode($email) . "&reset_token_hash=" . urlencode($reset_token_hash));
-        exit();
-    } else {
-        echo "Invalid or expired OTP.";
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <div class="card text-bg-light mb-6" style="width: 25rem; padding:30px">
     <h5 class="card-title text-center mb-4">Enter OTP</h5>
     <p class="text-center">We sent a code to <strong><?php echo htmlspecialchars($_GET["email"]); ?></strong></p></br>
-    <form action="otp.php?email=<?php echo urlencode($_GET["email"]); ?>" method="POST">
+    <form id="otpForm">
       <div class="d-flex justify-content-between mb-4">
         <input type="text" name="otp[]" class="form-control otp-input" maxlength="1" />
         <input type="text" name="otp[]" class="form-control otp-input" maxlength="1" />
@@ -58,5 +32,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </form>
   </div>
 </center>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const email = new URLSearchParams(window.location.search).get('email');
+    const otpForm = document.getElementById('otpForm');
+
+    otpForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const otpInputs = document.querySelectorAll('input[name="otp[]"]');
+        let otp = '';
+        otpInputs.forEach(input => otp += input.value);
+
+        const storedOtp = localStorage.getItem('otp');
+        const otpExpiresAt = localStorage.getItem('otpExpiresAt');
+
+        if (otp === storedOtp && new Date().getTime() < otpExpiresAt) {
+            alert('OTP verified successfully.');
+            window.location.href = `setpass.php?email=${encodeURIComponent(email)}`;
+        } else {
+            alert('Invalid or expired OTP.');
+        }
+    });
+});
+</script>
 </body>
 </html>
