@@ -4,15 +4,11 @@ include("database.php");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $new_password = $_POST["password"];
-    $reset_token_hash = $_POST["reset_token_hash"];
 
-   
-    $new_password_unhashed = $new_password;
-
-   
-    $sql = "UPDATE employees SET Employee_PassKey = ?, reset_token_hash = NULL, reset_token_expires_at = NULL WHERE Employee_Email = ? AND reset_token_hash = ?";
+    // Update the password in the database
+    $sql = "UPDATE employees SET Employee_PassKey = ? WHERE Employee_Email = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sss", $new_password_unhashed, $email, $reset_token_hash);
+    $stmt->bind_param("ss", $new_password, $email);
 
     if ($stmt->execute()) {
         echo "Password reset successfully.";
@@ -45,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <p style=" padding-bottom:20px; color:#6a4413; font-size:25px">Inventory Management - Point of Sale System</p>
     <div class="card text-bg-light mb-6" style="justify-content: center; width: 25rem; padding:30px">
         <h5>Set Password</h5></br>
-        <form action="setpass.php" method="POST">
+        <form id="setPassForm" action="setpass.php" method="POST">
             <!-- Email input -->
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">@</span>
@@ -60,14 +56,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input name="password" type="password" class="form-control" placeholder="New Password" aria-label="Password" aria-describedby="basic-addon1" id="password" required />
             </div>
 
-            <!-- Hidden input for reset token hash -->
-            <input type="hidden" name="reset_token_hash" value="<?php echo htmlspecialchars($_GET['reset_token_hash']); ?>" />
-
             <!-- Submit button -->
             <button type="submit" class="btn btn-primary btn-block">Continue</button>
         </form>
     </div>
 </div>
 </center>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const setPassForm = document.getElementById('setPassForm');
+
+    setPassForm.addEventListener('submit', function(event) {
+        const storedOtp = localStorage.getItem('otp');
+        const otpExpiresAt = localStorage.getItem('otpExpiresAt');
+
+        if (new Date().getTime() > otpExpiresAt) {
+            alert('Invalid or expired reset token.');
+            event.preventDefault();
+            window.location.href = 'forgotpass.php';
+        }
+    });
+});
+</script>
 </body>
 </html>

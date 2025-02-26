@@ -29,7 +29,7 @@
         <div class="card p-4">
             <h2 class="text-center h4 fw-bold">Please fill in information</h2>
             <p class="text-center text-muted">Enter details to get going.</p>
-            <form>
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                 <div class="row mb-2">
                     <div class="col-md-12">
                         <label class="section-title fw-bold">Full Name</label>
@@ -40,11 +40,11 @@
                             <span class="input-group-text">
                                 <i class="fas fa-user"></i>
                             </span>
-                            <input type="text" class="form-control" id="firstName" placeholder="John">
+                            <input type="text" name="first_name"class="form-control" id="firstName" placeholder="John">
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" for="lastName">Last Name</label>
+                        <label class="form-label" name="last_name" for="lastName">Last Name</label>
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="fas fa-user"></i>
@@ -63,17 +63,17 @@
                             <span class="input-group-text">
                                 <i class="fas fa-envelope"></i>
                             </span>
-                            <input type="email" class="form-control" id="email" placeholder="johndoe@gmail.com">
+                            <input type="email" name="email" class="form-control" id="email" placeholder="johndoe@gmail.com">
                             <div class="invalid-feedback">Please enter a valid email</div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" for="mobileNumber">Mobile Number</label>
+                        <label class="form-label"  for="mobileNumber">Mobile Number</label>
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="fas fa-phone"></i>
                             </span>
-                            <input type="text" class="form-control" id="mobileNumber" placeholder="(+63) 912 3456 789">
+                            <input type="text"  name="mobile_number" class="form-control" id="mobileNumber" placeholder="(+63) 912 3456 789">
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                             <span class="input-group-text">
                                 <i class="fas fa-lock"></i>
                             </span>
-                            <input type="password" class="form-control" id="password">
+                            <input type="password" name="password" class="form-control" id="password">
                             <span class="input-group-text">
                                 <i class="fas fa-eye" id="togglePassword"></i>
                             </span>
@@ -119,7 +119,7 @@
                             <span class="input-group-text">
                                 <i class="fas fa-users"></i>
                             </span>
-                            <input type="text" class="form-control" id="role" placeholder="Employee Staff">
+                            <input type="text" name="role" class="form-control" id="role" placeholder="Employee Staff">
                         </div>
                     </div>
                 </div>
@@ -151,3 +151,31 @@
     </script>
 </body>
 </html>
+
+<?php 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    include '../Login/database.php';
+
+    $firstName = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
+    $lastName = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_STRING);
+    $mobileNumber = filter_input(INPUT_POST, 'mobile_number', FILTER_SANITIZE_STRING);
+    $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+    $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
+
+    if(empty($firstName) || empty($email) || empty($password) || empty($role)) {
+        echo "Please fill in all required fields";
+    } else {
+        try {
+            $stmt = $conn->prepare("INSERT into employees (Employee_Name, Employee_Email, Employee_PassKey, Employee_PhoneNumber, Employee_Role) VALUES (?, ?, ?, ?, ?)");
+            $fullName = $firstName . ' '. $lastName;
+            $stmt->bind_param("sssss", $fullName, $email, $password, $mobileNumber, $role);
+            $stmt->execute();
+            $stmt->close();
+            echo "User added successfully";   
+        } catch (mysqli_sql_exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+}
+?>

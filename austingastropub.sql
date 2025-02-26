@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3307
--- Generation Time: Jan 27, 2025 at 12:22 PM
+-- Host: 127.0.0.1
+-- Generation Time: Feb 25, 2025 at 03:58 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -33,17 +33,31 @@ CREATE TABLE `employees` (
   `Employee_Name` text NOT NULL,
   `Employee_Email` varchar(255) NOT NULL,
   `Employee_PassKey` varchar(6) NOT NULL,
-  `Employee_PhoneNumber` bigint(11) NOT NULL,
-  `reset_token_hash` varchar(64) DEFAULT NULL,
-  `reset_token_expires_at` datetime DEFAULT NULL
+  `Employee_PhoneNumber` bigint(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `employees`
 --
 
-INSERT INTO `employees` (`Employee_ID`, `Employee_Role`, `Employee_Name`, `Employee_Email`, `Employee_PassKey`, `Employee_PhoneNumber`, `reset_token_hash`, `reset_token_expires_at`) VALUES
-('123456789', 'Inventory Manager', 'Dominic Xandy Adino', 'dominicadino23@gmail.com', '123456', 9257717724, NULL, NULL);
+INSERT INTO `employees` (`Employee_ID`, `Employee_Role`, `Employee_Name`, `Employee_Email`, `Employee_PassKey`, `Employee_PhoneNumber`) VALUES
+('', 'Employee ', 'Spongebob ', 'dominicxandy.adino.cics@ust.edu.ph', '123456', 9257717724),
+('123456789', 'Inventory Manager', 'Dominic Xandy Adino', 'dominicadino23@gmail.com', '123456', 9257717724);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `inventory`
+--
+
+CREATE TABLE `inventory` (
+  `Item_ID` varchar(9) NOT NULL,
+  `Item_Name` varchar(50) NOT NULL,
+  `Item_Quantity` int(255) NOT NULL,
+  `Date_Purchased` date NOT NULL,
+  `Expiration_Date` date NOT NULL,
+  `Item_Price` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indexes for dumped tables
@@ -54,8 +68,14 @@ INSERT INTO `employees` (`Employee_ID`, `Employee_Role`, `Employee_Name`, `Emplo
 --
 ALTER TABLE `employees`
   ADD PRIMARY KEY (`Employee_ID`),
-  ADD UNIQUE KEY `Employee_Email` (`Employee_Email`),
-  ADD UNIQUE KEY `reset_token_hash` (`reset_token_hash`);
+  ADD UNIQUE KEY `Employee_Email` (`Employee_Email`);
+
+--
+-- Indexes for table `inventory`
+--
+ALTER TABLE `inventory`
+  ADD PRIMARY KEY (`Item_ID`),
+  ADD UNIQUE KEY `Item_Name` (`Item_Name`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

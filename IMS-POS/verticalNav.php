@@ -49,21 +49,21 @@ if ($page == "orderQueue_History.php") {
         </div>
         <div class="offcanvas-body p-0">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item border-0 py-3 active d-flex align-items-center">
+                <li class="list-group-item border-0 py-3 d-flex align-items-center">
                     <i class="fi fi-tr-utensils" style="font-size: large;"></i>
-                    <span class="ms-2">Menu</span> 
+                    <a href="menu.php" class="ms-2 text-decoration-none text-dark w-100">Menu</a>
                 </li>
                 <li class="list-group-item border-0 py-3 d-flex align-items-center">
                     <i class="bi bi-journal-text"></i>
-                    <span class="ms-2">Orders</span>
+                    <a href="orderQueue_History.php" class="ms-2 text-decoration-none text-dark w-100">Orders</a>
                 </li>
-                <li class="list-group-item border-0 py-3 d-flex align-items-center text-muted">
+                <li class="list-group-item border-0 py-3 d-flex align-items-center">
                     <i class="bi bi-box"></i>
-                    <span class="ms-2">Stocks</span>
+                    <a href="stockPage.php" class="ms-2 text-decoration-none text-dark w-100">Stocks</a>
                 </li>
-                <li class="list-group-item border-0 py-3 d-flex align-items-center text-muted">
+                <li class="list-group-item border-0 py-3 d-flex align-items-center">
                     <i class="bi bi-clipboard"></i>
-                    <span class="ms-2">Inventory</span>
+                    <a href="Inventory_Item-Records.php" class="ms-2 text-decoration-none text-dark w-100">Inventory</a>
                 </li>
             </ul>
         </div>
