@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMS-POS | Stocks</title>
+    <?php require_once('links.php'); ?>
+</head>
+<body>
 <?php include 'verticalNav.php' ?>
 <main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
         <div class="row">
@@ -230,3 +239,5 @@
         responsive: true
     })
 </script>
+</body>
+</html>

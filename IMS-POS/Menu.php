@@ -1,5 +1,14 @@
-<?php include 'verticalNav.php'?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMS-POS | Menu</title>
+    <?php require_once('links.php'); ?>
+</head>
 
+<body>
+<?php include 'verticalNav.php'?>
 <div class="offcanvas offcanvas-end show" id="nav2" data-bs-scroll="true" data-bs-backdrop="false" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
         <div class="offcanvas-header" style="padding-bottom: 0px;">
             <div class="row" style="width: 100%; margin-left: 1px;">
@@ -472,6 +481,7 @@
         </div>
     </div>
 </div>
-
+</body>
 <script type="text/javascript" src="scripts/POS.js"></script>
 <?php include 'footer.php' ?>
+</html>
