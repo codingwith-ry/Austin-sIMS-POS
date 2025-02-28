@@ -16,8 +16,8 @@
             height: 200px; 
         }
         .table {
-            border-radius: 12px; /* Adjust as needed */
-            overflow: hidden; /* Ensures corners are applied */
+            border-radius: 12px;
+            overflow: hidden;
         }
         
         

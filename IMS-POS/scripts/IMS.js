@@ -195,11 +195,11 @@ let itemRecords = new DataTable("#itemRecords", {
                                             <h5 class="modal-title">Add Item</h5>
                                         </div>
                                     <div class="modal-body">
-                                        <form id="myForm">
+                                        <form id="myForm" action="process.php" method="post">
                                             <div class="form-group" style="display:flex">
                                                 <span class="col-sm-4 control-label">Item Name</span>
                                                 <div class="col-sm-8">
-                                                    <input class="form-control" id="focusedInput" type="text" placeholder="Name">
+                                                    <input class="form-control" id="focusedInput" type="text" placeholder="Name" name="item_Name">
                                                 </div>
                                             </div>
                                             <div class="form-group" style="display:flex">

@@ -1,3 +1,6 @@
+body{
+  font-family: Inter, Arial;
+}
 #mainContent {
   position: relative;
   height: 100vh;
