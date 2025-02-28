@@ -1,3 +1,4 @@
+<?php include 'IMS_process.php' ?>
 <?php include 'verticalNav.php' ?>
 <main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
     <div class="title">
@@ -9,19 +10,19 @@
         <div class="row" style="margin-bottom: 20px;">
             <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding-left: 12px;">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#Records-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#Records-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">
                         Records
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#Items-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">
+                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#Items-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">
                         Items
                     </button>
                 </li>
             </ul>
         </div>
         <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade" id="Records-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+            <div class="tab-pane fade show active" id="Records-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                 <div class="card">
                     <div class="card-body">
                         <table id="itemRecords" class="display nowrap">
@@ -45,7 +46,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade show active" id="Items-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+            <div class="tab-pane fade" id="Items-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                 <strong style="font-size: 20px">Categories</strong>
                 <div class="row">
                     <div class="col">
