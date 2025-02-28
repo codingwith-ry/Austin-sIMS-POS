@@ -114,7 +114,7 @@
                         <label class="section-title fw-bold">Position</label>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" for="role">Role</label>
+                        <label class="form-label" for="role">Rope</label>
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="fas fa-users"></i>
@@ -152,29 +152,49 @@
 </body>
 </html>
 
-<?php 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    include '../Login/database.php';
+<?php
+include '../Login/database.php';
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $firstName = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
     $lastName = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_STRING);
-    $mobileNumber = filter_input(INPUT_POST, 'mobile_number', FILTER_SANITIZE_STRING);
-    $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
+    $mobileNumber = filter_input(INPUT_POST, 'mobile_number', FILTER_SANITIZE_NUMBER_INT);
     $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
 
-    if(empty($firstName) || empty($email) || empty($password) || empty($role)) {
-        echo "Please fill in all required fields";
+    if (empty($firstName) || empty($email) || empty($password) || empty($role)) {
+        echo "<script>alert('Please fill in all required fields.');</script>";
     } else {
         try {
 
-            $employeeId=mt_rand(100000000, 999999999);
-            $stmt = $conn->prepare("INSERT into employees (Employee_ID, Employee_Name, Employee_Email, Employee_PassKey, Employee_PhoneNumber, Employee_Role) VALUES (?, ?, ?, ?, ?)");
-            $fullName = $firstName . ' '. $lastName;
-            $stmt->bind_param("sssss", $employeeId, $fullName, $email, $password, $mobileNumber, $role);
-            $stmt->execute();
-            $stmt->close();
-            echo "User added successfully";   
+            $checkStmt = $conn->prepare("SELECT Count(*) FROM employees WHERE Employee_Email = ?");
+            $checkStmt->bind_param("s", $email);
+            $checkStmt->execute();
+            $checkStmt->bind_result($count);
+            $checkStmt->fetch();
+            $checkStmt->close();
+
+            if ($count > 0 ) {
+                echo "<script>alert('User already exists');</script>";
+            }else{
+                $employeeId = mt_rand(100000000, 999999999);
+                $stmt = $conn->prepare("INSERT INTO employees (Employee_ID, Employee_Name, Employee_Email, Employee_PassKey, Employee_PhoneNumber, Employee_Role) VALUES (?, ?, ?, ?, ?, ?)");
+                $fullName = $firstName . ' ' . $lastName;
+                $stmt->bind_param("ssssss", $employeeId, $fullName, $email, $password, $mobileNumber, $role);
+    
+                if (!$stmt) {
+                    echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
+                }
+    
+                if (!$stmt->execute()) {
+                    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                } else {
+                    echo "User added successfully";
+                }
+                
+                $stmt->close();
+            }
         } catch (mysqli_sql_exception $e) {
             echo "Error: " . $e->getMessage();
         }

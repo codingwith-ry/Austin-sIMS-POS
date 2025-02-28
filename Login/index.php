@@ -11,16 +11,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = null;
 
         try {
-            $stmt = $conn->prepare("SELECT Employee_PassKey FROM employees WHERE Employee_Email = ?");
+            $stmt = $conn->prepare("SELECT Employee_PassKey, Employee_Role FROM employees WHERE Employee_Email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
-            $stmt->bind_result($stored_password);
+            $stmt->bind_result($stored_password, $role);
             $stmt->fetch();
             $stmt->close();
 
             if ($password === $stored_password) {
+                $role = strtolower($role);
                 // Password is correct
-                header("Location: /Austin-sIMS-POS/IMS-POS/Menu.php");
+                if ($role === 'admin') {
+                    header("Location: /Austin-sIMS-POS/Admin/adminDashboard.php");
+                } else {
+                    header("Location: /Austin-sIMS-POS/IMS-POS/Menu.php");
+                }   
+
                 exit();
             } else {
                 // Invalid password
