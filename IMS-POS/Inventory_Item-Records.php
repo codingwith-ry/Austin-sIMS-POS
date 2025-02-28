@@ -1,4 +1,13 @@
-<?php include 'IMS_process.php' ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMS-POS | Inventory</title>
+    <?php require_once('links.php'); ?>
+</head>
+
+<body>
 <?php include 'verticalNav.php' ?>
 <main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
     <div class="title">
@@ -256,5 +265,7 @@
         </div>
     </div>
 </main>
-
+</body>
 <?php include 'footer.php' ?>
+</html>
+
