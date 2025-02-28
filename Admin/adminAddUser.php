@@ -167,35 +167,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<script>alert('Please fill in all required fields.');</script>";
     } else {
         try {
-
-            $checkStmt = $conn->prepare("SELECT Count(*) FROM employees WHERE Employee_Email = ?");
-            $checkStmt->bind_param("s", $email);
+            // Check if the user already exists
+            $checkStmt = $conn->prepare("SELECT COUNT(*) FROM employees WHERE Employee_Email = :email");
+            $checkStmt->bindParam(':email', $email);
             $checkStmt->execute();
-            $checkStmt->bind_result($count);
-            $checkStmt->fetch();
-            $checkStmt->close();
+            $count = $checkStmt->fetchColumn();
 
-            if ($count > 0 ) {
+            if ($count > 0) {
                 echo "<script>alert('User already exists');</script>";
-            }else{
+            } else {
                 $employeeId = mt_rand(100000000, 999999999);
-                $stmt = $conn->prepare("INSERT INTO employees (Employee_ID, Employee_Name, Employee_Email, Employee_PassKey, Employee_PhoneNumber, Employee_Role) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt = $conn->prepare("INSERT INTO employees (Employee_ID, Employee_Name, Employee_Email, Employee_PassKey, Employee_PhoneNumber, Employee_Role) VALUES (:employeeId, :fullName, :email, :password, :mobileNumber, :role)");
                 $fullName = $firstName . ' ' . $lastName;
-                $stmt->bind_param("ssssss", $employeeId, $fullName, $email, $password, $mobileNumber, $role);
-    
-                if (!$stmt) {
-                    echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
-                }
-    
-                if (!$stmt->execute()) {
-                    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+                $stmt->bindParam(':employeeId', $employeeId);
+                $stmt->bindParam(':fullName', $fullName);
+                $stmt->bindParam(':email', $email);
+                $stmt->bindParam(':password', $password);
+                $stmt->bindParam(':mobileNumber', $mobileNumber);
+                $stmt->bindParam(':role', $role);
+
+                if ($stmt->execute()) {
+                    echo "<script>alert('User added successfully');</script>";
                 } else {
-                    echo "User added successfully";
+                    echo "Execute failed: (" . $stmt->errorInfo()[2] . ")";
                 }
-                
-                $stmt->close();
             }
-        } catch (mysqli_sql_exception $e) {
+        } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
         }
     }

@@ -6,16 +6,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_password = $_POST["password"];
 
     // Update the password in the database
-    $sql = "UPDATE employees SET Employee_PassKey = ? WHERE Employee_Email = ?";
+    $sql = "UPDATE employees SET Employee_PassKey = :password WHERE Employee_Email = :email";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $new_password, $email);
+    $stmt->bindParam(':password', $new_password);
+    $stmt->bindParam(':email', $email);
 
     if ($stmt->execute()) {
         echo "Password reset successfully.";
         header("Location: index.php");
         exit();
     } else {
-        echo "Error updating password: " . htmlspecialchars($stmt->error);
+        echo "Error updating password: " . htmlspecialchars($stmt->errorInfo()[2]);
     }
 }
 ?>

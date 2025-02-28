@@ -8,31 +8,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($email) || empty($password)) {
         echo "Please fill in all fields";
     } else {
-        $user = null;
-
         try {
-            $stmt = $conn->prepare("SELECT Employee_PassKey, Employee_Role FROM employees WHERE Employee_Email = ?");
-            $stmt->bind_param("s", $email);
+            $stmt = $conn->prepare("SELECT Employee_PassKey, Employee_Role FROM employees WHERE Employee_Email = :email");
+            $stmt->bindParam(':email', $email);
             $stmt->execute();
-            $stmt->bind_result($stored_password, $role);
-            $stmt->fetch();
-            $stmt->close();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($password === $stored_password) {
-                $role = strtolower($role);
+            if ($user && $password === $user['Employee_PassKey']) {
+                $role = strtolower($user['Employee_Role']);
                 // Password is correct
                 if ($role === 'admin') {
                     header("Location: /Austin-sIMS-POS/Admin/adminDashboard.php");
                 } else {
                     header("Location: /Austin-sIMS-POS/IMS-POS/Menu.php");
                 }   
-
                 exit();
             } else {
                 // Invalid password
                 echo "Invalid email or password";
             }
-        } catch (mysqli_sql_exception $e) {
+        } catch (PDOException $e) {
             echo "Please enter a valid email and password";
         }
     }
