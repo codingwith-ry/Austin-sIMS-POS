@@ -167,9 +167,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Please fill in all required fields";
     } else {
         try {
-            $stmt = $conn->prepare("INSERT into employees (Employee_Name, Employee_Email, Employee_PassKey, Employee_PhoneNumber, Employee_Role) VALUES (?, ?, ?, ?, ?)");
+
+            $employeeId=mt_rand(100000000, 999999999);
+            $stmt = $conn->prepare("INSERT into employees (Employee_ID, Employee_Name, Employee_Email, Employee_PassKey, Employee_PhoneNumber, Employee_Role) VALUES (?, ?, ?, ?, ?)");
             $fullName = $firstName . ' '. $lastName;
-            $stmt->bind_param("sssss", $fullName, $email, $password, $mobileNumber, $role);
+            $stmt->bind_param("sssss", $employeeId, $fullName, $email, $password, $mobileNumber, $role);
             $stmt->execute();
             $stmt->close();
             echo "User added successfully";   
