@@ -195,7 +195,7 @@ let itemRecords = new DataTable("#itemRecords", {
                                             <h5 class="modal-title">Add Item</h5>
                                         </div>
                                     <div class="modal-body">
-                                        <form id="myForm" action="process.php" method="post">
+                                        <form id="myForm" action="IMS_process.php" method="post">
                                             <div class="form-group" style="display:flex">
                                                 <span class="col-sm-4 control-label">Item Name</span>
                                                 <div class="col-sm-8">
@@ -205,22 +205,8 @@ let itemRecords = new DataTable("#itemRecords", {
                                             <div class="form-group" style="display:flex">
                                                 <span class="col-sm-4 control-label">Category</span>
                                                 <div class="col-sm-8">
-                                                    <select class="form-select">
-                                                        <option selected>Select Category</option>
-                                                        <option value="1">One</option>
-                                                        <option value="2">Two</option>
-                                                        <option value="3">Three</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Units</span>
-                                                <div class="col-sm-8">
-                                                    <select class="form-select">
-                                                        <option selected>Select unit of measurement</option>
-                                                        <option value="1">One</option>
-                                                        <option value="2">Two</option>
-                                                        <option value="3">Three</option>
+                                                    <select class="form-select" name="item_category" id="categoryDropdown">
+                                                        
                                                     </select>
                                                 </div>
                                             </div>
