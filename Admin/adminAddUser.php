@@ -6,7 +6,7 @@
     <title>Add New User</title>
     <?php include 'adminCDN.php'; ?>
     <link rel="stylesheet" href="styles/adminAddUser.css">
-    <link rel="stylesheet" href="styles/adminNav.css">
+    <link rel="stylesheet" href="styles/adminNav.css">  
 </head>
 <body>
     <?php include 'adminNavBar.php'; ?>
@@ -14,15 +14,13 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h1 class="page-title">Add New User</h1>
             <div class="dropdown">
-                <div class="profile-dropdown d-flex align-items-center admin-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="profile-pic.png" alt="Profile Picture" class="admin-avatar me-2">
-                    <span class="fw-semibold">Administrator</span>
-                    <i class="fas fa-chevron-down ms-2"></i>
-                </div>
+                <button class="btn btn-outline-secondary dropdown-toggle" id="accountDropdownBtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Administrator
+                </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Admin 1</a></li>
-                    <li><a class="dropdown-item" href="#">Admin 2</a></li>
-                    <li><a class="dropdown-item" href="#">Admin 3</a></li>
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
                 </ul>
             </div>
         </div>
@@ -30,7 +28,7 @@
             <h2 class="text-center h4 fw-bold">Please fill in information</h2>
             <p class="text-center text-muted">Enter details to get going.</p>
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-                <div class="row mb-2">
+                <div class="row mb-3">
                     <div class="col-md-12">
                         <label class="section-title fw-bold">Full Name</label>
                     </div>
@@ -40,20 +38,20 @@
                             <span class="input-group-text">
                                 <i class="fas fa-user"></i>
                             </span>
-                            <input type="text" name="first_name"class="form-control" id="firstName" placeholder="John">
+                            <input type="text" name="first_name" class="form-control" id="firstName" placeholder="John">
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" name="last_name" for="lastName">Last Name</label>
+                        <label class="form-label" for="lastName">Last Name</label>
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="fas fa-user"></i>
                             </span>
-                            <input type="text" class="form-control" id="lastName" placeholder="Doe">
+                            <input type="text" name="last_name" class="form-control" id="lastName" placeholder="Doe">
                         </div>
                     </div>
                 </div>
-                <div class="row mb-2">
+                <div class="row mb-3">
                     <div class="col-md-12">
                         <label class="section-title fw-bold">Contact Email</label>
                     </div>
@@ -68,21 +66,18 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label"  for="mobileNumber">Mobile Number</label>
+                        <label class="form-label" for="mobileNumber">Mobile Number</label>
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="fas fa-phone"></i>
                             </span>
-                            <input type="text"  name="mobile_number" class="form-control" id="mobileNumber" placeholder="(+63) 912 3456 789">
+                            <input type="text" name="mobile_number" class="form-control" id="mobileNumber" placeholder="(+63) 912 3456 789">
                         </div>
                     </div>
                 </div>
-                <div class="row mb-2">
+                <div class="row mb-3">
                     <div class="col-md-12">
                         <label class="section-title fw-bold">Password</label>
-                    </div>
-                    <div class="col-md-12">
-                        <label class="form-label">Modify your current password</label>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label" for="password">Enter password</label>
@@ -109,17 +104,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mb-2">
+                <div class="row mb-3">
                     <div class="col-md-12">
                         <label class="section-title fw-bold">Position</label>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" for="role">Rope</label>
+                        <label class="form-label" for="role">Role</label>
                         <div class="input-group">
                             <span class="input-group-text">
                                 <i class="fas fa-users"></i>
                             </span>
-                            <input type="text" name="role" class="form-control" id="role" placeholder="Employee Staff">
+                            <select name="role" class="form-select" id="role">
+                                <option value="" selected disabled>Select Role</option>
+                                <option value="POS Staff Management">POS Staff Management</option>
+                                <option value="Inventory Staff Management">Inventory Staff Management</option>
+                                <option value="Administrator">Administrator</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -134,10 +134,8 @@
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#password');
         togglePassword.addEventListener('click', function (e) {
-            // toggle the type attribute
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
-            // toggle the eye slash icon
             this.classList.toggle('fa-eye-slash');
         });
 
