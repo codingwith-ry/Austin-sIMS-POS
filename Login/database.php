@@ -14,7 +14,7 @@
 
             try {
                 $conn = new PDO($attrs, $db_user, $db_pass, $opts);
-                echo "DB Connected Successfully (PDO) <br>";
+                // echo "DB Connected Successfully (PDO) <br>";
             } catch (PDOException $e) {
                 echo "Could not connect: " . $e->getMessage() . "<br>";
             }

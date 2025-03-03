@@ -17,11 +17,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($user && $password === $user['Employee_PassKey']) {
                 $role = strtolower($user['Employee_Role']);
                 // Password is correct
+                echo "<script>
+                localStorage.setItem('userRole', '$role');
+              </script>";
                 if ($role === 'admin') {
                     header("Location: /Austin-sIMS-POS/Admin/adminDashboard.php");
-                } else {
+                } else if ($role === 'PoS'){
                     header("Location: /Austin-sIMS-POS/IMS-POS/Menu.php");
-                }   
+                } else {
+                    header("Location: /Austin-sIMS-POS/IMS-POS/IMS_process.php");
+                }
                 exit();
             } else {
                 // Invalid password
