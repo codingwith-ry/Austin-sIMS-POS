@@ -62,6 +62,7 @@ body {
 
 .form-label {
     color: black;
+    font-size: 14px;
 }
 
 .input-group .form-select {
