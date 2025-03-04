@@ -14,7 +14,7 @@
     <div class="title">
         <div class="row">
             <div>
-                <h1>Inventory</h1>
+                <h2>Inventory</h2>
             </div>
         </div>
         <div class="row" style="margin-bottom: 20px;">
@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="Items-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-                <strong style="font-size: 20px">Categories</strong>
+                <strong style="font-size: 25px">Categories</strong>
                 <div class="row">
                     <div class="col">
                         <div class="mt-3">
@@ -75,6 +75,97 @@
                                 </div>
                             </div>
                         </div>
+
+                        <br />
+                        <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="coffeeMenuTab" data-bs-toggle="pill" data-bs-target="#coffeeMenu" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Coffee Menu</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="gastropubMenu" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Gastro Pub Menu</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="partytrayMenu" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Party Tray Menu</button>
+                            </li>
+                            <li class="nav-item ms-auto" role="presentation">
+                                <button class="btn btn-success h-100 pt-2" id="partytrayMenu" data-bs-toggle="modal" data-bs-target="#addItemModal">Add Item
+						            <i 
+						            class="fi fi-rr-add " style="vertical-align: middle; font-size: 18px"></i>
+					            </button>
+                            </li>
+                        </ul>
+                        
+                        <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5 fw-bold" id="addItemLabel">Add Item</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <!-- Category -->
+                                            <div class="mb-3">
+                                                <label for="itemCategory" class="form-label fw-bold" style="font-size: 18px;">Category</label>
+                                                <select class="form-select" id="itemCategory">
+                                                    <option selected>Select Category</option>
+                                                    <option value="food">Food</option>
+                                                    <option value="beverage">Beverage</option>
+                                                    <option value="dessert">Dessert</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Item Name -->
+                                            <div class="mb-3">
+                                                <label for="itemNameInput" class="form-label fw-bold" style="font-size: 18px;">Item Name</label>
+                                                <input type="text" class="form-control" id="itemNameInput" placeholder="ex. Nachos">
+                                            </div>
+
+                                            <!-- Unit of Measurement -->
+                                            <div class="mb-3">
+                                                <label for="unitMeasurement" class="form-label fw-bold" style="font-size: 18px;">Unit of Measurement</label>
+                                                <select class="form-select" id="unitMeasurement">
+                                                    <option selected>Select Unit</option>
+                                                    <option value="piece">Piece</option>
+                                                    <option value="kg">Kilogram</option>
+                                                    <option value="liter">Liter</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Item Quantity -->
+                                            <div class="mb-3">
+                                                <label for="itemQuantityInput" class="form-label fw-bold" style="font-size: 18px;">Item Quantity</label>
+                                                <input type="number" class="form-control" id="itemQuantityInput" placeholder="Enter quantity">
+                                            </div>
+
+                                            <!-- Supplier -->
+                                            <div class="mb-3">
+                                                <label for="supplierInput" class="form-label fw-bold" style="font-size: 18px;">Supplier</label>
+                                                <input type="text" class="form-control" id="supplierInput" placeholder="Enter supplier name">
+                                            </div>
+
+                                            <hr />
+
+                                            <!-- Item Picture -->
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <span class="fw-bold" style="font-size: 18px;">Item Picture</span>
+                                                    <img src="resources/nachos.jpg" class="card-img-top img-fluid rounded-start rounded-end mt-2 mb-2" id="itemImagePreview" alt="...">
+                                                </div>
+                                            <div class="col-12">
+                                                <input class="form-control ps-2 pe-2" type="file" id="itemImageUpload">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary">Add Item</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
                         <br />
                         <div class="">
@@ -180,6 +271,8 @@
                             </div>
                             <br />
                             <strong style="font-size: 25px">Products</strong>
+                            <br />
+                            <br />
                             <div class="products">
                                 <div class="row">
                                     <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
@@ -190,7 +283,8 @@
                                                     <div class="col-8 flex-shrink-0 pe-0">
                                                         <span style="font-weight: bold; opacity: 0.5; font-size:15px">Dairy Products</span><br />
                                                         <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">Magnolia Fresh Milk</span><br />
-                                                        <span style="font-weight: bold; font-size:15px">15 cartons</span>
+                                                        <span style="font-weight: bold; font-size:15px">15 cartons</span><br />
+                                                        <span style="opacity: 0.5; font-size:15px">1 liter</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -205,7 +299,8 @@
                                                     <div class="col-8 flex-shrink-0 pe-0">
                                                         <span style="font-weight: bold; opacity: 0.5; font-size:15px">Meat & Poultry</span><br />
                                                         <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">Bounty Chicken Breast</span><br />
-                                                        <span style="font-weight: bold; font-size:15px">10 kilograms</span>
+                                                        <span style="font-weight: bold; font-size:15px">10 kilograms</span><br />
+                                                        <span style="opacity: 0.5; font-size:15px">1 kilogram</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -220,7 +315,8 @@
                                                     <div class="col-8 flex-shrink-0 pe-0">
                                                         <span style="font-weight: bold; opacity: 0.5; font-size:15px">Grains</span><br />
                                                         <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">Penne Pasta</span><br />
-                                                        <span style="font-weight: bold; font-size:15px">10 kilograms</span>
+                                                        <span style="font-weight: bold; font-size:15px">10 kilograms</span><br />
+                                                        <span style="opacity: 0.5; font-size:15px">1 kilogram</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -235,7 +331,8 @@
                                                     <div class="col-8 flex-shrink-0 pe-0">
                                                         <span style="font-weight: bold; opacity: 0.5; font-size:15px">Vegetables</span><br />
                                                         <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">Spinach</span><br />
-                                                        <span style="font-weight: bold; font-size:15px">7 kilograms</span>
+                                                        <span style="font-weight: bold; font-size:15px">7 kilograms</span><br />
+                                                        <span style="opacity: 0.5; font-size:15px">1 kilogram</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -251,7 +348,8 @@
                                                     <div class="col-8 flex-shrink-0 pe-0">
                                                         <span style="font-weight: bold; opacity: 0.5; font-size:15px">Fruits</span><br />
                                                         <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">Strawberry</span><br />
-                                                        <span style="font-weight: bold; font-size:15px">3 kilograms</span>
+                                                        <span style="font-weight: bold; font-size:15px">3 kilograms</span><br />
+                                                        <span style="opacity: 0.5; font-size:15px">1 kilogram</span>
                                                     </div>
                                                 </div>
                                             </div>
