@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `employees`
 --
 
-CREATE TABLE `employees` (
+CREATE TABLE IF NOT EXISTS `employees` (
   `Employee_ID` varchar(9) NOT NULL,
   `Employee_Role` text NOT NULL,
   `Employee_Name` text NOT NULL,
@@ -41,9 +41,8 @@ CREATE TABLE `employees` (
 --
 
 INSERT INTO `employees` (`Employee_ID`, `Employee_Role`, `Employee_Name`, `Employee_Email`, `Employee_PassKey`, `Employee_PhoneNumber`) VALUES
-('', 'Employee ', 'Spongebob ', 'dominicxandy.adino.cics@ust.edu.ph', '123456', 9257717724),
-('123456789', 'Inventory Manager', 'Dominic Xandy Adino', 'dominicadino23@gmail.com', '123456', 9257717724),
-('798180543', 'admin', 'John ', 'admin@gmail.com', '654321', 9257887178);
+('987654321', 'Employee ', 'Spongebob ', 'dominicxandy.adino.cics@ust.edu.ph', '123456', 9257717724),
+('123456789', 'Inventory Manager', 'Dominic Xandy Adino', 'dominicadino23@gmail.com', '123456', 9257717724);
 
 -- --------------------------------------------------------
 
@@ -51,7 +50,7 @@ INSERT INTO `employees` (`Employee_ID`, `Employee_Role`, `Employee_Name`, `Emplo
 -- Table structure for table `inventory`
 --
 
-CREATE TABLE `inventory` (
+CREATE TABLE IF NOT EXISTS `inventory` (
   `Item_ID` varchar(9) NOT NULL,
   `Item_Name` varchar(50) NOT NULL,
   `Item_Quantity` int(255) NOT NULL,
@@ -89,6 +88,19 @@ CREATE TABLE IF NOT EXISTS `tbl_addons` (
 
 -- Dumping data for table austingastropub.tbl_addons: ~0 rows (approximately)
 
+-- Dumping structure for table austingastropub.tbl_menuclass
+CREATE TABLE IF NOT EXISTS `tbl_menuclass` (
+  `menuID` int(11) NOT NULL AUTO_INCREMENT,
+  `menuName` varchar(50) NOT NULL,
+  PRIMARY KEY (`menuID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table austingastropub.tbl_menuclass: ~2 rows (approximately)
+INSERT INTO `tbl_menuclass` (`menuID`, `menuName`) VALUES
+	(1, 'Coffee Menu'),
+	(2, 'Gastro Pub Menu'),
+	(3, 'Party Tray Menu');
+
 -- Dumping structure for table austingastropub.tbl_categories
 CREATE TABLE IF NOT EXISTS `tbl_categories` (
   `categoryID` int(11) NOT NULL AUTO_INCREMENT,
@@ -97,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `tbl_categories` (
   `menuID` int(11) DEFAULT NULL,
   PRIMARY KEY (`categoryID`),
   KEY `menuID` (`menuID`),
-  CONSTRAINT `menuID` FOREIGN KEY (`menuID`) REFERENCES `tbl_menuclass` (`menuID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `tbl_categories_ibfk_1` FOREIGN KEY (`menuID`) REFERENCES `tbl_menuclass` (`menuID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table austingastropub.tbl_categories: ~25 rows (approximately)
@@ -151,19 +163,6 @@ INSERT INTO `tbl_menu` (`productID`, `productName`, `productImage`, `menuID`, `c
 	(4, 'Roast Beef with Mashed Potato', '', 3, 26, 2450.00),
 	(5, 'Beef Salpicao', '', 3, 26, 2250.00);
 
--- Dumping structure for table austingastropub.tbl_menuclass
-CREATE TABLE IF NOT EXISTS `tbl_menuclass` (
-  `menuID` int(11) NOT NULL AUTO_INCREMENT,
-  `menuName` varchar(50) NOT NULL,
-  PRIMARY KEY (`menuID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumping data for table austingastropub.tbl_menuclass: ~2 rows (approximately)
-INSERT INTO `tbl_menuclass` (`menuID`, `menuName`) VALUES
-	(1, 'Coffee Menu'),
-	(2, 'Gastro Pub Menu'),
-	(3, 'Party Tray Menu');
-
 -- Dumping structure for table austingastropub.tbl_menutoaddons
 CREATE TABLE IF NOT EXISTS `tbl_menutoaddons` (
   `menuAddonID` int(11) NOT NULL AUTO_INCREMENT,
@@ -177,6 +176,59 @@ CREATE TABLE IF NOT EXISTS `tbl_menutoaddons` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table austingastropub.tbl_menutoaddons: ~0 rows (approximately)
+
+-- Dumping structure for table austingastropub.tbl_orders
+CREATE TABLE IF NOT EXISTS `tbl_orders` (
+  `orderID` int(11) NOT NULL AUTO_INCREMENT,
+  `orderNumber` int(11) NOT NULL,
+  `orderDate` date NOT NULL,
+  `orderTime` time NOT NULL,
+  `orderClass` varchar(8) NOT NULL,
+  `orderStatus` ENUM('IN PROCESS', 'DONE', 'CANCELLED') NOT NULL,
+  `salesOrderNumber` varchar(50) UNIQUE,
+  PRIMARY KEY (`orderID`),
+  UNIQUE KEY `orderNumber` (`orderNumber`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Insert sample data into tbl_orders  
+INSERT INTO `tbl_orders` (`orderNumber`, `orderDate`, `orderTime`, `orderClass`, `orderStatus`)  
+VALUES  
+(1002, '2025-03-02', '10:15:00', '', 'IN PROCESS'),  
+(1003, '2025-03-03', '12:45:00', '', 'IN PROCESS'),  
+(1004, '2025-03-04', '18:30:00', '', 'IN PROCESS'),  
+(1005, '2025-03-05', '20:00:00', '', 'IN PROCESS'),  
+(1006, '2025-03-06', '08:10:00', '', 'IN PROCESS');  
+
+-- Create trigger for auto-generating salesOrderNumber
+DELIMITER //
+
+CREATE TRIGGER before_insert_salesOrderNumber
+BEFORE INSERT ON tbl_orders
+FOR EACH ROW
+BEGIN
+    DECLARE lastOrderNumber INT DEFAULT 0;
+    DECLARE newOrderNumber VARCHAR(50);
+
+    -- Fetch the last order number
+    SELECT MAX(CAST(SUBSTRING(salesOrderNumber, 5) AS UNSIGNED))
+    INTO lastOrderNumber
+    FROM tbl_orders;
+
+    -- Increment the last order number and create new order number
+    SET newOrderNumber = CONCAT('ORD-', LPAD(lastOrderNumber + 1, 4, '0'));
+
+    -- Set the new salesOrderNumber value
+    SET NEW.salesOrderNumber = newOrderNumber;
+END//
+
+DELIMITER ;
+
+-- Update existing records to follow the new salesOrderNumber format
+SET @count = 0;
+
+UPDATE tbl_orders
+SET salesOrderNumber = CONCAT('ORD-', LPAD(@count := @count + 1, 4, '0'))
+WHERE salesOrderNumber IS NULL;
 
 -- Dumping structure for table austingastropub.tbl_orderitems
 CREATE TABLE IF NOT EXISTS `tbl_orderitems` (
@@ -193,18 +245,17 @@ CREATE TABLE IF NOT EXISTS `tbl_orderitems` (
   CONSTRAINT `tbl_orderitems_ibfk_2` FOREIGN KEY (`productID`) REFERENCES `tbl_menu` (`productID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Insert sample data into productQuantity only  
+INSERT INTO `tbl_orderitems` (`orderID`,`productQuantity`)  
+VALUES  
+(1, 3),  
+(2, 7),  
+(3, 12),  
+(4, 15),  
+(5, 25);  
+
 -- Dumping data for table austingastropub.tbl_orderitems: ~0 rows (approximately)
 
--- Dumping structure for table austingastropub.tbl_orders
-CREATE TABLE IF NOT EXISTS `tbl_orders` (
-  `orderID` int(11) NOT NULL AUTO_INCREMENT,
-  `orderNumber` int(11) NOT NULL,
-  `orderDate` date NOT NULL,
-  `orderTime` time NOT NULL,
-  `orderClass` varchar(8) NOT NULL,
-  PRIMARY KEY (`orderID`),
-  UNIQUE KEY `orderNumber` (`orderNumber`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
