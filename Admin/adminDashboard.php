@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'administrator') {
+    header("Location: /Austin-sIMS-POS/Login/index.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,6 +34,7 @@
             </div>
         </div>
         </div>
+        
         <div class="row">
         <div id="searchButtonContainer" class="d-flex justify-content-end">
             <form role="search">
@@ -340,10 +349,4 @@
 
 <?php
 include "cdnScripts.php";
-
-session_start();
-if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'admin') {
-    header("Location: /Austin-sIMS-POS/Login/index.php");
-    exit();
-}
 ?>
