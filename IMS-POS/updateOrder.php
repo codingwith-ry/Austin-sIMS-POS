@@ -15,10 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $result = $conn->prepare("SELECT * FROM tbl_orders WHERE orderID = :orderID");
         $result->bindParam(':orderID', $orderID, PDO::PARAM_INT);
         $result->execute();
-        $order = $result->fetch();
+        $order = $result->fetch(PDO::FETCH_ASSOC);
 
         echo json_encode(['success' => true, 'orderDetails' => $order]);
     } else {
+        error_log("Update failed: " . print_r($stmt->errorInfo(), true));
         echo json_encode(['success' => false, 'error' => $stmt->errorInfo()]);
     }
 }

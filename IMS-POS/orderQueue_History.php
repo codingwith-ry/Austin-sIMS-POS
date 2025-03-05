@@ -204,7 +204,7 @@ if ($page == "orderQueue_History.php") {
 
 <!-- Custom JS -->
 <script>
-    $(document).ready(function() {
+$(document).ready(function() {
     let selectedOrder;
     let actionType = '';
 
@@ -241,38 +241,60 @@ if ($page == "orderQueue_History.php") {
                         orderStatus: orderStatus
                     },
                     success: function(response) {
-                        if (response.success) {
-                            // Remove the order from the queue table
-                            selectedOrder.remove();
+                        console.log("AJAX Response: ", response); 
+                        try {
+                            const res = JSON.parse(response);
+                            if (res.success) {
+                                // Remove the order from the queue table
+                                selectedOrder.remove();
 
-                            // Add the updated order details to the history table
-                            const orderDetails = response.orderDetails;
-                            const historyTable = $('#history').find('tbody');
-                            const newRow = `<tr class='history-row'>
-                                                <td>${orderDetails.orderNumber}</td>
-                                                <td>${orderDetails.salesOrderNumber}</td>
-                                                <td>${orderDetails.employeeID}</td>
-                                                <td>${orderDetails.orderDate} ${orderDetails.orderTime}</td>
-                                                <td>${orderDetails.orderStatus}</td>
-                                            </tr>`;
-                            historyTable.append(newRow);
+                                // Add the updated order details to the history table
+                                const orderDetails = res.orderDetails;
+                                const historyTable = $('#history').find('tbody');
+                                const newRow = `<tr class='history-row'>
+                                                    <td>${orderDetails.orderNumber}</td>
+                                                    <td>${orderDetails.salesOrderNumber}</td>
+                                                    <td>${orderDetails.employeeID}</td>
+                                                    <td>${orderDetails.orderDate} ${orderDetails.orderTime}</td>
+                                                    <td>${orderDetails.orderStatus}</td>
+                                                </tr>`;
+                                historyTable.append(newRow);
 
-                            Swal.fire({
-                                title: "Success!",
-                                text: `The order has been ${orderStatus.toLowerCase()}.`,
-                                icon: "success",
-                                timer: 2000,
-                                showConfirmButton: false
-                            });
-                        } else {
+                                Swal.fire({
+                                    title: "Success!",
+                                    text: `The order has been ${orderStatus.toLowerCase()}.`,
+                                    icon: "success",
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: res.error,
+                                    icon: "error",
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        } catch (e) {
+                            console.error("Parsing error:", e);
                             Swal.fire({
                                 title: "Error!",
-                                text: response.error,
+                                text: "Response parsing failed.",
                                 icon: "error",
                                 timer: 2000,
                                 showConfirmButton: false
                             });
                         }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            title: "Error!",
+                            text: "There was an issue with the request.",
+                            icon: "error",
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                     }
                 });
             }
@@ -314,6 +336,7 @@ if ($page == "orderQueue_History.php") {
         table.search(this.value).draw();
     });
 });
+
 
 </script>
 </html>

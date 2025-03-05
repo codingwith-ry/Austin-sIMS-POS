@@ -187,18 +187,22 @@ CREATE TABLE IF NOT EXISTS `tbl_orders` (
   `orderClass` varchar(8) NOT NULL,
   `orderStatus` ENUM('IN PROCESS', 'DONE', 'CANCELLED') NOT NULL,
   `salesOrderNumber` varchar(50) UNIQUE,
+  `employeeID` varchar(9) NOT NULL, -- Add this line to include Employee_ID
   PRIMARY KEY (`orderID`),
-  UNIQUE KEY `orderNumber` (`orderNumber`)
+  UNIQUE KEY `orderNumber` (`orderNumber`),
+  CONSTRAINT `fk_employee_id` FOREIGN KEY (`employeeID`) REFERENCES `employees`(`Employee_ID`) -- Add this line for the foreign key constraint
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
 -- Insert sample data into tbl_orders  
-INSERT INTO `tbl_orders` (`orderNumber`, `orderDate`, `orderTime`, `orderClass`, `orderStatus`)  
+INSERT INTO `tbl_orders` (`orderNumber`, `orderDate`, `orderTime`, `orderClass`, `orderStatus`, `employeeID`)  
 VALUES  
-(1002, '2025-03-02', '10:15:00', '', 'IN PROCESS'),  
-(1003, '2025-03-03', '12:45:00', '', 'IN PROCESS'),  
-(1004, '2025-03-04', '18:30:00', '', 'IN PROCESS'),  
-(1005, '2025-03-05', '20:00:00', '', 'IN PROCESS'),  
-(1006, '2025-03-06', '08:10:00', '', 'IN PROCESS');  
+(1002, '2025-03-02', '10:15:00', '', 'IN PROCESS', '123456789'),  
+(1003, '2025-03-03', '12:45:00', '', 'IN PROCESS', '123456789'),  
+(1004, '2025-03-04', '18:30:00', '', 'IN PROCESS', '123456789'),  
+(1005, '2025-03-05', '20:00:00', '', 'IN PROCESS', '123456789'),  
+(1006, '2025-03-06', '08:10:00', '', 'IN PROCESS', '123456789');
+
 
 -- Create trigger for auto-generating salesOrderNumber
 DELIMITER //
