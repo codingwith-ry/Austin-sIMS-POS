@@ -41,8 +41,9 @@ CREATE TABLE IF NOT EXISTS `employees` (
 --
 
 INSERT INTO `employees` (`Employee_ID`, `Employee_Role`, `Employee_Name`, `Employee_Email`, `Employee_PassKey`, `Employee_PhoneNumber`) VALUES
-('987654321', 'Employee ', 'Spongebob ', 'dominicxandy.adino.cics@ust.edu.ph', '123456', 9257717724),
-('123456789', 'Inventory Manager', 'Dominic Xandy Adino', 'dominicadino23@gmail.com', '123456', 9257717724);
+('123456789', 'POS Staff Management', 'Dominic Xandy Adino', 'dominicadino23@gmail.com', '123456', 9257717724),
+('598353747', 'Administrator', 'John Doe', 'admin@gmail.com', '123456', 9257717724),
+('987654321', 'Employee ', 'Spongebob ', 'dominicxandy.adino.cics@ust.edu.ph', '123456', 9257717724);
 
 -- --------------------------------------------------------
 
