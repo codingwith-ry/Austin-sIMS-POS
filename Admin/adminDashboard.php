@@ -338,4 +338,12 @@
 </html>
 
 
-<?php include "cdnScripts.php" ?>
+<?php
+include "cdnScripts.php";
+
+session_start();
+if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'admin') {
+    header("Location: /Austin-sIMS-POS/Login/index.php");
+    exit();
+}
+?>
