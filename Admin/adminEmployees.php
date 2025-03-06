@@ -101,7 +101,7 @@
                     <tr>
                         <td>Stephen Lance Hao</td>
                         <td>IMS Staff Management</td>
-                        <td>Active</td>
+                        <td>Inactive</td>
                         <td>2025-02-26 08:12:34</td>
                         <td>
                             <button class="btn btn-sm btn-outline-secondary" type="button">
