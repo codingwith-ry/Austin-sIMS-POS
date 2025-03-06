@@ -62,135 +62,35 @@ include("../Login/database.php");
                         <th>Name</th>
                         <th>Position</th>
                         <th>Status</th>
-                        <!-- <th>Last Login</th> -->
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Example data, replace with dynamic data as needed -->
-                    <!-- <tr>
-                        <td>Ryan Regulacion</td>
-                        <td>Administrator</td>
-                        <td>Active</td>
-                        <td>2025-03-01 12:34:56</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-secondary" type="button">
-                                <i class="bi bi-pencil"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" type="button">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Dominic Adino</td>
-                        <td>POS Staff Management</td>
-                        <td>Inactive</td>
-                        <td>2025-02-28 09:21:45</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-secondary" type="button">
-                                <i class="bi bi-pencil"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" type="button">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Michael Owen Trinidad</td>
-                        <td>POS Staff Management</td>
-                        <td>Active</td>
-                        <td>2025-02-27 15:43:21</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-secondary" type="button">
-                                <i class="bi bi-pencil"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" type="button">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Stephen Lance Hao</td>
-                        <td>IMS Staff Management</td>
-                        <td>Inactive</td>
-                        <td>2025-02-26 08:12:34</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-secondary" type="button">
-                                <i class="bi bi-pencil"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" type="button">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Daryl Tumaneng</td>
-                        <td>Administrator</td>
-                        <td>Active</td>
-                        <td>2025-02-25 11:23:45</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-secondary" type="button">
-                                <i class="bi bi-pencil"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" type="button">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Ernest John Calalin</td>
-                        <td>IMS Staff Management</td>
-                        <td>Active</td>
-                        <td>2025-02-25 11:23:45</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-secondary" type="button">
-                                <i class="bi bi-pencil"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" type="button">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Ysabella Agbanglo</td>
-                        <td>IMS Staff Management</td>
-                        <td>Inactive</td>
-                        <td>2025-02-25 11:23:45</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-secondary" type="button">
-                                <i class="bi bi-pencil"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" type="button">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </td> -->
+                    <?php
+                    try {
+                        $stmt = $conn->prepare("SELECT Employee_ID, Employee_Name, Employee_Role, Employee_Status FROM employees");
+                        $stmt->execute();
+                        $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                        <?php
-                try {
-                    $stmt = $conn->prepare("SELECT Employee_Name, Employee_Role, Employee_Status FROM employees");
-                    $stmt->execute();
-                    $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                    foreach ($employees as $employee) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($employee['Employee_Name']) . "</td>";
-                        echo "<td>" . htmlspecialchars($employee['Employee_Role']) . "</td>";
-                        echo "<td>" . htmlspecialchars($employee['Employee_Status']) . "</td>";
-                        echo "<td>
-                                <button class='btn btn-sm btn-outline-secondary' type='button'>
-                                    <i class='bi bi-pencil'></i> Edit
-                                </button>
-                                <button class='btn btn-sm btn-outline-danger' type='button'>
-                                    <i class='bi bi-trash'></i> Delete
-                                </button>
-                              </td>";
-                        echo "</tr>";
+                        foreach ($employees as $employee) {
+                            echo "<tr data-id='" . $employee['Employee_ID'] . "'>";
+                            echo "<td class='editable' data-field='Employee_Name'>" . htmlspecialchars($employee['Employee_Name']) . "</td>";
+                            echo "<td class='editable' data-field='Employee_Role'>" . htmlspecialchars($employee['Employee_Role']) . "</td>";
+                            echo "<td class='editable' data-field='Employee_Status'>" . htmlspecialchars($employee['Employee_Status']) . "</td>";
+                            echo "<td>
+                                    <button class='btn btn-sm btn-outline-secondary edit-btn' type='button'>
+                                        <i class='bi bi-pencil'></i> Edit
+                                    </button>
+                                    <button class='btn btn-sm btn-outline-danger delete-btn' type='button'>
+                                        <i class='bi bi-trash'></i> Delete
+                                    </button>
+                                  </td>";
+                            echo "</tr>";
+                        }
+                    } catch (PDOException $e) {
+                        echo "Error: " . $e->getMessage();
                     }
-                } catch (PDOException $e) {
-                    echo "Error: " . $e->getMessage();
-                }
-                ?>
+                    ?>
                 </tbody>
             </table>
         </div>
@@ -201,8 +101,76 @@ include("../Login/database.php");
     <script>
         $(document).ready(function() {
             $('#employeeTable').DataTable();
+
+            // Handle edit button click
+            $(document).on('click', '.edit-btn', function() {
+                const row = $(this).closest('tr');
+                const id = row.data('id');
+
+                row.find('.editable').each(function() {
+                    const field = $(this).data('field');
+                    const value = $(this).text();
+                    $(this).html(`<input type="text" class="form-control" name="${field}" value="${value}">`);
+                });
+
+                $(this).removeClass('edit-btn btn-outline-secondary').addClass('save-btn btn-outline-success').html('<i class="bi bi-check"></i> Save');
+            });
+
+            // Handle save button click
+            $(document).on('click', '.save-btn', function() {
+                const row = $(this).closest('tr');
+                const id = row.data('id');
+                const data = {};
+
+                row.find('input').each(function() {
+                    const field = $(this).attr('name');
+                    const value = $(this).val();
+                    data[field] = value;
+                });
+
+                $.ajax({
+                    url: 'updateEmployee.php',
+                    type: 'POST',
+                    data: { id: id, ...data },
+                    success: function(response) {
+                        row.find('.editable').each(function() {
+                            const field = $(this).data('field');
+                            $(this).text(data[field]);
+                        });
+
+                        row.find('.save-btn').removeClass('save-btn btn-outline-success').addClass('edit-btn btn-outline-secondary').html('<i class="bi bi-pencil"></i> Edit');
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error updating employee: ' + error);
+                    }
+                });
+            });
+
+            // Handle delete button click
+            $(document).on('click', '.delete-btn', function() {
+                const row = $(this).closest('tr');
+                const id = row.data('id');
+
+                if (confirm('Are you sure you want to delete this employee?')) {
+                    $.ajax({
+                        url: 'deleteEmployee.php',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function(response) {
+                            const res = JSON.parse(response);
+                            if (res.success) {
+                                row.remove();
+                            } else {
+                                alert('Error deleting employee: ' + res.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            alert('Error deleting employee: ' + error);
+                        }
+                    });
+                }
+            });
         });
     </script>
 </body>
 </html>
-

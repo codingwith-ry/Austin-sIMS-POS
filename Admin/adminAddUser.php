@@ -6,13 +6,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $lastName = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
+    $confirmPassword = filter_input(INPUT_POST, 'confirm_password', FILTER_SANITIZE_SPECIAL_CHARS);
     $mobileNumber = filter_input(INPUT_POST, 'mobile_number', FILTER_SANITIZE_NUMBER_INT);
     $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
     $status = 'Active';
 
-    if (empty($firstName) || empty($email) || empty($password) || empty($role)) {
+    if (empty($firstName) || empty($email) || empty($password) || empty($confirmPassword) || empty($role)) {
         echo "<script>alert('Please fill in all required fields.');</script>";
-    } else {
+    } else if ($password !== $confirmPassword){
+        echo "<script>alert('Passwords do not match.');</script>";
+    }  else {
         try {
             // Check if the user already exists
             $checkStmt = $conn->prepare("SELECT COUNT(*) FROM employees WHERE Employee_Email = :email");
@@ -149,7 +152,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <span class="input-group-text">
                                 <i class="fas fa-lock"></i>
                             </span>
-                            <input type="password" class="form-control" id="rePassword">
+                            <input type="password" name="confirm_password" class="form-control" id="rePassword">
                             <span class="input-group-text">
                                 <i class="fas fa-eye" id="toggleRePassword"></i>
                             </span>
