@@ -18,7 +18,7 @@
                 <span class="material-symbols-outlined">
                     dashboard
                 </span>
-                <span class="ms-2">Dashboard</span> 
+                <a href="adminDashboard.php"><span class="ms-2">Dashboard</span></a>
             </li>
             <li class="list-group-item border-0 py-3 d-flex align-items-center">
                 <span class="material-symbols-outlined">
