@@ -123,6 +123,7 @@
                         </div>
                     </div>
                 </div>
+                <input type="hidden" name="status" value="Active">
                 <div class="d-flex justify-content-end mt-3">
                     <button type="submit" class="btn btn-custom px-4">Save</button>
                 </div>
@@ -160,6 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
     $mobileNumber = filter_input(INPUT_POST, 'mobile_number', FILTER_SANITIZE_NUMBER_INT);
     $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
+    $status = 'Active';
 
     if (empty($firstName) || empty($email) || empty($password) || empty($role)) {
         echo "<script>alert('Please fill in all required fields.');</script>";
@@ -175,7 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<script>alert('User already exists');</script>";
             } else {
                 $employeeId = mt_rand(100000000, 999999999);
-                $stmt = $conn->prepare("INSERT INTO employees (Employee_ID, Employee_Name, Employee_Email, Employee_PassKey, Employee_PhoneNumber, Employee_Role) VALUES (:employeeId, :fullName, :email, :password, :mobileNumber, :role)");
+                $stmt = $conn->prepare("INSERT INTO employees (Employee_ID, Employee_Name, Employee_Email, Employee_PassKey, Employee_PhoneNumber, Employee_Role, Employee_Status) VALUES (:employeeId, :fullName, :email, :password, :mobileNumber, :role, :status)");
                 $fullName = $firstName . ' ' . $lastName;
                 $stmt->bindParam(':employeeId', $employeeId);
                 $stmt->bindParam(':fullName', $fullName);
@@ -183,6 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->bindParam(':password', $password);
                 $stmt->bindParam(':mobileNumber', $mobileNumber);
                 $stmt->bindParam(':role', $role);
+                $stmt->bindParam(':status', $status);
 
                 if ($stmt->execute()) {
                     echo "<script>alert('User added successfully');</script>";

@@ -1,3 +1,13 @@
+<?php
+session_start();
+if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'administrator') {
+    header("Location: /Austin-sIMS-POS/Login/index.php");
+    exit();
+}
+
+include("../Login/database.php");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,9 +46,11 @@
             <p class="text-muted mb-0">Manage and monitor employee details, roles, and activity status.</p>
         </div>
         <div class="col-md-6 d-flex justify-content-end">
-            <button class="btn btn-primary" id="addUserBtn" type="button">
-                <i class="bi bi-person-plus"></i> Add Employee
-            </button>
+            <a href="/Austin-sIMS-POS/Admin/adminAddUser.php">
+                <button class="btn btn-primary" id="addUserBtn" type="button">
+                    <i class="bi bi-person-plus"></i> Add Employee
+                </button>
+            </a>
         </div>
     </div>
 
@@ -50,13 +62,13 @@
                         <th>Name</th>
                         <th>Position</th>
                         <th>Status</th>
-                        <th>Last Login</th>
+                        <!-- <th>Last Login</th> -->
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- Example data, replace with dynamic data as needed -->
-                    <tr>
+                    <!-- <tr>
                         <td>Ryan Regulacion</td>
                         <td>Administrator</td>
                         <td>Active</td>
@@ -152,7 +164,33 @@
                             <button class="btn btn-sm btn-outline-danger" type="button">
                                 <i class="bi bi-trash"></i> Delete
                             </button>
-                        </td>
+                        </td> -->
+
+                        <?php
+                try {
+                    $stmt = $conn->prepare("SELECT Employee_Name, Employee_Role, Employee_Status FROM employees");
+                    $stmt->execute();
+                    $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    foreach ($employees as $employee) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($employee['Employee_Name']) . "</td>";
+                        echo "<td>" . htmlspecialchars($employee['Employee_Role']) . "</td>";
+                        echo "<td>" . htmlspecialchars($employee['Employee_Status']) . "</td>";
+                        echo "<td>
+                                <button class='btn btn-sm btn-outline-secondary' type='button'>
+                                    <i class='bi bi-pencil'></i> Edit
+                                </button>
+                                <button class='btn btn-sm btn-outline-danger' type='button'>
+                                    <i class='bi bi-trash'></i> Delete
+                                </button>
+                              </td>";
+                        echo "</tr>";
+                    }
+                } catch (PDOException $e) {
+                    echo "Error: " . $e->getMessage();
+                }
+                ?>
                 </tbody>
             </table>
         </div>

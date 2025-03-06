@@ -24,7 +24,7 @@
                 <span class="material-symbols-outlined">
                     groups
                 </span>
-                <span class="ms-2">Employees</span>
+                <a href='/Austin-sIMS-POS/Admin/adminEmployees.php'><span class="ms-2">Employees</span></a>
             </li>
                 <li class="list-group-item border-0 py-3 d-flex align-items-center text-muted">
                     <span class="material-symbols-outlined">
