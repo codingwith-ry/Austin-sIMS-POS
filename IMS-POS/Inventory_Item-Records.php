@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IMS-POS | Inventory</title>
     <?php require_once('links.php'); ?>
+    <?php require('IMS_process.php') ?>
 </head>
 
 <body>
@@ -363,6 +364,81 @@
         </div>
     </div>
 </main>
+<!-- Modal HTML (Move this to your PHP document) -->
+<div class="modal" id="addItemForm">
+    <div class="modal-dialog modal-dialog-centered modal-l modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Item</h5>
+            </div>
+            <div class="modal-body">
+                <form id="myForm" action="IMS_process.php" method="post">
+                    <div class="form-group" style="display:flex">
+                        <span class="col-sm-4 control-label">Item Name</span>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="focusedInput" type="text" placeholder="Name" name="item_Name">
+                        </div>
+                    </div>
+                    <div class="form-group" style="display:flex">
+                        <span class="col-sm-4 control-label">Category</span>
+                        <div class="col-sm-8">
+                            <select class="form-select" name="item_category" id="categoryDropdown">
+                                <option selected disabled>Select Category</option>
+                                <?php
+                                    foreach($categories as $category){
+                                        echo '<option value="'.$category['categoryID'].'">'.$category['categoryName'].'</option>';
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" style="display:flex">
+                        <span class="col-sm-4 control-label">Unit Sales Price</span>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="focusedInput" type="text" placeholder="0.00" name="item_price">
+                        </div>
+                    </div>
+                    <div class="form-group" style="display:flex">
+                        <span class="col-sm-4 control-label">Item Quantity</span>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="focusedInput" type="number" placeholder="Number of Items" name="item_quantity">
+                        </div>
+                    </div>
+                    <div class="form-group" style="display:flex">
+                        <span class="col-sm-4 control-label">Purchase Date</span>
+                        <div class="flatpickr col-sm-8">
+                            <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField" name="purchase_date">
+                        </div>
+                    </div>
+                    <div class="form-group" style="display:flex">
+                        <span class="col-sm-4 control-label">Expiration Date</span>
+                        <div class="flatpickr col-sm-8">
+                            <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField" name="expiration_date">
+                        </div>
+                    </div>
+                    <div class="form-group" style="display:flex">
+                        <span class="col-sm-4 control-label">Employee Assigned</span>
+                        <div class="col-sm-8">
+                            <select class="form-select" name="employee_assigned">
+                                <option selected disabled>Select Employee</option>
+                                <?php 
+                                foreach($employee as $emp){
+                                    echo '<option value="'.$emp['Employee_ID'].'">'.$emp['Employee_Name'].'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 <?php include 'footer.php' ?>
 </html>

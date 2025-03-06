@@ -39,7 +39,7 @@
             </ul>
         </div>
         <div class="offcanvas-footer border-top p-3">
-            <a href="#" class="d-flex align-items-center text-danger text-decoration-none">
+            <a href="/Austin-sIMS-POS/Login/logout.php" class="d-flex align-items-center text-danger text-decoration-none">
                 <i class="bi bi-box-arrow-left"></i>
                 <span class="ms-2">Logout</span>
             </a>

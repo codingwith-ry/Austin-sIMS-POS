@@ -186,80 +186,11 @@ let itemRecords = new DataTable("#itemRecords", {
         },
         {
           text: "Add Item",
-          action: function (e, dt, node, config, cb) {
-            var addItemHTML = `
-                            <div class="modal" id="addItemForm">
-                                <div class="modal-dialog modal-dialog-centered modal-l modal-dialog-scrollable">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Add Item</h5>
-                                        </div>
-                                    <div class="modal-body">
-                                        <form id="myForm" action="IMS_process.php" method="post">
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Item Name</span>
-                                                <div class="col-sm-8">
-                                                    <input class="form-control" id="focusedInput" type="text" placeholder="Name" name="item_Name">
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Category</span>
-                                                <div class="col-sm-8">
-                                                    <select class="form-select" name="item_category" id="categoryDropdown">
-                                                        
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Unit Sales Price</span>
-                                                <div class="col-sm-8">
-                                                    <input class="form-control" id="focusedInput" type="text" placeholder="0.00">
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Purchase Date</span>
-                                                <div class="flatpickr col-sm-8">
-                                                    <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField">
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Expiration Date</span>
-                                                <div class="flatpickr col-sm-8">
-                                                    <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField">
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Employee Assigned</span>
-                                                <div class="col-sm-8">
-                                                    <select class="form-select">
-                                                        <option selected>Select Employee</option>
-                                                        <option value="1">One</option>
-                                                        <option value="2">Two</option>
-                                                        <option value="3">Three</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>
-                            `;
-            $("body").append(addItemHTML);
-
-            flatpickr(".flatpickr", {
-              enableTime: false,
-              dateFormat: "Y-M-D",
-            });
-
-            var myModal = new bootstrap.Modal(
+          action: function (e, dt, node, config) {
+            var addItemModal = new bootstrap.Modal(
               document.getElementById("addItemForm")
             );
-            myModal.show();
+            addItemModal.show();
           },
         },
       ],
