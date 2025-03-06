@@ -1,3 +1,55 @@
+<?php
+include '../Login/database.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $firstName = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
+    $lastName = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
+    $mobileNumber = filter_input(INPUT_POST, 'mobile_number', FILTER_SANITIZE_NUMBER_INT);
+    $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
+    $status = 'Active';
+
+    if (empty($firstName) || empty($email) || empty($password) || empty($role)) {
+        echo "<script>alert('Please fill in all required fields.');</script>";
+    } else {
+        try {
+            // Check if the user already exists
+            $checkStmt = $conn->prepare("SELECT COUNT(*) FROM employees WHERE Employee_Email = :email");
+            $checkStmt->bindParam(':email', $email);
+            $checkStmt->execute();
+            $count = $checkStmt->fetchColumn();
+
+            if ($count > 0) {
+                echo "<script>alert('User already exists');</script>";
+            } else {
+                $employeeId = mt_rand(100000000, 999999999);
+                $stmt = $conn->prepare("INSERT INTO employees (Employee_ID, Employee_Name, Employee_Email, Employee_PassKey, Employee_PhoneNumber, Employee_Role, Employee_Status) VALUES (:employeeId, :fullName, :email, :password, :mobileNumber, :role, :status)");
+                $fullName = $firstName . ' ' . $lastName;
+                $stmt->bindParam(':employeeId', $employeeId);
+                $stmt->bindParam(':fullName', $fullName);
+                $stmt->bindParam(':email', $email);
+                $stmt->bindParam(':password', $password);
+                $stmt->bindParam(':mobileNumber', $mobileNumber);
+                $stmt->bindParam(':role', $role);
+                $stmt->bindParam(':status', $status);
+
+                if ($stmt->execute()) {
+                    ob_start();
+                    header("Location: /Austin-sIMS-POS/Admin/adminEmployees.php");
+                    ob_end_flush();
+                    exit();
+                } else {
+                    echo "Execute failed: (" . $stmt->errorInfo()[2] . ")";
+                }
+            }
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -150,52 +202,3 @@
     </script>
 </body>
 </html>
-
-<?php
-include '../Login/database.php';
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $firstName = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
-    $lastName = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
-    $mobileNumber = filter_input(INPUT_POST, 'mobile_number', FILTER_SANITIZE_NUMBER_INT);
-    $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING);
-    $status = 'Active';
-
-    if (empty($firstName) || empty($email) || empty($password) || empty($role)) {
-        echo "<script>alert('Please fill in all required fields.');</script>";
-    } else {
-        try {
-            // Check if the user already exists
-            $checkStmt = $conn->prepare("SELECT COUNT(*) FROM employees WHERE Employee_Email = :email");
-            $checkStmt->bindParam(':email', $email);
-            $checkStmt->execute();
-            $count = $checkStmt->fetchColumn();
-
-            if ($count > 0) {
-                echo "<script>alert('User already exists');</script>";
-            } else {
-                $employeeId = mt_rand(100000000, 999999999);
-                $stmt = $conn->prepare("INSERT INTO employees (Employee_ID, Employee_Name, Employee_Email, Employee_PassKey, Employee_PhoneNumber, Employee_Role, Employee_Status) VALUES (:employeeId, :fullName, :email, :password, :mobileNumber, :role, :status)");
-                $fullName = $firstName . ' ' . $lastName;
-                $stmt->bindParam(':employeeId', $employeeId);
-                $stmt->bindParam(':fullName', $fullName);
-                $stmt->bindParam(':email', $email);
-                $stmt->bindParam(':password', $password);
-                $stmt->bindParam(':mobileNumber', $mobileNumber);
-                $stmt->bindParam(':role', $role);
-                $stmt->bindParam(':status', $status);
-
-                if ($stmt->execute()) {
-                    echo "<script>alert('User added successfully');</script>";
-                } else {
-                    echo "Execute failed: (" . $stmt->errorInfo()[2] . ")";
-                }
-            }
-        } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
-        }
-    }
-}
-?>
