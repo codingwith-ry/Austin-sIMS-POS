@@ -215,3 +215,28 @@ $("#select-all").on("change", function () {
   $(".row-checkbox").prop("checked", isChecked);
 });
 /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
+
+/***************************INITIALIZATION IMAGE PREVIEW********************************/
+function previewImage(event) {
+  var reader = new FileReader();
+  var preview = document.getElementById("imagePreview");
+
+  reader.onload = function () {
+    var image = new Image();
+    image.src = reader.result;
+
+    // Clear any previous image
+    preview.innerHTML = "";
+
+    // Append the new image to the preview div
+    preview.appendChild(image);
+
+    // Optionally, set a fixed size for the preview
+    image.style.width = "100%";
+    image.style.height = "100%";
+    image.style.objectFit = "contain";
+  };
+
+  // Read the uploaded file
+  reader.readAsDataURL(event.target.files[0]);
+}

@@ -1,4 +1,4 @@
--- phpMyAdmin SQL Dump
+austingastropubdb_hmsdb_hmsdb_hmsaustingastropubdb_hmsinventory-- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
@@ -78,7 +78,6 @@ ALTER TABLE `inventory`
   ADD PRIMARY KEY (`Item_ID`),
   ADD UNIQUE KEY `Item_Name` (`Item_Name`);
 COMMIT;
-
 
 CREATE TABLE IF NOT EXISTS `tbl_addons` (
   `addonID` int(11) NOT NULL AUTO_INCREMENT,
