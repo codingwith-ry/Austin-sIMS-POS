@@ -1,3 +1,13 @@
+<?php
+session_start();
+if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'Inventory Staff Management') {
+    header("Location: /Austin-sIMS-POS/Login/index.php");
+    exit();
+}
+
+include("../Login/database.php");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

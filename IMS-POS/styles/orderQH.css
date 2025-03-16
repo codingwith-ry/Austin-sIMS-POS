@@ -221,7 +221,10 @@ body, html {
 .fi {
     font-size: 24px;
     cursor: pointer;
-    margin-left: 10px;
+}
+
+.custom-icon {
+    margin-left: 10px !important;
 }
 
 .ml-2 {

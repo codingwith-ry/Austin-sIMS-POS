@@ -1,4 +1,5 @@
 <?php 
+session_start();
 include("database.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -17,12 +18,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($user && $password === $user['Employee_PassKey']) {
                 $role = strtolower($user['Employee_Role']);
                 // Password is correct
-                echo "<script>
-                localStorage.setItem('userRole', '$role');
-              </script>";
-                if ($role === 'admin') {
+                $_SESSION['userRole'] = $role;
+                $_SESSION['email'] = $email;
+
+                if ($role === 'administrator') {
                     header("Location: /Austin-sIMS-POS/Admin/adminDashboard.php");
-                } else if ($role === 'PoS'){
+                } else if ($role === 'pos staff management'){
                     header("Location: /Austin-sIMS-POS/IMS-POS/Menu.php");
                 } else {
                     header("Location: /Austin-sIMS-POS/IMS-POS/IMS_process.php");
