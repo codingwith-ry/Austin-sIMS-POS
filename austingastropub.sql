@@ -266,3 +266,103 @@ VALUES
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+DROP TABLE IF EXISTS `inventory`;
+
+--Create Table tbl_Item
+CREATE TABLE `tbl_item` (
+	`Item_ID` INT(11) NOT NULL,
+	`Item_Name` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`Item_Image` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`Item_Category` INT(11) NOT NULL,
+	PRIMARY KEY (`Item_ID`) USING BTREE,
+	INDEX `FK__tbl_itemcategories` (`Item_Category`) USING BTREE,
+	CONSTRAINT `FK__tbl_itemcategories` FOREIGN KEY (`Item_Category`) REFERENCES `tbl_itemcategories` (`Category_ID`) ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+
+--Create Table tbl_itemcategories
+CREATE TABLE `tbl_itemcategories` (
+	`Category_ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Category_Name` VARCHAR(150) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	PRIMARY KEY (`Category_ID`) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=9
+;
+
+
+--Create Table tbl_itemCategories
+CREATE TABLE `tbl_unitofmeasurments` (
+	`Unit_ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Unit_Name` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`Unit_Acronym` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	PRIMARY KEY (`Unit_ID`) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=10
+;
+
+
+--Create Table tbl_Record
+CREATE TABLE `tbl_record` (
+	`Record_ID` INT(11) NOT NULL,
+	`Item_ID` INT(11) NULL DEFAULT NULL,
+	`Unit_ID` INT(11) NULL DEFAULT NULL,
+	`Record_ItemQuantity` INT(11) NULL DEFAULT NULL,
+	`Record_ItemExpirationDate` INT(11) NULL DEFAULT NULL,
+	`Record_ItemPurchaseDate` INT(11) NULL DEFAULT NULL,
+	`Record_ItemSupplier` INT(11) NULL DEFAULT NULL,
+	`Record_EmployeeAssigned` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	PRIMARY KEY (`Record_ID`) USING BTREE,
+	INDEX `FK__tbl_item` (`Item_ID`) USING BTREE,
+	INDEX `FK__tbl_unitofmeasurments` (`Unit_ID`) USING BTREE,
+	INDEX `FK__employees` (`Record_EmployeeAssigned`) USING BTREE,
+	CONSTRAINT `FK__employees` FOREIGN KEY (`Record_EmployeeAssigned`) REFERENCES `employees` (`Employee_ID`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+	CONSTRAINT `FK__tbl_item` FOREIGN KEY (`Item_ID`) REFERENCES `tbl_item` (`Item_ID`) ON UPDATE NO ACTION ON DELETE NO ACTION,
+	CONSTRAINT `FK__tbl_unitofmeasurments` FOREIGN KEY (`Unit_ID`) REFERENCES `tbl_unitofmeasurments` (`Unit_ID`) ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+--Create Table tbl_inventory 
+CREATE TABLE `tbl_inventory` (
+	`Inventory_ID` INT(11) NOT NULL,
+	`Record_ID` INT(11) NULL DEFAULT NULL,
+	`Inventory_Quantity` INT(11) NULL DEFAULT NULL,
+	PRIMARY KEY (`Inventory_ID`) USING BTREE,
+	INDEX `FK__tbl_record` (`Record_ID`) USING BTREE,
+	CONSTRAINT `FK__tbl_record` FOREIGN KEY (`Record_ID`) REFERENCES `tbl_record` (`Record_ID`) ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+
+--insert data into unit of measurments table 
+INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (1, 'Mililiters', 'ml');
+INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (2, 'Liters', 'L');
+INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (3, 'Gallon', 'Gal');
+INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (4, 'Carton', 'C');
+INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (5, 'Grams', 'g');
+INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (6, 'Pound', 'lb');
+INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (7, 'Kilogram', 'kg');
+INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (8, 'Sack', 's');
+INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (9, 'Pieces', 'p');
+
+-- insert data into item categories table
+INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES (1, 'Fruits');
+INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES (2, 'Vegetables');
+INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES (3, 'Grains');
+INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES (4, 'Dairy');
+INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES (5, 'Fats & Oils');
+INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES (6, 'Beverages');
+INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES (7, 'Sweeteners & Condiments');
+INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES (8, 'Herbs & Spices');
