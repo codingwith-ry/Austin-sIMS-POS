@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'Inventory Staff Management') {
+if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'inventory staff management') {
     header("Location: /Austin-sIMS-POS/Login/index.php");
     exit();
 }

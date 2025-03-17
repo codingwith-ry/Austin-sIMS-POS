@@ -25,8 +25,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header("Location: /Austin-sIMS-POS/Admin/adminDashboard.php");
                 } else if ($role === 'pos staff management'){
                     header("Location: /Austin-sIMS-POS/IMS-POS/Menu.php");
+                } else if ($role === 'inventory staff management'){
+                    header("Location: /Austin-sIMS-POS/IMS-POS/Inventory_Item-Records.php");
                 } else {
-                    header("Location: /Austin-sIMS-POS/IMS-POS/IMS_process.php");
+                    echo "Invalid email or password";
                 }
                 exit();
             } else {
