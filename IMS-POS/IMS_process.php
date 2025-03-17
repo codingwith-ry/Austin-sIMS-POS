@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $pdo->exec($sql);
 
                 // Redirect after successful insert
-                header("Location: IMS.php");
+                header("Location: Inventory_Item-Records.php");
                 exit();
             } catch (PDOException $e) {
                 echo "Error: " . $e->getMessage();

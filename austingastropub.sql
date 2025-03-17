@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `austingastropub`
---
+--austinegastropub
 
 -- --------------------------------------------------------
 
@@ -270,7 +270,6 @@ VALUES
 
 DROP TABLE IF EXISTS `inventory`;
 
---Create Table tbl_Item
 CREATE TABLE `tbl_item` (
 	`Item_ID` INT(11) NOT NULL,
 	`Item_Name` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
@@ -284,8 +283,6 @@ COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
 
-
---Create Table tbl_itemcategories
 CREATE TABLE `tbl_itemcategories` (
 	`Category_ID` INT(11) NOT NULL AUTO_INCREMENT,
 	`Category_Name` VARCHAR(150) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
@@ -296,21 +293,6 @@ ENGINE=InnoDB
 AUTO_INCREMENT=9
 ;
 
-
---Create Table tbl_itemCategories
-CREATE TABLE `tbl_unitofmeasurments` (
-	`Unit_ID` INT(11) NOT NULL AUTO_INCREMENT,
-	`Unit_Name` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
-	`Unit_Acronym` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
-	PRIMARY KEY (`Unit_ID`) USING BTREE
-)
-COLLATE='utf8mb4_general_ci'
-ENGINE=InnoDB
-AUTO_INCREMENT=10
-;
-
-
---Create Table tbl_Record
 CREATE TABLE `tbl_record` (
 	`Record_ID` INT(11) NOT NULL,
 	`Item_ID` INT(11) NULL DEFAULT NULL,
@@ -332,7 +314,6 @@ COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
 
---Create Table tbl_inventory 
 CREATE TABLE `tbl_inventory` (
 	`Inventory_ID` INT(11) NOT NULL,
 	`Record_ID` INT(11) NULL DEFAULT NULL,
