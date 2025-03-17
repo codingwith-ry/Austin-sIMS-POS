@@ -326,8 +326,6 @@ COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
 
-
---insert data into unit of measurments table 
 INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (1, 'Mililiters', 'ml');
 INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (2, 'Liters', 'L');
 INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (3, 'Gallon', 'Gal');
@@ -338,7 +336,6 @@ INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VAL
 INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (8, 'Sack', 's');
 INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES (9, 'Pieces', 'p');
 
--- insert data into item categories table
 INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES (1, 'Fruits');
 INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES (2, 'Vegetables');
 INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES (3, 'Grains');
