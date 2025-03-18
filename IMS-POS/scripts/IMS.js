@@ -185,7 +185,7 @@ let itemRecords = new DataTable("#itemRecords", {
           ],
         },
         {
-          text: "Add Item",
+          text: "Add Record",
           action: function (e, dt, node, config) {
             var addItemModal = new bootstrap.Modal(
               document.getElementById("addItemForm")
