@@ -187,10 +187,10 @@ let itemRecords = new DataTable("#itemRecords", {
         {
           text: "Add Record",
           action: function (e, dt, node, config) {
-            var addItemModal = new bootstrap.Modal(
-              document.getElementById("addItemForm")
+            var addRecordModal = new bootstrap.Modal(
+              document.getElementById("addRecordForm")
             );
-            addItemModal.show();
+            addRecordModal.show();
           },
         },
       ],

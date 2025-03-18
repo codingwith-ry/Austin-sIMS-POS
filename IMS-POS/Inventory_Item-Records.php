@@ -352,11 +352,11 @@ include("../Login/database.php");
         </div>
     </main>
     <!-- Modal HTML (Move this to your PHP document) -->
-    <div class="modal" id="addItemForm">
+    <div class="modal" id="addRecordForm">
         <div class="modal-dialog modal-dialog-centered modal-l modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Item</h5>
+                    <h5 class="modal-title">Add Record</h5>
                 </div>
                 <div class="modal-body">
                     <form id="myForm" action="IMS_process.php" method="post">
