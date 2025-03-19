@@ -380,9 +380,15 @@ include("../Login/database.php");
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">
-                            <span class="col-sm-4 control-label">Unit Sales Price</span>
+                            <span class="col-sm-4 control-label">Item Price</span>
                             <div class="col-sm-8">
                                 <input class="form-control" id="focusedInput" type="text" placeholder="0.00" name="item_price">
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:flex">
+                            <span class="col-sm-4 control-label">Item Volume</span>
+                            <div class="col-sm-8">
+                                <input class="form-control" id="focusedInput" type="text" placeholder="0.00" name="item_measurment">
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">
@@ -401,6 +407,12 @@ include("../Login/database.php");
                             <span class="col-sm-4 control-label">Expiration Date</span>
                             <div class="flatpickr col-sm-8">
                                 <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField" name="expiration_date">
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:flex">
+                            <span class="col-sm-4 control-label">Supplier</span>
+                            <div class="flatpickr col-sm-8">
+                                <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField" name="item_supplier">
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">

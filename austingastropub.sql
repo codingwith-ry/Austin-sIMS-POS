@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 17, 2025 at 04:01 PM
+-- Generation Time: Mar 19, 2025 at 10:05 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -112,7 +112,8 @@ INSERT INTO `tbl_categories` (`categoryID`, `categoryName`, `categoryIcon`, `men
 CREATE TABLE `tbl_inventory` (
   `Inventory_ID` int(11) NOT NULL,
   `Record_ID` int(11) DEFAULT NULL,
-  `Inventory_Quantity` int(11) DEFAULT NULL
+  `Inventory_Quantity` int(11) DEFAULT NULL,
+  `Item_ID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -125,16 +126,17 @@ CREATE TABLE `tbl_item` (
   `Item_ID` int(11) NOT NULL,
   `Item_Name` varchar(50) NOT NULL,
   `Item_Image` varchar(50) NOT NULL,
-  `Item_Category` int(11) NOT NULL
+  `Item_Category` int(11) NOT NULL,
+  `Unit_ID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_item`
 --
 
-INSERT INTO `tbl_item` (`Item_ID`, `Item_Name`, `Item_Image`, `Item_Category`) VALUES
-(1, 'Magnolia Fresh Milk', 'itemImages/Magnolia Fresh Milk.png', 4),
-(2, 'Bounty Chicken Breast Fillet', 'itemImages/Bounty Chicken Breast Fillet.webp', 9);
+INSERT INTO `tbl_item` (`Item_ID`, `Item_Name`, `Item_Image`, `Item_Category`, `Unit_ID`) VALUES
+(1, 'Magnolia Fresh Milk', 'itemImages/Magnolia Fresh Milk.png', 4, NULL),
+(2, 'Bounty Chicken Breast Fillet', 'itemImages/Bounty Chicken Breast Fillet.webp', 9, NULL);
 
 -- --------------------------------------------------------
 
@@ -315,8 +317,9 @@ DELIMITER ;
 CREATE TABLE `tbl_record` (
   `Record_ID` int(11) NOT NULL,
   `Item_ID` int(11) DEFAULT NULL,
-  `Unit_ID` int(11) DEFAULT NULL,
+  `Record_ItemVolume` int(11) DEFAULT NULL,
   `Record_ItemQuantity` int(11) DEFAULT NULL,
+  `Record_ItemPrice` int(11) DEFAULT NULL,
   `Record_ItemExpirationDate` int(11) DEFAULT NULL,
   `Record_ItemPurchaseDate` int(11) DEFAULT NULL,
   `Record_ItemSupplier` int(11) DEFAULT NULL,
@@ -378,14 +381,16 @@ ALTER TABLE `tbl_categories`
 --
 ALTER TABLE `tbl_inventory`
   ADD PRIMARY KEY (`Inventory_ID`) USING BTREE,
-  ADD KEY `FK__tbl_record` (`Record_ID`) USING BTREE;
+  ADD KEY `FK__tbl_record` (`Record_ID`) USING BTREE,
+  ADD KEY `FK_tbl_inventory_tbl_item` (`Item_ID`);
 
 --
 -- Indexes for table `tbl_item`
 --
 ALTER TABLE `tbl_item`
   ADD PRIMARY KEY (`Item_ID`) USING BTREE,
-  ADD KEY `FK__tbl_itemcategories` (`Item_Category`) USING BTREE;
+  ADD KEY `FK__tbl_itemcategories` (`Item_Category`) USING BTREE,
+  ADD KEY `FK_tbl_item_tbl_unitofmeasurments` (`Unit_ID`);
 
 --
 -- Indexes for table `tbl_itemcategories`
@@ -438,7 +443,6 @@ ALTER TABLE `tbl_orders`
 ALTER TABLE `tbl_record`
   ADD PRIMARY KEY (`Record_ID`) USING BTREE,
   ADD KEY `FK__tbl_item` (`Item_ID`) USING BTREE,
-  ADD KEY `FK__tbl_unitofmeasurments` (`Unit_ID`) USING BTREE,
   ADD KEY `FK__employees` (`Record_EmployeeAssigned`) USING BTREE;
 
 --
@@ -525,13 +529,15 @@ ALTER TABLE `tbl_categories`
 -- Constraints for table `tbl_inventory`
 --
 ALTER TABLE `tbl_inventory`
-  ADD CONSTRAINT `FK__tbl_record` FOREIGN KEY (`Record_ID`) REFERENCES `tbl_record` (`Record_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `FK__tbl_record` FOREIGN KEY (`Record_ID`) REFERENCES `tbl_record` (`Record_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `FK_tbl_inventory_tbl_item` FOREIGN KEY (`Item_ID`) REFERENCES `tbl_item` (`Item_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tbl_item`
 --
 ALTER TABLE `tbl_item`
-  ADD CONSTRAINT `FK__tbl_itemcategories` FOREIGN KEY (`Item_Category`) REFERENCES `tbl_itemcategories` (`Category_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `FK__tbl_itemcategories` FOREIGN KEY (`Item_Category`) REFERENCES `tbl_itemcategories` (`Category_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `FK_tbl_item_tbl_unitofmeasurments` FOREIGN KEY (`Unit_ID`) REFERENCES `tbl_unitofmeasurments` (`Unit_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tbl_menu`
@@ -565,8 +571,7 @@ ALTER TABLE `tbl_orders`
 --
 ALTER TABLE `tbl_record`
   ADD CONSTRAINT `FK__employees` FOREIGN KEY (`Record_EmployeeAssigned`) REFERENCES `employees` (`Employee_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `FK__tbl_item` FOREIGN KEY (`Item_ID`) REFERENCES `tbl_item` (`Item_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `FK__tbl_unitofmeasurments` FOREIGN KEY (`Unit_ID`) REFERENCES `tbl_unitofmeasurments` (`Unit_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `FK__tbl_item` FOREIGN KEY (`Item_ID`) REFERENCES `tbl_item` (`Item_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
