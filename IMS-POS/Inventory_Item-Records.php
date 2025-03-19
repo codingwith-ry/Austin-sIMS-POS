@@ -6,6 +6,7 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'inventory staff 
 }
 
 include("../Login/database.php");
+include("IMS_process.php");
 ?>
 
 <!DOCTYPE html>
@@ -372,9 +373,9 @@ include("../Login/database.php");
                                 <select class="form-select" name="item_category" id="categoryDropdown">
                                     <option selected disabled>Select Category</option>
                                     <?php
-                                    foreach ($categories as $category) {
-                                        echo '<option value="' . $category['categoryID'] . '">' . $category['categoryName'] . '</option>';
-                                    }
+        foreach ($item_categories as $category) {
+            echo '<option value="' . htmlspecialchars($category['Category_ID']) . '">' . htmlspecialchars($category['Category_Name']) . '</option>';
+        }
                                     ?>
                                 </select>
                             </div>
