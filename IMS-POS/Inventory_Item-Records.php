@@ -373,9 +373,9 @@ include("IMS_process.php");
                                 <select class="form-select" name="item_category" id="categoryDropdown">
                                     <option selected disabled>Select Category</option>
                                     <?php
-        foreach ($item_categories as $category) {
-            echo '<option value="' . htmlspecialchars($category['Category_ID']) . '">' . htmlspecialchars($category['Category_Name']) . '</option>';
-        }
+                                    foreach ($item_categories as $category) {
+                                        echo '<option value="' . htmlspecialchars($category['Category_ID']) . '">' . htmlspecialchars($category['Category_Name']) . '</option>';
+                                    }
                                     ?>
                                 </select>
                             </div>
@@ -389,7 +389,7 @@ include("IMS_process.php");
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Item Volume</span>
                             <div class="col-sm-8">
-                                <input class="form-control" id="focusedInput" type="text" placeholder="0.00" name="item_measurment">
+                                <input class="form-control" id="focusedInput" type="text" placeholder="0.00" name="item_volume">
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">
@@ -412,8 +412,8 @@ include("IMS_process.php");
                         </div>
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Supplier</span>
-                            <div class="flatpickr col-sm-8">
-                                <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField" name="item_supplier">
+                            <div class="col-sm-8">
+                                <input class="form-control" id="focusedInput" type="text" placeholder="Supplier Name" name="item_supplier">
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">
@@ -423,17 +423,17 @@ include("IMS_process.php");
                                     <option selected disabled>Select Employee</option>
                                     <?php
                                     foreach ($employee as $emp) {
-                                        echo '<option value="' . $emp['Employee_ID'] . '">' . $emp['Employee_Name'] . '</option>';
+                                        echo '<option value="' . htmlspecialchars($emp['Employee_ID']) . '">' . htmlspecialchars($emp['Employee_Name']) . '</option>';
                                     }
                                     ?>
                                 </select>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" name="add_record">Submit</button>
+                        </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </div>
