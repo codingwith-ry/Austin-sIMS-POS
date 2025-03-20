@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Mar 19, 2025 at 10:05 AM
+-- Host: 127.0.0.1:3306
+-- Generation Time: Mar 20, 2025 at 03:58 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -320,11 +320,20 @@ CREATE TABLE `tbl_record` (
   `Record_ItemVolume` int(11) DEFAULT NULL,
   `Record_ItemQuantity` int(11) DEFAULT NULL,
   `Record_ItemPrice` int(11) DEFAULT NULL,
-  `Record_ItemExpirationDate` int(11) DEFAULT NULL,
-  `Record_ItemPurchaseDate` int(11) DEFAULT NULL,
-  `Record_ItemSupplier` int(11) DEFAULT NULL,
+  `Record_ItemExpirationDate` date DEFAULT NULL,
+  `Record_ItemPurchaseDate` date DEFAULT NULL,
+  `Record_ItemSupplier` varchar(255) DEFAULT NULL,
   `Record_EmployeeAssigned` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_record`
+--
+
+INSERT INTO `tbl_record` (`Record_ID`, `Item_ID`, `Record_ItemVolume`, `Record_ItemQuantity`, `Record_ItemPrice`, `Record_ItemExpirationDate`, `Record_ItemPurchaseDate`, `Record_ItemSupplier`, `Record_EmployeeAssigned`) VALUES
+(217802, 2, 23, 15, 22, '2025-06-20', '2025-02-20', 'Bounty', '123456789'),
+(486387, 1, 5, 3, 30, '2025-07-22', '2025-05-22', 'Magnolia', '123456789'),
+(556037, 2, 15, 5, 300, '2025-02-20', '2025-01-20', 'Bounty', '123456789');
 
 -- --------------------------------------------------------
 
