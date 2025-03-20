@@ -1,5 +1,6 @@
-
-    <div class="offcanvas offcanvas-start show" id="nav" tabindex="1" data-bs-scroll="true" data-bs-backdrop="false">
+<?php
+    echo'
+<div class="offcanvas offcanvas-start show" id="nav" tabindex="1" data-bs-scroll="true" data-bs-backdrop="false">
         <div class="p-3">
             <div>
             <div class="row">
@@ -7,7 +8,7 @@
                     <img src="resources/logo.png" alt="Logo" style="width: 65px; height: 65px; object-fit: cover;" class="rounded-circle">
                 </div>
                 <div class="col-md-8 col-xl-8 col-lg-12 p-1">
-                    <span id="offcanvasScrollingLabel" class="flex-grow-1 w-75" style="font-size: 16px;"><b>Austin's Cafe & Gastro Pub IMS-POS</b></span>
+                    <span id="offcanvasScrollingLabel" class="flex-grow-1 w-75" style="font-size: 16px;"><b>Austin\'s Cafe & Gastro Pub IMS-POS</b></span>
                 </div>
             </div>
             </div>
@@ -39,3 +40,5 @@
             </a>
         </div>
     </div>
+    ';
+?>

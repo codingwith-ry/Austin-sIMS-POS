@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin | Products</title>
+    <?php require_once('../Login/database.php'); ?>    
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php include 'adminCDN.php'; ?>
     <link rel="stylesheet" type="text/css" href="styles/adminProducts.css">
 </head>
@@ -47,27 +51,9 @@
                     </div> 
                 </div>
             </div>
+
             
-            <br />
-
-
-            <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="coffeeMenuTab" data-bs-toggle="pill" data-bs-target="#coffeeMenu" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Coffee Menu</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="gastropubMenu" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Gastro Pub Menu</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="partytrayMenu" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Party Tray Menu</button>
-                </li>
-                <li class="nav-item ms-auto" role="presentation">
-                    <button class="btn btn-success h-100 pt-2" id="partytrayMenu" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Item
-						<i 
-						class="fi fi-rr-add " style="vertical-align: middle; font-size: 18px"></i>
-					</button>
-                </li>
-            </ul>
+            
             <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -127,360 +113,363 @@
                 </div>
             </div>
             <br />
+
             <div id="productsTab" class="tab-pane fade show active">
-                <div class="tab-pane fade show active" id="coffeeMenu" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
-                    <div class="d-flex flex-row flex-nowrap overflow-x-scroll">
-                        <button class="btn btn-primary flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold" >All</p> 
-                        </button>
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text">Coffees</p>
-                        </button>
+                <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                    <?php 
+                        $arrTabs = array();
+                        $index = 0;
+                        $getMenu = "SELECT * from tbl_menuclass;";
+                        $result = $conn->prepare("$getMenu");
+                        $result->execute();
 
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold" >All</p> 
+                        if($result->rowCount() > 0){
+                            while($row = $result->fetch()){
+                                $menuName = explode(' ', trim($row['menuName']))[0];
+                                $arrTabs[] =  strtolower($menuName)."MenuTab";
+                                if($index == 0){
+                                    $isTabActive = "active";
+                                }else{
+                                    $isTabActive = "";
+                                }
+                                echo '<li class="nav-item" role="presentation">
+                                        <button class="nav-link '.$isTabActive.' me-2" id="'.$arrTabs[$index].'Tab" data-bs-toggle="pill" data-bs-target="#'.$arrTabs[$index].'" type="button" role="tab" aria-controls="pills-home" aria-selected="true">'.$row['menuName'].'</button>
+                                    </li>';
+                                    $index++;
+                                }
+                        }
+                    ?>
+                    <li class="nav-item ms-auto" role="presentation">
+                        <button class="btn btn-success h-100 pt-2" id="partytrayMenu" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Item
+                            <i 
+                            class="fi fi-rr-add " style="vertical-align: middle; font-size: 18px"></i>
                         </button>
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text">Coffees</p>
-                        </button>
-
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold" >All</p> 
-                        </button>
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text">Coffees</p>
-                        </button>
-
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold" >All</p> 
-                        </button>
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text">Coffees</p>
-                        </button>
-
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold" >All</p> 
-                        </button>
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text">Coffees</p>
-                        </button>
-
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold" >All</p> 
-                        </button>
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-rr-mug-hot-alt" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text">Coffees</p>
-                        </button>
+                    </li>
+                </ul>
                         
+                <br />
 
-                        
-                    </div>
-                    <br />
-                    <div class="products">
-                        <div class="row">
-                            <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                                <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                                    <img src="resources/nachos.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                                    <div class="card-body" id="productBody">
-                                        <div class="row">
-                                            <div class="col-8 flex-shrink-0 pe-0">
-                                                <span id="productName">Roast Beef with Mashed Potato</span>
-                                            </div>
-                                            <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
-                                                <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Starters</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <span id="foodPrice">₱280.00</span>
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="tab-content" id="pills-tabContent">
+                    <?php
+                    $index = 0;
+                    $getMenu = "SELECT * from tbl_menuclass;";
+                    $result = $conn->prepare("$getMenu");
+                    $result->execute();
+                    
+                    if($result->rowCount() > 0){
+                        $categoryArr = [];
+                        while($row = $result->fetch()){
+                            $currID = $row['menuID'];
+                            $searchCategories = "SELECT categoryID, categoryName, categoryIcon FROM tbl_categories WHERE menuID = $currID;";
+                            $categories = $conn->prepare("$searchCategories");
+                            $categories->execute();
 
-                            <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                                <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                                    <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                                    <div class="card-body" id="productBody">
-                                        <div class="row">
-                                            <div class="col-8 flex-shrink-0 pe-0">
-                                                <span id="productName">Creamy Chicken Alfredo Pasta</span>
-                                            </div>
-                                            <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
-                                                <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <span id="foodPrice">₱280.00</span>
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                                <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                                    <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                                    <div class="card-body" id="productBody">
-                                        <div class="row">
-                                            <div class="col-8 flex-shrink-0 pe-0">
-                                                <span id="productName">Creamy Chicken Alfredo Pasta</span>
-                                            </div>
-                                            <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
-                                                <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <span id="foodPrice">₱280.00</span>
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                                <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                                    <img src="resources/chickenalfredo.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                                    <div class="card-body" id="productBody">
-                                        <div class="row">
-                                            <div class="col-8 flex-shrink-0 pe-0">
-                                                <span id="productName">Creamy Chicken Alfredo Pasta</span>
-                                            </div>
-                                            <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
-                                                <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i> Pastas</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <span id="foodPrice">₱280.00</span>
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            if($index == 0){
+                                $isActive = "active";
+                            }else{
+                                $isActive = "";
+                            }
                             
+                            echo'
+                            <div class="tab-pane fade show '.$isActive.'" id="'.$arrTabs[$index].'" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+                            ';
+                                
+                            echo'
+                                <div class="">
+                                <ul class="nav nav-pills d-flex flex-row flex-nowrap overflow-x-scroll" id="pills-tab" role="tablist">
+                            ';
+                            
+                            $catIndex = 0;
+                            $menuCategoryName = explode(' ', trim($row['menuName']))[0];
+                            $allTab = false;
+                            if(!$allTab){
+                                $isActiveCat = "fw-bold active";
+                                echo'
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link '.$isActiveCat.'  flex-shrink-0 align-baseline me-3 nav-item"  style="width: 12rem; text-align: left; padding:15px;" data-bs-toggle="pill" data-bs-target="#all'.$menuCategoryName.'Row" role="tab" aria-selected="true">
+                                        <span>
+                                            <i class="fi fi-ss-apps" id="categoryIcon"></i>
+                                        </span>
+                                        <br />
+                                        <br />
+                                        <p class="card-text" >All</p> 
+                                    </button>
+                                </li>
+                                ';
+                                $allTab = true;
+                            }
+                            while($category = $categories->fetch()){
+                                $isActiveCat = "";
+                                $explodeCategory = explode(' ', trim($category['categoryName']))[0];
+                                $tabName = strtolower($explodeCategory).$menuCategoryName."Row";
+                                $categoryArr[$index][$catIndex]= $category['categoryName'];
+                                echo'
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-item nav-link flex-shrink-0 align-baseline me-3 "  style="width: 12rem; text-align: left; padding:15px;" data-bs-toggle="pill" data-bs-target="#'.$tabName.'" role="tab" aria-selected="true">
+                                                <span>
+                                                    <i class="'.$category['categoryIcon'].'" id="categoryIcon"></i>  
+                                                </span>
+                                                <br />
+                                                <br />
+                                                <p class="card-text" >'.$category['categoryName'].'</p> 
+                                    </button>
+                                </li>
+                                ';
+                                $catIndex++;
+                            }
+                            echo '</ul></div>';
+                            
+
+                            echo'
+                                <br />
+                                <div id="pills-tabContent" class="tab-content products">
+                            ';
+                            $ifShow = "show active";
+
+                            $x = 0;
+                            $allRow = false;
+                            if(!$allRow){
+                                $ifShow = "show active";
+                                $searchProducts = "SELECT tbl_menu.productID, tbl_menu.productName, tbl_menu.productImage, tbl_menu.productPrice, tbl_categories.categoryName, tbl_categories.categoryIcon FROM tbl_menu INNER JOIN tbl_categories ON tbl_menu.categoryID = tbl_categories.categoryID  WHERE tbl_menu.menuID = $currID;";
+                                $products = $conn->prepare("$searchProducts");
+                                $products->execute();
+                    
+                                echo'<div class="tab-pane fade '.$ifShow.'" id="all'.$menuCategoryName.'Row">
+                                    <div class="row">   
+                                ';
+                                
+                                if($products->rowCount()  <= 0){
+                                    echo'
+                                    <h2>No products found.</h2>';
+                                    goto skip;
+                                }
+
+                                while($product = $products->fetch()){
+                                    echo'
+                                        <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                                            <div class="card flex-shrink-0" id="productCard" style="width: 100%; padding: 15px;">
+                                                <img src="resources/nachos.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
+                                                <div class="card-body" id="productBody">
+                                                    <div class="row">
+                                                        <div class="col-8 flex-shrink-0 pe-0">
+                                                            <span id="productName">'.$product['productName'].'</span>
+                                                        </div>
+                                                        <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
+                                                            <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="'.$product['categoryIcon'].'" style="margin-top: 1px; padding-right: 3px;"></i>'.$product['categoryName'].'</span>
+                                                        </div>
+                                                    </div>
+                                                                                                        
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <span id="foodPrice">₱'.$product['productPrice'].'</span>
+                                                            <button type="button" id="addtoOrderModal" class="btn btn-primary"  data-product-name="'.$product['productName'].'" 
+                                                                data-product-price="'.$product['productPrice'].'"  data-product-image="resources/nachos.jpg"  data-product-category="'.$product['categoryName'].'" 
+                                                                data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ';
+                                }
+
+                                skip:
+                                echo'</div>
+                                </div>';
+                                $allTab = true;
+                            }
+
+                            while($x < count($categoryArr[$index])){
+                                $explodeRow = explode(' ', trim($categoryArr[$index][$x]))[0];
+                                $tabName = strtolower($explodeRow).$menuCategoryName."Row";
+                                $searchCategories;
+                                $products;
+                                $categoryCont = $categoryArr[$index][$x];
+
+                                $ifShow = "";
+                                $searchProducts = "SELECT tbl_menu.productID, tbl_menu.productName, tbl_menu.productImage, tbl_menu.productPrice, tbl_menu.menuID, tbl_categories.categoryName FROM tbl_menu 
+                                                    INNER JOIN tbl_categories ON tbl_menu.categoryID = tbl_categories.categoryID 
+                                                    WHERE tbl_menu.menuID = $currID AND tbl_categories.categoryName = '$categoryCont';";
+                                    
+                                $products = $conn->prepare("$searchProducts");
+                                $products->execute();
+                                
+                                echo'<div class="tab-pane fade" id="'.$tabName.'"> 
+                                    <div class="row">
+                                ';
+                                if($products->rowCount()  <= 0){
+                                    echo'
+                                    <h2>No products found.</h2>';
+                                    goto jump;
+                                }
+                                else{
+                                    while($product = $products->fetch()){
+                                        echo'
+                                            <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                                                <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
+                                                    <img src="resources/nachos.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
+                                                    <div class="card-body" id="productBody">
+                                                        <div class="row">
+                                                            <div class="col-8 flex-shrink-0 pe-0">
+                                                                <span id="productName">'.$product['productName'].'</span>
+                                                            </div>
+                                                            <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
+                                                                <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i>'.$product['categoryName'].'</span>
+                                                            </div>
+                                                        </div>
+                                                                                                            
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <span id="foodPrice">₱'.$product['productPrice'].'</span>
+                                                                <button id="addtoOrderModal" type="button" data-product-name="'.$product['productName'].'" 
+                                                                data-product-price="'.$product['productPrice'].'"  data-product-image="resources/nachos.jpg"  data-product-category="'.$product['categoryName'].'"
+                                                                class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ';
+                                    }
+                                }
+                                
+                                jump:
+                                echo'</div>
+                                </div>';
+                                $x++;
+                            }
+                            
+                            
+                            echo'
+                                </div>
+                            ';
+                            echo '</div>';
+                            $index++;
+                        }
+                    }  
+                    $index = 0;
+                    $getMenu = "SELECT * from tbl_menuclass;";
+                    $result = $conn->prepare("$getMenu");
+                    $result->execute();
+
+                    echo'
                         </div>
-                    </div>
-                </div>
-            </div>
+                    </div>';
+                    ?>
 
-            <div id="categoriesTab" class="tab-pane fade show">
-                <div class="row">
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                    <div class="col-xl-2 col-lg-3 col-md- mb-3 flex-shrink-0">
-                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3"  style="width: 12rem; text-align: left; padding:15px;">
-                                <span>
-                                    <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                </span>
-                                <br />
-                                <br />
-                                <p class="card-text fw-bold " >All</p> 
-                        </button>
-                    </div>
-                </div>
-            </div>
+                    <div id="categoriesTab" class="tab-pane fade show">
+                    <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                        <?php 
+                            $arrTabs = array();
+                            $index = 0;
+                            $getMenu = "SELECT * from tbl_menuclass;";
+                            $result = $conn->prepare("$getMenu");
+                            $result->execute();
 
+                            if($result->rowCount() > 0){
+                                while($row = $result->fetch()){
+                                    $menuName = explode(' ', trim($row['menuName']))[0];
+                                    $arrTabs[] =  strtolower($menuName)."MenuTab2";
+                                    if($index == 0){
+                                        $isTabActive = "active";
+                                    }else{
+                                        $isTabActive = "";
+                                    }
+                                    echo '<li class="nav-item" role="presentation">
+                                            <button class="nav-link '.$isTabActive.' me-2" id="'.$arrTabs[$index].'Tab" data-bs-toggle="pill" data-bs-target="#'.$arrTabs[$index].'" type="button" role="tab" aria-controls="pills-home" aria-selected="true">'.$row['menuName'].'</button>
+                                        </li>';
+                                        $index++;
+                                    }
+                            }
+                        ?>
+                        <li class="nav-item ms-auto" role="presentation">
+                            <button class="btn btn-success h-100 pt-2" id="partytrayMenu" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Item
+                                <i 
+                                class="fi fi-rr-add " style="vertical-align: middle; font-size: 18px"></i>
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <br />
+                    <?php
+                    
+                    echo'
+                    <div class="tab-content" id="pills-tabContent">
+                    ';
+
+                    if($result->rowCount() > 0){
+                        $categoryArr = [];
+                        while($row = $result->fetch()){
+                            $currID = $row['menuID'];
+                            $searchCategories = "SELECT categoryID, categoryName, categoryIcon FROM tbl_categories WHERE menuID = $currID;";
+                            $categories = $conn->prepare("$searchCategories");
+                            $categories->execute();
+
+                            if($index == 0){
+                                $isActive = "active";
+                            }else{
+                                $isActive = "";
+                            }
+                            
+                            echo'
+                            <div class="tab-pane fade show '.$isActive.'" id="'.$arrTabs[$index].'" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+                            ';
+                                
+                            echo'
+                            <div class="">
+                                <ul class="nav nav-pills d-flex flex-row flex-nowrap overflow-x-scroll" id="pills-tab" role="tablist">
+                            ';
+                            
+                            $catIndex = 0;
+                            $menuCategoryName = explode(' ', trim($row['menuName']))[0];
+                            $allTab = false;
+                            if(!$allTab){
+                                $isActiveCat = "fw-bold active";
+                                echo'
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link '.$isActiveCat.'  flex-shrink-0 align-baseline me-3 nav-item"  style="width: 12rem; text-align: left; padding:15px;" data-bs-toggle="pill" data-bs-target="#all'.$menuCategoryName.'Row" role="tab" aria-selected="true">
+                                        <span>
+                                            <i class="fi fi-ss-apps" id="categoryIcon"></i>
+                                        </span>
+                                        <br />
+                                        <br />
+                                        <p class="card-text" >All</p> 
+                                    </button>
+                                </li>
+                                ';
+                                $allTab = true;
+                            }
+                            while($category = $categories->fetch()){
+                                $isActiveCat = "";
+                                $explodeCategory = explode(' ', trim($category['categoryName']))[0];
+                                $tabName = strtolower($explodeCategory).$menuCategoryName."Row";
+                                $categoryArr[$index][$catIndex]= $category['categoryName'];
+                                echo'
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-item nav-link flex-shrink-0 align-baseline me-3 "  style="width: 12rem; text-align: left; padding:15px;" data-bs-toggle="pill" data-bs-target="#'.$tabName.'" role="tab" aria-selected="true">
+                                                <span>
+                                                    <i class="'.$category['categoryIcon'].'" id="categoryIcon"></i>  
+                                                </span>
+                                                <br />
+                                                <br />
+                                                <p class="card-text" >'.$category['categoryName'].'</p> 
+                                    </button>
+                                </li>
+                                ';
+                                $catIndex++;
+                            }
+                            echo '</ul>
+                            </div>
+                            </div>
+                            ';
             
+                            $index++;
+                        }
+                    }    
+                    ?>
+
+                </div>
+            </div>
         </div>
     </div>
 </body>
