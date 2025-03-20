@@ -12,6 +12,10 @@ try {
 $fetchCategoryQuery = "SELECT * FROM tbl_itemcategories";
 $item_categories = $pdo->query($fetchCategoryQuery)->fetchAll(PDO::FETCH_ASSOC);
 
+/* Fetching Item Name from the database */
+$fetchItemQuery = "SELECT * FROM tbl_item";
+$items = $pdo->query($fetchItemQuery)->fetchAll(PDO::FETCH_ASSOC);
+
 /* Fetching Employee List from the database */
 $fetchEmployeeQuery = "SELECT * FROM employees";
 $employee = $pdo -> query($fetchEmployeeQuery) -> fetchAll(PDO::FETCH_ASSOC);

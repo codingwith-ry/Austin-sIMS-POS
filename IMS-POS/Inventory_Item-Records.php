@@ -361,12 +361,7 @@ include("IMS_process.php");
                 </div>
                 <div class="modal-body">
                     <form id="myForm" action="IMS_process.php" method="post">
-                        <div class="form-group" style="display:flex">
-                            <span class="col-sm-4 control-label">Item Name</span>
-                            <div class="col-sm-8">
-                                <input class="form-control" id="focusedInput" type="text" placeholder="Name" name="item_Name">
-                            </div>
-                        </div>
+                        
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Category</span>
                             <div class="col-sm-8">
@@ -380,6 +375,21 @@ include("IMS_process.php");
                                 </select>
                             </div>
                         </div>
+
+                        <div class="form-group" style="display:flex">
+                            <span class="col-sm-4 control-label">Item Name</span>
+                            <div class="col-sm-8">
+                                <select class="form-select" name="item_Name" id="itemDropdown">
+                                        <option selected disabled>Select Name</option>
+                                        <?php
+                                        foreach ($items as $item) {
+                                            echo '<option value="' . htmlspecialchars($item['Item_Name']) . '">' . htmlspecialchars($item['Item_Name']) . '</option>';
+                                        }
+                                        ?>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Item Price</span>
                             <div class="col-sm-8">
@@ -401,13 +411,13 @@ include("IMS_process.php");
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Purchase Date</span>
                             <div class="flatpickr col-sm-8">
-                                <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField" name="purchase_date">
+                                <input class="form-control" id="focusedInput" type="date" placeholder="Select Date" data-input class="dateInputField" name="purchase_date">
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Expiration Date</span>
                             <div class="flatpickr col-sm-8">
-                                <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField" name="expiration_date">
+                                <input class="form-control" id="focusedInput" type="date" placeholder="Select Date" data-input class="dateInputField" name="expiration_date">
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">
