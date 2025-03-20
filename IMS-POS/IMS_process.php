@@ -20,8 +20,6 @@ $items = $pdo->query($fetchItemQuery)->fetchAll(PDO::FETCH_ASSOC);
 $fetchEmployeeQuery = "SELECT * FROM employees";
 $employee = $pdo -> query($fetchEmployeeQuery) -> fetchAll(PDO::FETCH_ASSOC);
 
-
-
 if (isset($_POST['add_record'])) {
     $itemName = filter_input(INPUT_POST, 'item_Name', FILTER_SANITIZE_STRING);
     $itemCategory = filter_input(INPUT_POST, 'item_category', FILTER_SANITIZE_NUMBER_INT);
@@ -114,5 +112,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
+$fetchInventoryQuery = "
+    SELECT r.Record_ID, r.Record_ItemPurchaseDate, r.Record_EmployeeAssigned, 
+           i.Item_Name, i.Item_Image, ic.Category_Name, u.Unit_Name, r.Record_ItemQuantity, r.Record_ItemExpirationDate, r.Record_ItemPrice
+    FROM tbl_record r
+    JOIN tbl_item i ON r.Item_ID = i.Item_ID
+    LEFT JOIN tbl_itemcategories ic ON i.Item_Category = ic.Category_ID
+    LEFT JOIN tbl_unitofmeasurments u ON i.Unit_ID = u.Unit_ID
+    ORDER BY r.Record_ItemPurchaseDate DESC
+";
+
+$inventoryRecords = $pdo->query($fetchInventoryQuery)->fetchAll(PDO::FETCH_ASSOC);
+
 
 ?>

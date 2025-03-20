@@ -65,6 +65,9 @@ include("IMS_process.php");
                                     <!----Test niyo kung gagana yung pag export pati print ng data lagay kayo mga data !------>
                                 </tbody>
                             </table>
+                            <script>
+                                window.inventoryData = <?php echo json_encode($inventoryRecords); ?>;
+                            </script>
                         </div>
                     </div>
                 </div>
@@ -178,12 +181,12 @@ include("IMS_process.php");
                                     </button>
 
                                     <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3" style="width: 12rem; text-align: left; padding-left:15px;">
-                                            <span>
-                                                <i class="fi fi-rr-drumstick" id="categoryIcon"></i>
-                                            </span>
-                                            <br />
-                                            <br />
-                                            <p class="card-text">Meat & Poultry</p>
+                                        <span>
+                                            <i class="fi fi-rr-drumstick" id="categoryIcon"></i>
+                                        </span>
+                                        <br />
+                                        <br />
+                                        <p class="card-text">Meat & Poultry</p>
                                     </button>
                                     <div class="card me-3 flex-shrink-0" style="width: 12rem;">
                                         <div class="card-body">
@@ -361,7 +364,7 @@ include("IMS_process.php");
                 </div>
                 <div class="modal-body">
                     <form id="myForm" action="IMS_process.php" method="post">
-                        
+
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Category</span>
                             <div class="col-sm-8">
@@ -380,12 +383,12 @@ include("IMS_process.php");
                             <span class="col-sm-4 control-label">Item Name</span>
                             <div class="col-sm-8">
                                 <select class="form-select" name="item_Name" id="itemDropdown">
-                                        <option selected disabled>Select Name</option>
-                                        <?php
-                                        foreach ($items as $item) {
-                                            echo '<option value="' . htmlspecialchars($item['Item_Name']) . '">' . htmlspecialchars($item['Item_Name']) . '</option>';
-                                        }
-                                        ?>
+                                    <option selected disabled>Select Name</option>
+                                    <?php
+                                    foreach ($items as $item) {
+                                        echo '<option value="' . htmlspecialchars($item['Item_Name']) . '">' . htmlspecialchars($item['Item_Name']) . '</option>';
+                                    }
+                                    ?>
                                 </select>
                             </div>
                         </div>

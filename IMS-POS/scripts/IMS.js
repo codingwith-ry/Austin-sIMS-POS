@@ -1,138 +1,32 @@
 /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
 function format(d) {
-  return (
-    "<div style'align-items:center;'>" +
-    // Image Section
-    '<div class="row row-cols-6" style="align-items:center;">' +
-    '<div class="col">' +
-    '<img src="images/milk.jpg" class="rounded border" style="width: 50px; height: auto;" />' +
-    "</div>" +
-    // Product Info
-    '<div class="col">' +
-    '<div style="font-weight: bold;">Fresh Milk</div>' +
-    "<div>1000mL</div>" +
-    "</div>" +
-    '<div class="col">' +
-    '<div style="font-weight: bold;">Category</div>' +
-    "<div>Dairy</div>" +
-    "</div>" +
-    // Quantity Info
-    '<div class="col">' +
-    '<div style="font-weight: bold;">Quantity</div>' +
-    "<div>10 cartons</div>" +
-    "</div>" +
-    // Expiration Date
-    '<div class="col">' +
-    '<div style="font-weight: bold;">Expiration Date</div>' +
-    "<div>10/24/2026</div>" +
-    "</div>" +
-    // Price Info
-    '<div class="col">' +
-    '<div style="font-weight: bold;">Price/unit</div>' +
-    "<div>120.00</div>" +
-    "</div>" +
-    "</div>" +
-    "</div>" +
-    "<hr />" +
-    "<div>" +
-    // Image Section
-    '<div class="row row-cols-6" style="align-items:center;">' +
-    '<div class="col">' +
-    '<img src="images/milk.jpg" class="rounded border" style="width: 50px; height: auto;" />' +
-    "</div>" +
-    // Product Info
-    '<div class="col">' +
-    '<div style="font-weight: bold;">Fresh Milk</div>' +
-    "<div>1000mL</div>" +
-    "</div>" +
-    '<div class="col">' +
-    '<div style="font-weight: bold;">Category</div>' +
-    "<div>Dairy</div>" +
-    "</div>" +
-    // Quantity Info
-    '<div class="col">' +
-    '<div style="font-weight: bold;">Quantity</div>' +
-    "<div>10 cartons</div>" +
-    "</div>" +
-    // Expiration Date
-    '<div class="col">' +
-    '<div style="font-weight: bold;">Expiration Date</div>' +
-    "<div>10/24/2026</div>" +
-    "</div>" +
-    // Price Info
-    '<div class="col">' +
-    '<div style="font-weight: bold;">Price/unit</div>' +
-    "<div>120.00</div>" +
-    "</div>" +
-    "</div>" +
-    "</div>"
-  );
+  return `
+    <div class="row row-cols-6" style="align-items:center;">
+      <div class="col"><img src="${
+        d.Item_Image
+      }" class="rounded border" style="width: 50px; height: auto;" /></div>
+      <div class="col"><div style="font-weight: bold;">${
+        d.Item_Name
+      }</div><div>${d.Unit_Name}</div></div>
+      <div class="col"><div style="font-weight: bold;">Category</div><div>${
+        d.Category_Name
+      }</div></div>
+      <div class="col"><div style="font-weight: bold;">Quantity</div><div>${
+        d.Record_ItemQuantity
+      } units</div></div>
+      <div class="col"><div style="font-weight: bold;">Expiration Date</div><div>${new Date(
+        d.Record_ItemExpirationDate * 1000
+      ).toLocaleDateString()}</div></div>
+      <div class="col"><div style="font-weight: bold;">Price/unit</div><div>${
+        d.Record_ItemPrice
+      }</div></div>
+    </div>
+  `;
 }
 
 let itemRecords = new DataTable("#itemRecords", {
   responsive: true,
-  data: [
-    {
-      Inventory_ID: "1",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Owen Trinidaddy",
-    },
-    {
-      Inventory_ID: "2",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Daryl Tuminang",
-    },
-    {
-      Inventory_ID: "2",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Dominican Adino",
-    },
-    {
-      Inventory_ID: "1",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Owen Trinidaddy",
-    },
-    {
-      Inventory_ID: "2",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Daryl Tuminang",
-    },
-    {
-      Inventory_ID: "2",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Dominican Adino",
-    },
-    {
-      Inventory_ID: "1",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Owen Trinidaddy",
-    },
-    {
-      Inventory_ID: "2",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Daryl Tuminang",
-    },
-    {
-      Inventory_ID: "2",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Dominican Adino",
-    },
-    {
-      Inventory_ID: "1",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Owen Trinidaddy",
-    },
-    {
-      Inventory_ID: "2",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Daryl Tuminang",
-    },
-    {
-      Inventory_ID: "2",
-      Purchase_Date: "12/10/2022",
-      Employee_Assigned: "Dominican Adino",
-    },
-  ],
+  data: window.inventoryData, // ✅ USE THE PHP JSON DATA INSTEAD OF HARDCODED
   columns: [
     {
       data: null,
@@ -140,13 +34,13 @@ let itemRecords = new DataTable("#itemRecords", {
       className: `dt-checkbox-column`,
       render: function (data, type, row, meta) {
         return `<div class="form-check">
-                  <input class="form-check-input row-checkbox" type="checkbox" value="${row.Inventory_ID}">
+                  <input class="form-check-input row-checkbox" type="checkbox" value="${row.Record_ID}">
                 </div>`;
       },
     },
-    { data: "Inventory_ID" },
-    { data: "Purchase_Date" },
-    { data: "Employee_Assigned" },
+    { data: "Record_ID" },
+    { data: "Record_ItemPurchaseDate" },
+    { data: "Record_EmployeeAssigned" },
     {
       className: "dt-control",
       orderable: false,
@@ -169,7 +63,7 @@ let itemRecords = new DataTable("#itemRecords", {
           buttons: [
             {
               extend: "pdfHtml5",
-              text: '<div><span><i class="bi bi-file-earmark-pdf-fill" style="color: red; font-size: 20px; margin-right: 5%;""></i>Export PDF</span></div>',
+              text: '<div><span><i class="bi bi-file-earmark-pdf-fill" style="color: red; font-size: 20px; margin-right: 5%;"></i>Export PDF</span></div>',
               titleAttr: "PDF",
             },
             {
@@ -201,8 +95,6 @@ let itemRecords = new DataTable("#itemRecords", {
 itemRecords.on("click", "td.dt-control", function (e) {
   let tr = e.target.closest("tr");
   let row = itemRecords.row(tr);
-  let icon = $(this).find("i");
-
   if (row.child.isShown()) {
     row.child.hide();
   } else {
