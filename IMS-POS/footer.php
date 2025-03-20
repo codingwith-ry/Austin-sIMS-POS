@@ -22,5 +22,5 @@
 <script src="https://unpkg.com/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js"></script>
 <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
 <script src="scripts/IMS.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </html>
