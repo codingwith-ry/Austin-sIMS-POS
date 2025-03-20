@@ -14,21 +14,19 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h1 class="page-title">Account Settings</h1>
             <div class="dropdown">
-                <div class="profile-dropdown d-flex align-items-center admin-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="profile-pic.png" alt="Profile Picture" class="admin-avatar me-2">
-                    <span class="fw-semibold">Administrator</span>
-                    <i class="fas fa-chevron-down ms-2"></i>
-                </div>
+            <button class="btn btn-outline-secondary dropdown-toggle" id="accountDropdownBtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Administrator
+                </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Admin 1</a></li>
-                    <li><a class="dropdown-item" href="#">Admin 2</a></li>
-                    <li><a class="dropdown-item" href="#">Admin 3</a></li>
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
                 </ul>
             </div>
         </div>
         <div class="card p-4">
             <div class="d-flex align-items-center mb-3">
-                <img src="profile-pic.png" alt="Profile Picture" class="admin-avatar me-3">
+                <img src="resources/profile-pic.png" alt="Profile Picture" class="admin-avatar me-3">
                 <div>
                     <h2 class="fw-bold mb-0">John Doe</h2>
                     <p class="text-muted mb-0">johndoe@gmail.com</p>
@@ -124,7 +122,12 @@
                             <span class="input-group-text">
                                 <i class="fas fa-users"></i>
                             </span>
-                            <input type="text" class="form-control" id="role" placeholder="Employee Staff">
+                            <select name="role" class="form-select" id="role">
+                                <option value="" selected disabled>Select Role</option>
+                                <option value="POS Staff Management">POS Staff Management</option>
+                                <option value="Inventory Staff Management">Inventory Staff Management</option>
+                                <option value="Administrator">Administrator</option>
+                            </select>
                         </div>
                     </div>
                 </div>

@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff management') {
+    header("Location: /Austin-sIMS-POS/Login/index.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

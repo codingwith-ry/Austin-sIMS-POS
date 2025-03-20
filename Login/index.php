@@ -1,4 +1,5 @@
 <?php 
+session_start();
 include("database.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -8,25 +9,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($email) || empty($password)) {
         echo "Please fill in all fields";
     } else {
-        $user = null;
-
         try {
-            $stmt = $conn->prepare("SELECT Employee_PassKey FROM employees WHERE Employee_Email = ?");
-            $stmt->bind_param("s", $email);
+            $stmt = $conn->prepare("SELECT Employee_PassKey, Employee_Role FROM employees WHERE Employee_Email = :email");
+            $stmt->bindParam(':email', $email);
             $stmt->execute();
-            $stmt->bind_result($stored_password);
-            $stmt->fetch();
-            $stmt->close();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($password === $stored_password) {
+            if ($user && $password === $user['Employee_PassKey']) {
+                $role = strtolower($user['Employee_Role']);
                 // Password is correct
-                header("Location: /Austin-sIMS-POS/IMS-POS/Menu.php");
+                $_SESSION['userRole'] = $role;
+                $_SESSION['email'] = $email;
+
+                if ($role === 'administrator') {
+                    header("Location: /Austin-sIMS-POS/Admin/adminDashboard.php");
+                } else if ($role === 'pos staff management'){
+                    header("Location: /Austin-sIMS-POS/IMS-POS/Menu.php");
+                } else if ($role === 'inventory staff management'){
+                    header("Location: /Austin-sIMS-POS/IMS-POS/Inventory_Item-Records.php");
+                } else {
+                    echo "Invalid email or password";
+                }
                 exit();
             } else {
                 // Invalid password
                 echo "Invalid email or password";
             }
-        } catch (mysqli_sql_exception $e) {
+        } catch (PDOException $e) {
             echo "Please enter a valid email and password";
         }
     }

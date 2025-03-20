@@ -4,14 +4,18 @@
     $db_pass = '';
     $db_name = "austingastropub";
     $db_port = 3306;
+    $chrs = "utf8mb4";
+    $attrs = "mysql:host=$db_server;dbname=$db_name;charset=$chrs;port=$db_port";
+    $opts = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+            ];
 
-    try{
-        $conn = mysqli_connect($db_server, $db_user, $db_pass, $db_name, $db_port);
-    } catch (mysqli_sql_exception) {
-        echo "Could not connect <br>";
-    }
-
-    if($conn){
-        echo "DB Connected Successfully <br>";
-    }
+            try {
+                $conn = new PDO($attrs, $db_user, $db_pass, $opts);
+                // echo "DB Connected Successfully (PDO) <br>";
+            } catch (PDOException $e) {
+                echo "Could not connect: " . $e->getMessage() . "<br>";
+            }
 ?>

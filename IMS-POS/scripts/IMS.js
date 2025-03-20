@@ -185,95 +185,12 @@ let itemRecords = new DataTable("#itemRecords", {
           ],
         },
         {
-          text: "Add Item",
-          action: function (e, dt, node, config, cb) {
-            var addItemHTML = `
-                            <div class="modal" id="addItemForm">
-                                <div class="modal-dialog modal-dialog-centered modal-l modal-dialog-scrollable">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Add Item</h5>
-                                        </div>
-                                    <div class="modal-body">
-                                        <form id="myForm">
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Item Name</span>
-                                                <div class="col-sm-8">
-                                                    <input class="form-control" id="focusedInput" type="text" placeholder="Name">
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Category</span>
-                                                <div class="col-sm-8">
-                                                    <select class="form-select">
-                                                        <option selected>Select Category</option>
-                                                        <option value="1">One</option>
-                                                        <option value="2">Two</option>
-                                                        <option value="3">Three</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Units</span>
-                                                <div class="col-sm-8">
-                                                    <select class="form-select">
-                                                        <option selected>Select unit of measurement</option>
-                                                        <option value="1">One</option>
-                                                        <option value="2">Two</option>
-                                                        <option value="3">Three</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Unit Sales Price</span>
-                                                <div class="col-sm-8">
-                                                    <input class="form-control" id="focusedInput" type="text" placeholder="0.00">
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Purchase Date</span>
-                                                <div class="flatpickr col-sm-8">
-                                                    <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField">
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Expiration Date</span>
-                                                <div class="flatpickr col-sm-8">
-                                                    <input class="form-control" id="focusedInput" type="text" placeholder="Select Date" data-input class="dateInputField">
-                                                </div>
-                                            </div>
-                                            <div class="form-group" style="display:flex">
-                                                <span class="col-sm-4 control-label">Employee Assigned</span>
-                                                <div class="col-sm-8">
-                                                    <select class="form-select">
-                                                        <option selected>Select Employee</option>
-                                                        <option value="1">One</option>
-                                                        <option value="2">Two</option>
-                                                        <option value="3">Three</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>
-                            `;
-            $("body").append(addItemHTML);
-
-            flatpickr(".flatpickr", {
-              enableTime: false,
-              dateFormat: "Y-M-D",
-            });
-
-            var myModal = new bootstrap.Modal(
-              document.getElementById("addItemForm")
+          text: "Add Record",
+          action: function (e, dt, node, config) {
+            var addRecordModal = new bootstrap.Modal(
+              document.getElementById("addRecordForm")
             );
-            myModal.show();
+            addRecordModal.show();
           },
         },
       ],
@@ -298,3 +215,28 @@ $("#select-all").on("change", function () {
   $(".row-checkbox").prop("checked", isChecked);
 });
 /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
+
+/***************************INITIALIZATION IMAGE PREVIEW********************************/
+function previewImage(event) {
+  var reader = new FileReader();
+  var preview = document.getElementById("imagePreview");
+
+  reader.onload = function () {
+    var image = new Image();
+    image.src = reader.result;
+
+    // Clear any previous image
+    preview.innerHTML = "";
+
+    // Append the new image to the preview div
+    preview.appendChild(image);
+
+    // Optionally, set a fixed size for the preview
+    image.style.width = "100%";
+    image.style.height = "100%";
+    image.style.objectFit = "contain";
+  };
+
+  // Read the uploaded file
+  reader.readAsDataURL(event.target.files[0]);
+}
