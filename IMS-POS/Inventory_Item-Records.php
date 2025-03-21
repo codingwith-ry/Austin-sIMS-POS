@@ -55,7 +55,7 @@ include("IMS_process.php");
                                                 <input class="form-check-input" id="select-all" type="checkbox">
                                             </div>
                                         </th>
-                                        <th>Inventory ID</th>
+                                        <th>Record ID</th>
                                         <th>Purchase Date</th>
                                         <th>Employee Assigned</th>
                                         <th></th>
@@ -132,6 +132,18 @@ include("IMS_process.php");
                                                     </select>
                                                 </div>
 
+                                                <!-- Item Unit of Measurement -->
+                                                <div class="mb-3">
+                                                    <label for="itemCategory" class="form-label fw-bold" style="font-size: 18px;">Unit Of Measurement</label>
+                                                    <select class="form-select" id="itemCategory" name="item_unit">
+                                                        <option disabled selected>Select Measurement</option>
+                                                        <?php
+                                                        foreach ($unitOfMeasurementList as $unitOfMeasurement) {
+                                                            echo '<option value="' . $unitOfMeasurement['Unit_ID'] . '">' . $unitOfMeasurement['Unit_Name'] ." (".$unitOfMeasurement['Unit_Acronym'] .")" . '</option>';
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
                                                 <!-- Item Name -->
                                                 <div class="mb-3">
                                                     <label for="itemNameInput" class="form-label fw-bold" style="font-size: 18px;">Item Name</label>
