@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Mar 20, 2025 at 03:58 AM
+-- Host: 127.0.0.1
+-- Generation Time: Mar 22, 2025 at 11:44 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -135,8 +135,8 @@ CREATE TABLE `tbl_item` (
 --
 
 INSERT INTO `tbl_item` (`Item_ID`, `Item_Name`, `Item_Image`, `Item_Category`, `Unit_ID`) VALUES
-(1, 'Magnolia Fresh Milk', 'itemImages/Magnolia Fresh Milk.png', 4, NULL),
-(2, 'Bounty Chicken Breast Fillet', 'itemImages/Bounty Chicken Breast Fillet.webp', 9, NULL);
+(3, 'Stawberry', 'itemImages/strawberry.webp', 1, 5),
+(4, 'Bounty Chicken Breast Fillet', 'itemImages/bounty chicken breast.webp', 9, 5);
 
 -- --------------------------------------------------------
 
@@ -146,23 +146,24 @@ INSERT INTO `tbl_item` (`Item_ID`, `Item_Name`, `Item_Image`, `Item_Category`, `
 
 CREATE TABLE `tbl_itemcategories` (
   `Category_ID` int(11) NOT NULL,
-  `Category_Name` varchar(150) DEFAULT NULL
+  `Category_Name` varchar(150) DEFAULT NULL,
+  `Category_Icon` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_itemcategories`
 --
 
-INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES
-(1, 'Fruits'),
-(2, 'Vegetables'),
-(3, 'Grains'),
-(4, 'Dairy'),
-(5, 'Fats & Oils'),
-(6, 'Beverages'),
-(7, 'Sweeteners & Condiments'),
-(8, 'Herbs & Spices'),
-(9, 'Protein');
+INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`, `Category_Icon`) VALUES
+(1, 'Fruits', 'fi fi-rr-apple-whole'),
+(2, 'Vegetables', 'fi fi-rr-carrot'),
+(3, 'Grains', 'fi fi-rr-bread-slice'),
+(4, 'Dairy', 'fi fi-rr-milk-alt'),
+(5, 'Fats & Oils', 'fi fi-rr-oil-can'),
+(6, 'Beverages', 'fi fi-rr-coffee'),
+(7, 'Sweeteners & Condiments', 'fi fi-rr-salt-shaker'),
+(8, 'Herbs & Spices', 'fi fi-rr-pepper-hot'),
+(9, 'Protein', 'fi fi-rr-egg-fried');
 
 -- --------------------------------------------------------
 
@@ -331,9 +332,8 @@ CREATE TABLE `tbl_record` (
 --
 
 INSERT INTO `tbl_record` (`Record_ID`, `Item_ID`, `Record_ItemVolume`, `Record_ItemQuantity`, `Record_ItemPrice`, `Record_ItemExpirationDate`, `Record_ItemPurchaseDate`, `Record_ItemSupplier`, `Record_EmployeeAssigned`) VALUES
-(217802, 2, 23, 15, 22, '2025-06-20', '2025-02-20', 'Bounty', '123456789'),
-(486387, 1, 5, 3, 30, '2025-07-22', '2025-05-22', 'Magnolia', '123456789'),
-(556037, 2, 15, 5, 300, '2025-02-20', '2025-01-20', 'Bounty', '123456789');
+(593638, 4, 180, 5, 205, '2028-07-21', '2025-03-21', 'Bounty Fresh', '987654321'),
+(822860, 3, 10, 6, 50, '2027-03-21', '2025-03-21', 'N/A', '123456789');
 
 -- --------------------------------------------------------
 
@@ -480,7 +480,7 @@ ALTER TABLE `tbl_categories`
 -- AUTO_INCREMENT for table `tbl_item`
 --
 ALTER TABLE `tbl_item`
-  MODIFY `Item_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Item_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_itemcategories`
