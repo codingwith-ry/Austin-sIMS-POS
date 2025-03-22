@@ -139,7 +139,7 @@ include("IMS_process.php");
                                                         <option disabled selected>Select Measurement</option>
                                                         <?php
                                                         foreach ($unitOfMeasurementList as $unitOfMeasurement) {
-                                                            echo '<option value="' . $unitOfMeasurement['Unit_ID'] . '">' . $unitOfMeasurement['Unit_Name'] ." (".$unitOfMeasurement['Unit_Acronym'] .")" . '</option>';
+                                                            echo '<option value="' . $unitOfMeasurement['Unit_ID'] . '">' . $unitOfMeasurement['Unit_Name'] . " (" . $unitOfMeasurement['Unit_Acronym'] . ")" . '</option>';
                                                         }
                                                         ?>
                                                     </select>
@@ -173,199 +173,70 @@ include("IMS_process.php");
 
 
                             <br />
-                            <div class="">
-                                <div class="d-flex flex-row flex-nowrap overflow-x-scroll custom-scrollbar">
-                                    <button class="btn btn-primary flex-shrink-0 align-baseline me-3" style="width: 12rem; text-align: left; padding-left:15px;">
-                                        <span>
-                                            <i class="fi fi-ss-apps" id="categoryIcon"></i>
-                                        </span>
-                                        <br />
-                                        <br />
-                                        <p class="card-text fw-bold ">All</p>
-                                    </button>
-                                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3" style="width: 12rem; text-align: left; padding-left:15px;">
-                                        <span>
-                                            <i class="fi fi-rr-milk-alt" id="categoryIcon"></i>
-                                        </span>
-                                        <br />
-                                        <br />
-                                        <p class="card-text">Dairy Products</p>
-                                    </button>
+                            <div class="d-flex flex-row flex-nowrap overflow-x-scroll custom-scrollbar">
+                                <!-- Static 'All' Button -->
+                                <button class="btn btn-primary flex-shrink-0 align-baseline me-3 category-btn"
+                                    id="allCategory"
+                                    data-category="all"
+                                    style="width: 12rem; text-align: left; padding-left:15px;">
+                                    <span><i class="fi fi-ss-apps" id="categoryIcon"></i></span><br><br>
+                                    <p class="card-text fw-bold">All</p>
+                                </button>
 
-                                    <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3" style="width: 12rem; text-align: left; padding-left:15px;">
-                                        <span>
-                                            <i class="fi fi-rr-drumstick" id="categoryIcon"></i>
-                                        </span>
-                                        <br />
-                                        <br />
-                                        <p class="card-text">Meat & Poultry</p>
-                                    </button>
-                                    <div class="card me-3 flex-shrink-0" style="width: 12rem;">
-                                        <div class="card-body">
-                                            <span>
-                                                <i class="fi fi-rr-aubergine" id="categoryIcon"></i>
-                                            </span>
-                                            <br />
-                                            <br />
-                                            <p class="card-text">Vegetable</p>
-                                        </div>
-                                    </div>
-                                    <div class="card me-3 flex-shrink-0" style="width: 12rem;">
-                                        <div class="card-body">
-                                            <span>
-                                                <i class="fi fi-rr-apple-whole" id="categoryIcon"></i>
-                                            </span>
-                                            <br />
-                                            <br />
-                                            <p class="card-text">Fruits</p>
-                                        </div>
-                                    </div>
-                                    <div class="card me-3 flex-shrink-0" style="width: 12rem;">
-                                        <div class="card-body">
-                                            <span>
-                                                <i class="fi fi-rr-bowl-rice" id="categoryIcon"></i>
-                                            </span>
-                                            <br />
-                                            <br />
-                                            <p class="card-text">Grains</p>
-                                        </div>
-                                    </div>
+                                <?php
+                                // Fetch categories from the database
+                                $categoryQuery = "SELECT * FROM tbl_itemcategories";
+                                foreach ($pdo->query($categoryQuery) as $category) {
+                                    $categoryIcon = htmlspecialchars($category['Category_Icon']);
+                                    $categoryName = htmlspecialchars($category['Category_Name']);
+                                    $categoryID = htmlspecialchars($category['Category_ID']);
 
-                                    <div class="card me-3 flex-shrink-0" style="width: 12rem;">
-                                        <div class="card-body">
-                                            <span>
-                                                <i class="fi fi-rr-cup-straw-swoosh" id="categoryIcon"></i>
-                                            </span>
-                                            <br />
-                                            <br />
-                                            <p class="card-text">Seafoods</p>
-                                        </div>
-                                    </div>
-                                    <div class="card me-3 flex-shrink-0" style="width: 12rem;">
-                                        <div class="card-body">
-                                            <span>
-                                                <i class="fi fi-rr-cup-straw-swoosh" id="categoryIcon"></i>
-                                            </span>
-                                            <br />
-                                            <br />
-                                            <p class="card-text">Rice and Noodles</p>
-                                        </div>
-                                    </div>
-                                    <div class="card me-3 flex-shrink-0" style="width: 12rem;">
-                                        <div class="card-body">
-                                            <span>
-                                                <i class="fi fi-rr-cup-straw-swoosh" id="categoryIcon"></i>
-                                            </span>
-                                            <br />
-                                            <br />
-                                            <p class="card-text">Vegetables</p>
-                                        </div>
-                                    </div>
-                                    <div class="card me-3 flex-shrink-0" style="width: 12rem;">
-                                        <div class="card-body">
-                                            <span>
-                                                <i class="fi fi-rr-cupcake-alt" id="categoryIcon"></i>
-                                            </span>
-                                            <br />
-                                            <br />
-                                            <p class="card-text">Desserts</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br />
-                                <strong style="font-size: 25px">Items</strong>
-                                <br />
-                                <br />
-                                <div class="products">
-                                    <div class="row">
-                                        <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                                            <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                                                <img src="resources/milk.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                                                <div class="card-body" id="productBody">
-                                                    <div class="row">
-                                                        <div class="col-8 flex-shrink-0 pe-0">
-                                                            <span style="font-weight: bold; opacity: 0.5; font-size:15px">Dairy Products</span><br />
-                                                            <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">Magnolia Fresh Milk</span><br />
-                                                            <span style="font-weight: bold; font-size:15px">15 cartons</span><br />
-                                                            <span style="opacity: 0.5; font-size:15px">1 liter</span>
+                                    // Removed logic for auto-assigning 'active' class
+                                    echo '
+                                        <button class="btn btn-custom-outline flex-shrink-0 align-baseline me-3 category-btn" 
+                                                data-category="' . $categoryID . '" 
+                                                style="width: 12rem; text-align: left; padding-left:15px;">
+                                            <span><i class="' . $categoryIcon . '" id="categoryIcon"></i></span><br><br>
+                                            <p class="card-text">' . $categoryName . '</p>
+                                        </button>';
+                                }
+                                ?>
+                            </div>
+
+                            <br />
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="products-wrapper">
+                                    <div class="row" id="product-list">
+                                        <!-- Loop through each item to display in the desired format -->
+                                        <?php
+                                        // Loop through and display each item
+                                        foreach ($itemData as $row) {
+                                            echo '
+                                            <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0 product-item" data-category="' . htmlspecialchars($row['Item_Category']) . '">
+                                                <div class="card flex-shrink-0" style="height: 400px; padding: 15px;">
+                                                    <img src="' . htmlspecialchars($row['Item_Image']) . '" class="card-img-top rounded-start rounded-end mb-2" alt="' . htmlspecialchars($row['Item_Name']) . '" style="height: 150px; width: 100%; object-fit: contain;">
+                                                    <div class="card-body" style="height: calc(100% - 150px); display: flex; flex-direction: column; justify-content: space-between;">
+                                                        <div class="row">
+                                                            <div class="col-8 flex-shrink-0 pe-0">
+                                                                <span style="font-weight: bold; opacity: 0.5; font-size:10px;">' . htmlspecialchars($row['Category_Name']) . '</span><br />
+                                                                <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">' . htmlspecialchars($row['Item_Name']) . '</span><br />
+                                                                <span style="font-weight: bold; font-size:15px;">' . htmlspecialchars($row['Record_ItemQuantity']) . ' pcs</span><br />
+                                                                <span style="opacity: 0.5; font-size:15px;">' . htmlspecialchars($row['Unit_Name']) . '</span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                                            <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                                                <img src="resources/chickenbrest.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                                                <div class="card-body" id="productBody">
-                                                    <div class="row">
-                                                        <div class="col-8 flex-shrink-0 pe-0">
-                                                            <span style="font-weight: bold; opacity: 0.5; font-size:15px">Meat & Poultry</span><br />
-                                                            <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">Bounty Chicken Breast</span><br />
-                                                            <span style="font-weight: bold; font-size:15px">10 kilograms</span><br />
-                                                            <span style="opacity: 0.5; font-size:15px">1 kilogram</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                                            <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                                                <img src="resources/rigate.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                                                <div class="card-body" id="productBody">
-                                                    <div class="row">
-                                                        <div class="col-8 flex-shrink-0 pe-0">
-                                                            <span style="font-weight: bold; opacity: 0.5; font-size:15px">Grains</span><br />
-                                                            <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">Penne Pasta</span><br />
-                                                            <span style="font-weight: bold; font-size:15px">10 kilograms</span><br />
-                                                            <span style="opacity: 0.5; font-size:15px">1 kilogram</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                                            <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                                                <img src="resources/spinach.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                                                <div class="card-body" id="productBody">
-                                                    <div class="row">
-                                                        <div class="col-8 flex-shrink-0 pe-0">
-                                                            <span style="font-weight: bold; opacity: 0.5; font-size:15px">Vegetables</span><br />
-                                                            <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">Spinach</span><br />
-                                                            <span style="font-weight: bold; font-size:15px">7 kilograms</span><br />
-                                                            <span style="opacity: 0.5; font-size:15px">1 kilogram</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
-                                            <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
-                                                <img src="resources/strawberry.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
-                                                <div class="card-body" id="productBody">
-                                                    <div class="row">
-                                                        <div class="col-8 flex-shrink-0 pe-0">
-                                                            <span style="font-weight: bold; opacity: 0.5; font-size:15px">Fruits</span><br />
-                                                            <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">Strawberry</span><br />
-                                                            <span style="font-weight: bold; font-size:15px">3 kilograms</span><br />
-                                                            <span style="opacity: 0.5; font-size:15px">1 kilogram</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                            </div>';
+                                        }
+                                        ?>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </main>
     <!-- Modal HTML (Move this to your PHP document) -->
     <div class="modal" id="addRecordForm">

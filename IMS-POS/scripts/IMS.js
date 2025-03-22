@@ -2,24 +2,12 @@
 function format(d) {
   return `
     <div class="row row-cols-6" style="align-items:center;">
-      <div class="col"><img src="${
-        d.Item_Image
-      }" class="rounded border" style="width: 50px; height: auto;" /></div>
-      <div class="col"><div style="font-weight: bold;">${
-        d.Item_Name
-      }</div><div>${d.Unit_Name}</div></div>
-      <div class="col"><div style="font-weight: bold;">Category</div><div>${
-        d.Category_Name
-      }</div></div>
-      <div class="col"><div style="font-weight: bold;">Quantity</div><div>${
-        d.Record_ItemQuantity
-      } units</div></div>
-      <div class="col"><div style="font-weight: bold;">Expiration Date</div><div>${new Date(
-        d.Record_ItemExpirationDate * 1000
-      ).toLocaleDateString()}</div></div>
-      <div class="col"><div style="font-weight: bold;">Price/unit</div><div>${
-        d.Record_ItemPrice
-      }</div></div>
+      <div class="col"><img src="${d.Item_Image}" class="rounded border" style="width: 50px; height: auto;" /></div>
+      <div class="col"><div style="font-weight: bold;">${d.Item_Name}</div><div>${d.Record_ItemVolume} ${d.Unit_Name}</div></div>
+      <div class="col"><div style="font-weight: bold;">Category</div><div>${d.Category_Name}</div></div>
+      <div class="col"><div style="font-weight: bold;">Quantity</div><div>${d.Record_ItemQuantity} units</div></div>
+      <div class="col"><div style="font-weight: bold;">Expiration Date</div><div>${d.Record_ItemExpirationDate}</div></div>
+      <div class="col"><div style="font-weight: bold;">Price/unit</div><div>${d.Record_ItemPrice}</div></div>
     </div>
   `;
 }
@@ -132,3 +120,49 @@ function previewImage(event) {
   // Read the uploaded file
   reader.readAsDataURL(event.target.files[0]);
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Attach click event listeners to all category buttons
+  document.querySelectorAll(".category-btn").forEach((button) => {
+    button.addEventListener("click", function () {
+      // Remove active class from all buttons
+      document.querySelectorAll(".category-btn").forEach((btn) => {
+        btn.classList.remove("btn-primary"); // Remove 'active' class (btn-primary)
+        btn.classList.add("btn-custom-outline"); // Reset to non-active button style
+      });
+
+      // Add active class to the clicked button
+      this.classList.remove("btn-custom-outline");
+      this.classList.add("btn-primary"); // Set as active
+
+      // Get the selected category ID
+      const categoryId = this.getAttribute("data-category");
+
+      // Call the function to filter items
+      filterItems(categoryId);
+    });
+  });
+
+  function filterItems(categoryId) {
+    const items = document.querySelectorAll(".product-item");
+
+    // If "All" is selected, show all items
+    if (categoryId === "all") {
+      items.forEach((item) => {
+        item.style.display = "block";
+      });
+    } else {
+      items.forEach((item) => {
+        const itemCategory = item.getAttribute("data-category");
+        if (itemCategory === categoryId) {
+          item.style.display = "block";
+        } else {
+          item.style.display = "none";
+        }
+      });
+    }
+  }
+
+  // Default display of all items on page load
+  filterItems("all");
+});

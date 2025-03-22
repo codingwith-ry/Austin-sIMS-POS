@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $fetchInventoryQuery = "
-    SELECT r.Record_ID, r.Record_ItemPurchaseDate, r.Record_EmployeeAssigned, 
+    SELECT r.Record_ID, r.Record_ItemPurchaseDate, r.Record_EmployeeAssigned, r.Record_ItemVolume,
            i.Item_Name, i.Item_Image, ic.Category_Name, u.Unit_Name, r.Record_ItemQuantity, r.Record_ItemExpirationDate, r.Record_ItemPrice
     FROM tbl_record r
     JOIN tbl_item i ON r.Item_ID = i.Item_ID
@@ -130,6 +130,23 @@ $fetchInventoryQuery = "
 ";
 
 $inventoryRecords = $pdo->query($fetchInventoryQuery)->fetchAll(PDO::FETCH_ASSOC);
+
+$fetchItemDataQuery = "
+    SELECT 
+        i.Item_Name, 
+        i.Item_Image, 
+        i.Item_Category, 
+        ic.Category_Name, 
+        um.Unit_Name, 
+        r.Record_ItemQuantity 
+    FROM tbl_item i
+    JOIN tbl_itemcategories ic ON i.Item_Category = ic.Category_ID
+    JOIN tbl_record r ON i.Item_ID = r.Item_ID
+    LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
+";
+
+$itemData = $pdo -> query($fetchItemDataQuery) -> fetchAll(PDO::FETCH_ASSOC);
+
 
 
 ?>
