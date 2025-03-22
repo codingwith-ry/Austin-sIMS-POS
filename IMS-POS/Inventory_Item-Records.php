@@ -83,32 +83,23 @@ include("IMS_process.php");
                                                 <i class="bi-search"></i></span> <input type="text" class="form-control" placeholder="Search product here" aria-describedby="addon-wrapping">
                                         </div>
                                     </div>
-                                    <div class="col-auto">
+                                    <div class="col-auto" style="display: flex; gap: 10px">
                                         <button class="btn btn-secondary" type="button">
                                             <i class="fi fi-rr-settings-sliders"></i>
                                         </button>
+                                        <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                                            <li class="nav-item ms-auto" role="presentation">
+                                                <button class="btn btn-success h-100 pt-2" id="partytrayMenu" data-bs-toggle="modal" data-bs-target="#addItemModal">Add Item
+                                                    <i
+                                                        class="fi fi-rr-add " style="vertical-align: middle; font-size: 18px"></i>
+                                                </button>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
 
                             <br />
-                            <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="coffeeMenuTab" data-bs-toggle="pill" data-bs-target="#coffeeMenu" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Coffee Menu</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="gastropubMenu" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Gastro Pub Menu</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="partytrayMenu" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Party Tray Menu</button>
-                                </li>
-                                <li class="nav-item ms-auto" role="presentation">
-                                    <button class="btn btn-success h-100 pt-2" id="partytrayMenu" data-bs-toggle="modal" data-bs-target="#addItemModal">Add Item
-                                        <i
-                                            class="fi fi-rr-add " style="vertical-align: middle; font-size: 18px"></i>
-                                    </button>
-                                </li>
-                            </ul>
 
                             <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemLabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -221,7 +212,7 @@ include("IMS_process.php");
                                                                 <span style="font-weight: bold; opacity: 0.5; font-size:10px;">' . htmlspecialchars($row['Category_Name']) . '</span><br />
                                                                 <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">' . htmlspecialchars($row['Item_Name']) . '</span><br />
                                                                 <span style="font-weight: bold; font-size:15px;">' . htmlspecialchars($row['Record_ItemQuantity']) . ' pcs</span><br />
-                                                                <span style="opacity: 0.5; font-size:15px;">' . htmlspecialchars($row['Unit_Name']) . '</span>
+                                                                <span style="opacity: 0.5; font-size:15px;"> '.htmlspecialchars($row['Record_ItemVolume']).' (' . htmlspecialchars($row['Unit_Acronym']) . ')</span>
                                                             </div>
                                                         </div>
                                                     </div>

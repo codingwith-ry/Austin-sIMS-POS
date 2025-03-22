@@ -137,8 +137,9 @@ $fetchItemDataQuery = "
         i.Item_Image, 
         i.Item_Category, 
         ic.Category_Name, 
-        um.Unit_Name, 
-        r.Record_ItemQuantity 
+        um.Unit_Acronym, 
+        r.Record_ItemQuantity, 
+        r.Record_ItemVolume
     FROM tbl_item i
     JOIN tbl_itemcategories ic ON i.Item_Category = ic.Category_ID
     JOIN tbl_record r ON i.Item_ID = r.Item_ID
