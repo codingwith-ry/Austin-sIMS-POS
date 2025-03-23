@@ -75,6 +75,75 @@ let itemRecords = new DataTable("#itemRecords", {
             addRecordModal.show();
           },
         },
+        {
+          text: "Delete Record",
+          action: function (e, dt, node, config) {
+            console.log("Delete Record button clicked!");
+            const selectedRecords = Array.from(
+              document.querySelectorAll(".row-checkbox:checked")
+            ).map((checkbox) => checkbox.value);
+
+            console.log("Selected Records: ", selectedRecords);
+        
+            if (selectedRecords.length === 0) {
+              Swal.fire({
+                icon: "warning",
+                title: "No Records Selected",
+                text: "Please select at least one record to delete.",
+              });
+              return;
+            }
+        
+            Swal.fire({
+              title: "Are you sure?",
+              text: "This action cannot be undone.",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#d33",
+              cancelButtonColor: "#3085d6",
+              confirmButtonText: "Yes, delete it!",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Perform the delete operation via AJAX
+                console.log("Sending AJAX request with data:", { recordIds: selectedRecords });
+                $.ajax({
+                  url: "../IMS-POS/scripts/deleteRecord.php", // Replace with your server-side delete endpoint
+                  type: "POST",
+                  data: { recordIds: selectedRecords },
+                  success: function (response) {
+                    const res = JSON.parse(response);
+                    if (res.success) {
+                      Swal.fire({
+                        icon: "success",
+                        title: "Deleted!",
+                        text: "The selected records have been deleted.",
+                      });
+        
+                      // Update the DataTable with the new data
+                      itemRecords.clear().rows.add(res.updatedData).draw();
+                    } else {
+                      Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: res.message || "Failed to delete the selected records.",
+                      });
+                    }
+                  },
+                  error: function () {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Error",
+                      text: "Failed to delete the selected records.",
+                    });
+                  },
+                });
+              }
+            });
+          },
+        },
+
+
+
       ],
     },
   },
