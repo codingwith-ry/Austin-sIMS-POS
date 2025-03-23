@@ -16,7 +16,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute($recordIds);
 
             // Fetch updated data
-            $fetchStmt = $conn->query("SELECT * FROM tbl_record");
+            $fetchStmt = $conn->query("
+                SELECT 
+                    r.Record_ID,
+                    r.Record_ItemPurchaseDate,
+                    r.Record_EmployeeAssigned,
+                    i.Item_Image,
+                    i.Item_Name,
+                    r.Record_ItemVolume,
+                    u.Unit_Name,
+                    c.Category_Name,
+                    r.Record_ItemQuantity,
+                    r.Record_ItemExpirationDate,
+                    r.Record_ItemPrice
+                FROM tbl_record r
+                LEFT JOIN tbl_item i ON r.Item_ID = i.Item_ID
+                LEFT JOIN tbl_unitofmeasurments u ON i.Unit_ID = u.Unit_ID
+                LEFT JOIN tbl_itemcategories c ON i.Item_Category = c.Category_ID
+            ");
             $updatedData = $fetchStmt->fetchAll(PDO::FETCH_ASSOC);
 
             echo json_encode(['success' => true, 'updatedData' => $updatedData]);

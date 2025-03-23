@@ -326,6 +326,87 @@ include("IMS_process.php");
         </div>
     </div>
 
+    <div class="modal fade" id="editRecordModal" tabindex="-1" aria-labelledby="editRecordModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editRecordModalLabel">Edit Record</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editRecordForm">
+          <input type="hidden" id="recordId" name="recordId">
+          <div class="mb-3">
+            <label for="itemName" class="form-label">Item Name</label>
+            <select class="form-select" id="itemName" name="itemName">
+              <option value="" disabled selected>Select Item</option>
+              <!-- Options will be dynamically populated -->
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="itemVolume" class="form-label">Item Volume</label>
+            <input type="text" class="form-control" id="itemVolume" name="itemVolume">
+          </div>
+          <div class="mb-3">
+            <label for="itemQuantity" class="form-label">Item Quantity</label>
+            <input type="number" class="form-control" id="itemQuantity" name="itemQuantity">
+          </div>
+          <div class="mb-3">
+            <label for="itemPrice" class="form-label">Item Price</label>
+            <input type="number" class="form-control" id="itemPrice" name="itemPrice">
+          </div>
+          <div class="mb-3">
+            <label for="itemExpirationDate" class="form-label">Expiration Date</label>
+            <input type="date" class="form-control" id="itemExpirationDate" name="itemExpirationDate">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveEditRecord">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById("saveEditRecord").addEventListener("click", function () {
+  const formData = $("#editRecordForm").serialize();
+
+  $.ajax({
+    url: "../IMS-POS/scripts/updateRecord.php",
+    type: "POST",
+    data: formData,
+    success: function (response) {
+      const res = JSON.parse(response);
+      if (res.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Updated!",
+          text: "The record has been updated successfully.",
+        }).then(() => {
+          // Refresh the page after the success message
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: res.message || "Failed to update the record.",
+        });
+      }
+    },
+    error: function () {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to update the record.",
+      });
+    },
+  });
+});
+</script>
+
 </body>
 <?php include 'footer.php' ?>
 
