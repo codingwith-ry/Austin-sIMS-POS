@@ -1,20 +1,66 @@
 /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
-function format(d) {
-  return `
-    <div class="row row-cols-6" style="align-items:center;">
-      <div class="col"><img src="${d.Item_Image}" class="rounded border" style="width: 50px; height: auto;" /></div>
-      <div class="col"><div style="font-weight: bold;">${d.Item_Name}</div><div>${d.Record_ItemVolume} ${d.Unit_Name}</div></div>
-      <div class="col"><div style="font-weight: bold;">Category</div><div>${d.Category_Name}</div></div>
-      <div class="col"><div style="font-weight: bold;">Quantity</div><div>${d.Record_ItemQuantity} units</div></div>
-      <div class="col"><div style="font-weight: bold;">Expiration Date</div><div>${d.Record_ItemExpirationDate}</div></div>
-      <div class="col"><div style="font-weight: bold;">Price/unit</div><div>${d.Record_ItemPrice}</div></div>
-    </div>
-  `;
+function format(groupItems) {
+  let content = "";
+  groupItems.forEach((d) => {
+    content += `
+      <div class="row" style="align-items: center; margin-bottom: 5px;">
+        <div class="col-auto" style="display: flex; align-items: center;">
+          <input class="form-check-input child-checkbox" type="checkbox" data-record-id="${d.Record_ID}" value="${d.Record_ID}">
+        </div>
+        <div class="col" style="display: flex; align-items: center;">
+          <img src="${d.Item_Image}" class="rounded border" style="width: 40px; height: auto; margin-right: 5px;" />
+          <div>
+            <div style="font-weight: bold;">${d.Item_Name}</div>
+            <div style="font-size: 12px;">${d.Record_ItemVolume} ${d.Unit_Name}</div>
+          </div>
+        </div>
+        <div class="col" style="text-align: center;">
+          <div style="font-weight: bold;">Category</div>
+          <div>${d.Category_Name}</div>
+        </div>
+        <div class="col" style="text-align: center;">
+          <div style="font-weight: bold;">Quantity</div>
+          <div>${d.Record_ItemQuantity} units</div>
+        </div>
+        <div class="col" style="text-align: center;">
+          <div style="font-weight: bold;">Expiration Date</div>
+          <div>${d.Record_ItemExpirationDate}</div>
+        </div>
+        <div class="col" style="text-align: center;">
+          <div style="font-weight: bold;">Price/unit</div>
+          <div>${d.Record_ItemPrice}</div>
+        </div>
+      </div>
+    `;
+  });
+  return content;
 }
+// ✅ Group data by purchase date
+const groupedData = {};
+window.inventoryData.forEach((record) => {
+  if (!groupedData[record.Record_ItemPurchaseDate]) {
+    groupedData[record.Record_ItemPurchaseDate] = [];
+  }
+  groupedData[record.Record_ItemPurchaseDate].push(record);
+});
+
+// ✅ Prepare rows - one per purchase date
+const tableData = Object.keys(groupedData).map((purchaseDate, index) => {
+  return {
+    groupId: index,
+    Record_ItemPurchaseDate: purchaseDate,
+    Record_EmployeeAssigned:
+      groupedData[purchaseDate][0].Record_EmployeeAssigned,
+    items: groupedData[purchaseDate],
+    Record_IDs: groupedData[purchaseDate]
+      .map((item) => item.Record_ID)
+      .join(","), // For checkbox selection
+  };
+});
 
 let itemRecords = new DataTable("#itemRecords", {
   responsive: true,
-  data: window.inventoryData, // ✅ USE THE PHP JSON DATA INSTEAD OF HARDCODED
+  data: tableData,
   columns: [
     {
       data: null,
@@ -22,18 +68,19 @@ let itemRecords = new DataTable("#itemRecords", {
       className: `dt-checkbox-column`,
       render: function (data, type, row, meta) {
         return `<div class="form-check">
-                  <input class="form-check-input row-checkbox" type="checkbox" value="${row.Record_ID}">
+                  <input class="form-check-input row-checkbox" type="checkbox" data-record-ids="${row.Record_IDs}">
                 </div>`;
       },
     },
-    { data: "Record_ID" },
-    { data: "Record_ItemPurchaseDate" },
-    { data: "Record_EmployeeAssigned" },
+    { data: "groupId", title: "Group ID" },
+    { data: "Record_ItemPurchaseDate", title: "Purchase Date" },
+    { data: "Record_EmployeeAssigned", title: "Employee Assigned" },
     {
       className: "dt-control",
       orderable: false,
       data: null,
       defaultContent: '<i class="fa-solid fa-circle-chevron-down"></i>',
+      title: "Details",
     },
   ],
   layout: {
@@ -79,12 +126,17 @@ let itemRecords = new DataTable("#itemRecords", {
           text: "Delete Record",
           action: function (e, dt, node, config) {
             console.log("Delete Record button clicked!");
+
+            // Select both .row-checkbox and .child-checkbox checkboxes
             const selectedRecords = Array.from(
-              document.querySelectorAll(".row-checkbox:checked")
-            ).map((checkbox) => checkbox.value);
+              document.querySelectorAll(
+                ".row-checkbox:checked, .child-checkbox:checked"
+              )
+            ).map((checkbox) => checkbox.getAttribute("data-record-id")); // Use data-record-id
 
             console.log("Selected Records: ", selectedRecords);
-        
+
+            // Check if no records are selected
             if (selectedRecords.length === 0) {
               Swal.fire({
                 icon: "warning",
@@ -93,7 +145,8 @@ let itemRecords = new DataTable("#itemRecords", {
               });
               return;
             }
-        
+
+            // Confirm delete action
             Swal.fire({
               title: "Are you sure?",
               text: "This action cannot be undone.",
@@ -105,7 +158,9 @@ let itemRecords = new DataTable("#itemRecords", {
             }).then((result) => {
               if (result.isConfirmed) {
                 // Perform the delete operation via AJAX
-                console.log("Sending AJAX request with data:", { recordIds: selectedRecords });
+                console.log("Sending AJAX request with data:", {
+                  recordIds: selectedRecords,
+                });
                 $.ajax({
                   url: "../IMS-POS/scripts/deleteRecord.php", // Replace with your server-side delete endpoint
                   type: "POST",
@@ -118,14 +173,16 @@ let itemRecords = new DataTable("#itemRecords", {
                         title: "Deleted!",
                         text: "The selected records have been deleted.",
                       });
-        
+
                       // Update the DataTable with the new data
                       itemRecords.clear().rows.add(res.updatedData).draw();
                     } else {
                       Swal.fire({
                         icon: "error",
                         title: "Error",
-                        text: res.message || "Failed to delete the selected records.",
+                        text:
+                          res.message ||
+                          "Failed to delete the selected records.",
                       });
                     }
                   },
@@ -146,11 +203,13 @@ let itemRecords = new DataTable("#itemRecords", {
           text: "Edit Record",
           action: function (e, dt, node, config) {
             const selectedRecords = Array.from(
-              document.querySelectorAll(".row-checkbox:checked")
-            ).map((checkbox) => checkbox.value);
-        
+              document.querySelectorAll(
+                ".row-checkbox:checked, .child-checkbox:checked"
+              ) // Include child-checkbox here
+            ).map((checkbox) => checkbox.getAttribute("data-record-id")); // Get data-record-id instead of value
+
             console.log("Selected Records for Editing: ", selectedRecords);
-        
+
             if (selectedRecords.length !== 1) {
               Swal.fire({
                 icon: "warning",
@@ -159,9 +218,9 @@ let itemRecords = new DataTable("#itemRecords", {
               });
               return;
             }
-        
+
             const recordId = selectedRecords[0];
-        
+
             // Fetch the record data for editing
             $.ajax({
               url: "../IMS-POS/scripts/fetchRecord.php", // Create this endpoint to fetch record details
@@ -174,15 +233,24 @@ let itemRecords = new DataTable("#itemRecords", {
                     // Populate the edit modal with the record data
                     $("#editRecordModal #recordId").val(res.record.Record_ID);
                     $("#editRecordModal #itemName").val(res.record.Item_Name);
-                    $("#editRecordModal #itemVolume").val(res.record.Record_ItemVolume);
-                    $("#editRecordModal #itemQuantity").val(res.record.Record_ItemQuantity);
-                    $("#editRecordModal #itemPrice").val(res.record.Record_ItemPrice);
-                    $("#editRecordModal #itemExpirationDate").val(res.record.Record_ItemExpirationDate);
-              
+                    $("#editRecordModal #itemVolume").val(
+                      res.record.Record_ItemVolume
+                    );
+                    $("#editRecordModal #itemQuantity").val(
+                      res.record.Record_ItemQuantity
+                    );
+                    $("#editRecordModal #itemPrice").val(
+                      res.record.Record_ItemPrice
+                    );
+                    $("#editRecordModal #itemExpirationDate").val(
+                      res.record.Record_ItemExpirationDate
+                    );
+
                     // Populate the dropdown with only the items associated with the record
-                    const itemNameDropdown = document.getElementById("itemName");
+                    const itemNameDropdown =
+                      document.getElementById("itemName");
                     itemNameDropdown.innerHTML = ""; // Clear existing options
-              
+
                     // Add a default "Select Item" option
                     const defaultOption = document.createElement("option");
                     defaultOption.value = "";
@@ -190,7 +258,7 @@ let itemRecords = new DataTable("#itemRecords", {
                     defaultOption.disabled = true;
                     defaultOption.selected = true;
                     itemNameDropdown.appendChild(defaultOption);
-              
+
                     // Add options dynamically
                     res.items.forEach((item) => {
                       const option = document.createElement("option");
@@ -198,10 +266,10 @@ let itemRecords = new DataTable("#itemRecords", {
                       option.textContent = `${item.Item_Name} (${item.Unit_Name})`;
                       itemNameDropdown.appendChild(option);
                     });
-              
+
                     // Set the selected value to the current record's item
                     itemNameDropdown.value = res.record.Item_Name;
-              
+
                     // Show the edit modal
                     const editRecordModal = new bootstrap.Modal(
                       document.getElementById("editRecordModal")
@@ -232,28 +300,28 @@ let itemRecords = new DataTable("#itemRecords", {
             });
           },
         },
-
-
-
       ],
     },
   },
 });
 
+// ✅ Expand/Collapse event to show grouped items
 itemRecords.on("click", "td.dt-control", function (e) {
   let tr = e.target.closest("tr");
   let row = itemRecords.row(tr);
   if (row.child.isShown()) {
     row.child.hide();
   } else {
-    row.child(format(row.data())).show();
+    row.child(format(row.data().items)).show();
   }
 });
 
+// ✅ Select All Checkbox logic
 $("#select-all").on("change", function () {
   const isChecked = $(this).is(":checked");
   $(".row-checkbox").prop("checked", isChecked);
 });
+
 /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
 
 /***************************INITIALIZATION IMAGE PREVIEW********************************/
