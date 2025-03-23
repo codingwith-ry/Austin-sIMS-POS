@@ -198,6 +198,7 @@ include("IMS_process.php");
                             <div class="tab-content" id="pills-tabContent">
                                 <div class="products-wrapper">
                                     <div class="row" id="product-list">
+                                    <strong style="font-size: 25px">Inventory Items</strong>
                                         <!-- Loop through each item to display in the desired format -->
                                         <?php
                                         // Loop through and display each item
