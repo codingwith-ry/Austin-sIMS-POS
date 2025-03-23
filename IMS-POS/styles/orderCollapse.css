@@ -1,71 +1,40 @@
+/* Collapse Container */
 .order-collapse {
-    background-color: #EBEBEB;  
+    background-color: #EBEBEB; 
+    border-left: 4px solid black; 
+    margin: 0; 
+    padding: 0; 
 }
 
+/* Order Details Container */
 .order-collapse .order-details {
     display: flex;
-    padding: 10px;
-    justify-content: space-between;
-    background-color: #EBEBEB;
-    border-left: 4px solid black; 
+    flex-direction: column;
+    padding: 15px; 
 }
 
-/*Sections in Collapse Content */
-.order-collapse .dine-in-section {
-    padding-left: 75px !important; 
-    
+/* Table Styling */
+
+
+.order-collapse .table-borderless {
+    width: 80%;
+    background-color: #EBEBEB; 
+    border-spacing: 0; 
+    table-layout: fixed; 
+    margin: 0; 
 }
 
-.order-collapse .notes-section {
-    flex: 1; 
-    padding-left: 80px !important;  
-}
-
-.order-collapse .addons-section {
-    flex: 1; 
-    padding-left: 35px !important; 
-    padding-right: 35px !important;
-}
-
-.order-collapse .time-section {
+/* Table Cell Styling */
+.order-collapse .table-borderless td {
+    height: 15%; 
     text-align: center;
-    padding-right: 260px !important;
+    vertical-align: top;
+    padding: 15px; 
+    word-wrap: break-word;
+    background-color: #EBEBEB; 
 }
 
-/* Text Styles in Collapse */
-.order-collapse .order-details p,
-.order-collapse .order-details li {
-    margin: 0;
-    text-align: left;
-    color: #000; 
-}
-
-.order-collapse .order-details h5,
-.order-collapse .order-details p {
-    color: #000; 
-}
-
-/* Dine In Section List Styles */
-.order-collapse .dine-in-section ul {
-    list-style: none;
-    padding-left: 20px;
-}
-
-.order-collapse .dine-in-section ul li {
-    margin-bottom: 5px;
-}
-
-.order-collapse .dine-in-section ul li.completed {
-    text-decoration: line-through;
-    color: #888;
-}
-
-.order-collapse .dine-in-section ul li input[type="checkbox"] {
-    margin-right: 10px;
-}
-
-/* Time Section */
-.order-collapse .time-section p:last-child {
-    font-weight: bold;
-    font-size: 18px;
+.table-borderless td, 
+.table-borderless th {
+    border: none;
 }

@@ -59,6 +59,14 @@ CREATE TABLE `tbl_addons` (
   `addonPrice` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Dumping data for table `tbl_addons`
+
+INSERT INTO `tbl_addons` (`addonID`, `addonName`, `addonPrice`) VALUES
+(1, 'Creamy Beef with Mushroom', 80.00),
+(2, 'Beef Salpicao', 105.00),
+(3, 'Chicken Alfredo', 105.00),
+(4, 'Spicy Beef Caldereta', 105.00),
+(5, 'Lengua with Mushroom', 105.00);
 -- --------------------------------------------------------
 
 --
@@ -223,6 +231,15 @@ CREATE TABLE `tbl_menutoaddons` (
   `addonID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Dumping data for table `tbl_menutoaddons`
+INSERT INTO `tbl_menutoaddons` (`menuAddonID`, `productID`, `addonID`) VALUES
+(1, 1, 1),
+(2, 1, 4),
+(3, 2, 2),
+(4, 3, 3),
+(5, 4, 4),
+(6, 5, 5);
+
 -- --------------------------------------------------------
 
 --
@@ -233,7 +250,6 @@ CREATE TABLE `tbl_orderitems` (
   `orderItemID` int(11) NOT NULL,
   `orderID` int(11) DEFAULT NULL,
   `productID` int(11) DEFAULT NULL,
-  `productAddons` text DEFAULT NULL,
   `productQuantity` int(11) NOT NULL,
   `productTotal` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -242,22 +258,12 @@ CREATE TABLE `tbl_orderitems` (
 -- Dumping data for table `tbl_orderitems`
 --
 
-INSERT INTO `tbl_orderitems` (`orderItemID`, `orderID`, `productID`, `productAddons`, `productQuantity`, `productTotal`) VALUES
-(1, 1, NULL, NULL, 3, 0.00),
-(2, 2, NULL, NULL, 7, 0.00),
-(3, 3, NULL, NULL, 12, 0.00),
-(4, 4, NULL, NULL, 15, 0.00),
-(5, 5, NULL, NULL, 25, 0.00),
-(6, 1, NULL, NULL, 3, 0.00),
-(7, 2, NULL, NULL, 7, 0.00),
-(8, 3, NULL, NULL, 12, 0.00),
-(9, 4, NULL, NULL, 15, 0.00),
-(10, 5, NULL, NULL, 25, 0.00),
-(11, 1, NULL, NULL, 3, 0.00),
-(12, 2, NULL, NULL, 7, 0.00),
-(13, 3, NULL, NULL, 12, 0.00),
-(14, 4, NULL, NULL, 15, 0.00),
-(15, 5, NULL, NULL, 25, 0.00);
+INSERT INTO `tbl_orderitems` (`orderItemID`, `orderID`, `productID`, `productQuantity`, `productTotal`) VALUES
+(1, 1, 1, 3, 0.00),
+(2, 2, 2, 7, 0.00),
+(3, 3, 3, 12, 0.00),
+(4, 4, 4, 15, 0.00),
+(5, 5, 5, 25, 0.00);
 
 -- --------------------------------------------------------
 
@@ -273,40 +279,42 @@ CREATE TABLE `tbl_orders` (
   `orderClass` varchar(8) NOT NULL,
   `orderStatus` enum('IN PROCESS','DONE','CANCELLED') NOT NULL,
   `salesOrderNumber` varchar(50) DEFAULT NULL,
-  `employeeID` varchar(9) NOT NULL
+  `employeeID` varchar(9) NOT NULL,
+  `orderRemarks` text DEFAULT NULL,
+  PRIMARY KEY (`orderID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
 -- Dumping data for table `tbl_orders`
---
-
-INSERT INTO `tbl_orders` (`orderID`, `orderNumber`, `orderDate`, `orderTime`, `orderClass`, `orderStatus`, `salesOrderNumber`, `employeeID`) VALUES
-(1, 1002, '2025-03-02', '10:15:00', '', 'IN PROCESS', 'ORD-0001', '123456789'),
-(2, 1003, '2025-03-03', '12:45:00', '', 'IN PROCESS', 'ORD-0002', '123456789'),
-(3, 1004, '2025-03-04', '18:30:00', '', 'IN PROCESS', 'ORD-0003', '123456789'),
-(4, 1005, '2025-03-05', '20:00:00', '', 'IN PROCESS', 'ORD-0004', '123456789'),
-(5, 1006, '2025-03-06', '08:10:00', '', 'IN PROCESS', 'ORD-0005', '123456789');
+INSERT INTO `tbl_orders` (`orderID`, `orderNumber`, `orderDate`, `orderTime`, `orderClass`, `orderStatus`, `salesOrderNumber`, `employeeID`, `orderRemarks`) VALUES
+(1, 1002, '2025-03-02', '10:15:00', 'DINE IN', 'IN PROCESS', 'ORD-0001', '123456789', 'Please prepare the order as soon as possible.'),
+(2, 1003, '2025-03-02', '12:45:00', 'DINE IN', 'IN PROCESS', 'ORD-0002', '123456789', 'Please prepare the order as soon as possible.'),
+(3, 1004, '2025-03-02', '18:30:00', 'TAKE OUT', 'IN PROCESS', 'ORD-0003', '123456789', 'Please prepare the order as soon as possible.'),
+(4, 1005, '2025-03-02', '20:00:00', 'TAKE OUT', 'IN PROCESS', 'ORD-0004', '123456789', 'Please prepare the order as soon as possible.'),
+(5, 1006, '2025-03-02', '21:10:00', 'DINE IN', 'IN PROCESS', 'ORD-0005', '123456789', 'Please prepare the order as soon as possible.');
 
 --
--- Triggers `tbl_orders`
---
+-- Define the trigger
 DELIMITER $$
-CREATE TRIGGER `before_insert_salesOrderNumber` BEFORE INSERT ON `tbl_orders` FOR EACH ROW BEGIN
+
+CREATE TRIGGER `before_insert_salesOrderNumber` 
+BEFORE INSERT ON `tbl_orders` 
+FOR EACH ROW 
+BEGIN
     DECLARE lastOrderNumber INT DEFAULT 0;
     DECLARE newOrderNumber VARCHAR(50);
 
-    -- Fetch the last order number
-    SELECT MAX(CAST(SUBSTRING(salesOrderNumber, 5) AS UNSIGNED))
+    /* Reset orders logic */
+    SELECT IFNULL(MAX(CAST(SUBSTRING(salesOrderNumber, 5) AS UNSIGNED)), 0)
     INTO lastOrderNumber
-    FROM tbl_orders;
+    FROM tbl_orders
+    WHERE orderDate = CURDATE();
 
-    -- Increment the last order number and create new order number
     SET newOrderNumber = CONCAT('ORD-', LPAD(lastOrderNumber + 1, 4, '0'));
 
-    -- Set the new salesOrderNumber value
     SET NEW.salesOrderNumber = newOrderNumber;
 END
 $$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -441,7 +449,6 @@ ALTER TABLE `tbl_orderitems`
 -- Indexes for table `tbl_orders`
 --
 ALTER TABLE `tbl_orders`
-  ADD PRIMARY KEY (`orderID`),
   ADD UNIQUE KEY `orderNumber` (`orderNumber`),
   ADD UNIQUE KEY `salesOrderNumber` (`salesOrderNumber`),
   ADD KEY `fk_employee_id` (`employeeID`);
