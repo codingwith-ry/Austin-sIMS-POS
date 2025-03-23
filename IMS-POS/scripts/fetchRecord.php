@@ -24,18 +24,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
         $record = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Fetch all available items for the dropdown
-        $itemsStmt = $conn->query("
+        // Fetch only the item associated with the record
+        $itemsStmt = $conn->prepare("
             SELECT 
                 i.Item_ID,
                 i.Item_Name,
-                i.Item_Image,
-                c.Category_Name,
                 u.Unit_Name
             FROM tbl_item i
-            LEFT JOIN tbl_itemcategories c ON i.Item_Category = c.Category_ID
             LEFT JOIN tbl_unitofmeasurments u ON i.Unit_ID = u.Unit_ID
+            WHERE i.Item_ID = (
+                SELECT Item_ID FROM tbl_record WHERE Record_ID = :recordId
+            )
         ");
+        $itemsStmt->bindParam(':recordId', $recordId);
+        $itemsStmt->execute();
         $items = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
 
         if ($record) {

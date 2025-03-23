@@ -179,7 +179,7 @@ let itemRecords = new DataTable("#itemRecords", {
                     $("#editRecordModal #itemPrice").val(res.record.Record_ItemPrice);
                     $("#editRecordModal #itemExpirationDate").val(res.record.Record_ItemExpirationDate);
               
-                    // Populate the dropdown with all available items
+                    // Populate the dropdown with only the items associated with the record
                     const itemNameDropdown = document.getElementById("itemName");
                     itemNameDropdown.innerHTML = ""; // Clear existing options
               
