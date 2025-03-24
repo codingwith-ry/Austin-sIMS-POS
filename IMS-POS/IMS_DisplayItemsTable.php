@@ -8,9 +8,12 @@ include("IMS_process.php");
 <head>
     <title>Item Records</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <?php require_once('links.php'); ?>
+    <?php require('IMS_process.php') ?>
 </head>
 <body class="p-4">
-
+<?php include 'verticalNav.php' ?>
+    <main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
 <h3>Item Records</h3>
 
 <?php if (!empty($records)) : ?>
@@ -43,7 +46,7 @@ include("IMS_process.php");
 <?php else : ?>
     <div class="alert alert-info">No records found for this item.</div>
 <?php endif; ?>
-
+</main>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     // Handle Delete button click
