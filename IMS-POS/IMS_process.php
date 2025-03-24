@@ -133,6 +133,7 @@ $inventoryRecords = $pdo->query($fetchInventoryQuery)->fetchAll(PDO::FETCH_ASSOC
 
 $fetchItemDataQuery = "
     SELECT 
+        i.Item_ID,
         i.Item_Name, 
         i.Item_Image, 
         i.Item_Category, 
@@ -149,5 +150,24 @@ $fetchItemDataQuery = "
 $itemData = $pdo -> query($fetchItemDataQuery) -> fetchAll(PDO::FETCH_ASSOC);
 
 
+
+if (isset($_GET['item_id'])) {
+    $item_id = $_GET['item_id'];
+
+    // Fetch the records of the clicked item
+    $query = "
+        SELECT i.Item_Name, r.Record_ItemQuantity, r.Record_ItemPurchaseDate, 
+               e.Employee_Name, r.Record_ID
+        FROM tbl_record r
+        JOIN tbl_item i ON i.Item_ID = r.Item_ID
+        LEFT JOIN employees e ON r.Record_EmployeeAssigned = e.Employee_ID
+        WHERE i.Item_ID = :item_id
+    ";
+
+    $stmt = $pdo->prepare($query);
+    $stmt->execute(['item_id' => $item_id]);
+    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+?>
 
 ?>

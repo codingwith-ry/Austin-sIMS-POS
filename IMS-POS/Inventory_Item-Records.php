@@ -205,21 +205,25 @@ include("IMS_process.php");
                                         foreach ($itemData as $row) {
                                             echo '
                                             <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0 product-item" data-category="' . htmlspecialchars($row['Item_Category']) . '">
-                                                <div class="card flex-shrink-0" style="height: 400px; padding: 15px;">
-                                                    <img src="' . htmlspecialchars($row['Item_Image']) . '" class="card-img-top rounded-start rounded-end mb-2" alt="' . htmlspecialchars($row['Item_Name']) . '" style="height: 150px; width: 100%; object-fit: contain;">
-                                                    <div class="card-body" style="height: calc(100% - 150px); display: flex; flex-direction: column; justify-content: space-between;">
-                                                        <div class="row">
-                                                            <div class="col-8 flex-shrink-0 pe-0">
-                                                                <span style="font-weight: bold; opacity: 0.5; font-size:10px;">' . htmlspecialchars($row['Category_Name']) . '</span><br />
-                                                                <span style="font-size: 20px; font-weight:bold; padding-bottom:10%;">' . htmlspecialchars($row['Item_Name']) . '</span><br />
-                                                                <span style="font-weight: bold; font-size:15px;">' . htmlspecialchars($row['Record_ItemQuantity']) . ' pcs</span><br />
-                                                                <span style="opacity: 0.5; font-size:15px;"> '.htmlspecialchars($row['Record_ItemVolume']).' (' . htmlspecialchars($row['Unit_Acronym']) . ')</span>
+                                                <a href="IMS_DisplayItemsTable.php?item_id=' . htmlspecialchars($row['Item_ID']) . '" class="text-decoration-none text-dark" style="display: block;">
+                                                    <div class="card flex-shrink-0" style="height: 400px; padding: 15px;">
+                                                        <img src="' . htmlspecialchars($row['Item_Image']) . '" class="card-img-top rounded mb-2" alt="' . htmlspecialchars($row['Item_Name']) . '" style="height: 150px; width: 100%; object-fit: contain;">
+                                                        <div class="card-body" style="height: calc(100% - 150px); display: flex; flex-direction: column; justify-content: space-between;">
+                                                            <div class="row">
+                                                                <div class="col-8 flex-shrink-0 pe-0">
+                                                                    <span style="font-weight: bold; opacity: 0.5; font-size:10px;">' . htmlspecialchars($row['Category_Name']) . '</span><br />
+                                                                    <span style="font-size: 20px; font-weight:bold;">' . htmlspecialchars($row['Item_Name']) . '</span><br />
+                                                                    <span style="font-weight: bold; font-size:15px;">' . htmlspecialchars($row['Record_ItemQuantity']) . ' pcs</span><br />
+                                                                    <span style="opacity: 0.5; font-size:15px;">'.htmlspecialchars($row['Record_ItemVolume']).' (' . htmlspecialchars($row['Unit_Acronym']) . ')</span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </a>
                                             </div>';
                                         }
+                                        
+                                        
                                         ?>
                                     </div>
                                 </div>
