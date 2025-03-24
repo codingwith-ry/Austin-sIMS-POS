@@ -9,6 +9,8 @@ include("IMS_process.php");
     <title>Item Records</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <?php require_once('links.php'); ?>
+    <?php require('IMS_process.php') ?>
 </head>
 <body class="p-4">
 <?php include 'verticalNav.php' ?>
