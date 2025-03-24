@@ -34,14 +34,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
     <title>Set New Password</title>
 </head>
-<body style="font-family: 'Rubik', sans-serif;">
+<body class="d-flex justify-content-center align-items-center vh-100" style="font-family: 'Rubik', sans-serif; background-color: #cdc7b0;">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <center>
 <div>
-    <img src="logo.png" alt="Austin's Logo" >
-    <p style=" padding-bottom:20px; color:#6a4413; font-size:25px">Inventory Management - Point of Sale System</p>
+    <img src="logo.png" alt="Austin's Logo" class="mb-3" style="width: 30%; height: auto;">
+    <p style=" padding-bottom: 20px; color: #6a4413; font-size: 20px">Inventory Management - Point of Sale System</p>
     <div class="card text-bg-light mb-6" style="justify-content: center; width: 25rem; padding:30px">
-        <h5>Set Password</h5></br>
+        <h3 class="text-center mb-4" style="color: #6a4413;">Set Password</h3>
+        <p class="text-center mb-4">Please enter your new password to reset your account credentials.</p>
         <form id="setPassForm" action="setpass.php" method="POST">
             <!-- Email input -->
             <div class="input-group mb-3">

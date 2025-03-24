@@ -10,14 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
     <title>OTP Reset Password</title>
 </head>
-<body style="font-family: 'Rubik', sans-serif;">
+<body class="d-flex justify-content-center align-items-center vh-100" style="font-family: 'Rubik', sans-serif; background-color: #cdc7b0;">
 <center>
   <div>
-      <img src="logo.png" alt="Austin's Logo">
-      <p style="padding-bottom:20px; color:#6a4413; font-size:25px">Inventory Management - Point of Sale System</p>
+      <img src="logo.png" alt="Austin's Logo" class="mb-3" style="width: 30%; height: auto;">
+      <p style="padding-bottom:20px; color:#6a4413; font-size:20px">Inventory Management - Point of Sale System</p>
   </div>
   <div class="card text-bg-light mb-6" style="width: 25rem; padding:30px">
-    <h5 class="card-title text-center mb-4">Enter OTP</h5>
+    <h5 class="text-center mb-4" style="color: #6a4413;">Enter OTP</h5>
     <p class="text-center">We sent a code to <strong><?php echo htmlspecialchars($_GET["email"]); ?></strong></p></br>
     <form id="otpForm">
       <div class="d-flex justify-content-between mb-4">

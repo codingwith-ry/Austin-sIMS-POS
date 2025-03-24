@@ -55,35 +55,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
     <title>Login Page</title>
 </head>
-<body style="font-family: 'Rubik', sans-serif;">
-<center>
-  <div>
-    <img src="logo.png" alt="Austin's Logo">
-    <p style=" padding-bottom:20px; color:#6a4413; font-size:25px">Inventory Management - Point of Sale System</p>
-      <div class="card text-bg-light mb-6" style="justify-content: center; width: 25rem;">
-        <div style="padding: 40px;">
-            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-                <!-- Email input -->
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">@</span>
-                    <input type="text" name="email" class="form-control" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1">
-                </div>
+<body class="d-flex justify-content-center align-items-center vh-100" style="font-family: 'Rubik', sans-serif; background-color: #cdc7b0;">
+    <center>
+        <div>
+            <img src="logo.png" alt="Austin's Logo" class="mb-4" style="width: 30%; height: auto;">
+            <p class="mb-4" style="color: #6a4413; font-size: 20px; margin: auto;">Inventory Management - Point of Sale System</p>
+            <div class="card text-bg-light mx-auto" style="width: 25rem;">
+                <div class="card-body p-4">
+                    <!-- Login Header -->
+                    <h3 class="text-center mb-3" style="color: #6a4413;">Login</h3>
+                    <p class="text-center mb-4">Please enter your email and password.</p>
+                    
+                    <!-- Login Form -->
+                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+                        <!-- Email input -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">@</span>
+                            <input type="text" name="email" class="form-control" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1" required>
+                        </div>
 
-                <!-- Password input -->
-                <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">
-                            <i class="bi bi-lock"></i>
-                        </span>
-                    <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="password" required />
-                    <a href="/Austin-sIMS-POS/Login/forgotpass.php" class="d-block text-end mt-2" style="padding-left: 180px">Forgot password?</a>
-                </div>
+                        <!-- Password input -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="password" required>
+                        </div>
+                        <a href="/Austin-sIMS-POS/Login/forgotpass.php" class="d-block text-end mb-3" style="color: #6a4413;">Forgot password?</a>
 
-                <!-- Submit button -->
-                <button type="submit" class="btn btn-primary btn-block">Continue</button>
-            </form>
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary w-100">Continue</button>
+                    </form>
+                </div>
+            </div>
         </div>
-      </div>
-  </div>
-  </center>
+    </center>
 </body>
 </html>

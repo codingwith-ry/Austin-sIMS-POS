@@ -10,12 +10,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
     <title>Forgot Password</title>
 </head>
-<body style="font-family: 'Rubik', sans-serif;">
+<body class="d-flex justify-content-center align-items-center vh-100" style="font-family: 'Rubik', sans-serif; background-color: #cdc7b0;">
 <center>
 <div>
-<img src="logo.png" alt="Austin's Logo" >
-<p style=" padding-bottom:20px; color:#6a4413; font-size:25px">Inventory Management - Point of Sale System</p>
+<img src="logo.png" alt="Austin's Logo" class="mb-3" style="width: 30%; height: auto;">
+<p style=" padding-bottom:20px; color:#6a4413; font-size: 20px">Inventory Management - Point of Sale System</p>
     <div class="card text-bg-light mb-6" style="justify-content: center; width: 25rem; padding:30px">
+        <!-- Forgot Password Header -->
+        <h3 class="text-center mb-4" style="color: #6a4413;">Forgot Password</h3>
+        <p class="text-center mb-4">Enter your email to receive a link to reset your password.</p>
+        
         <form id="forgotPassForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
             <!-- Email input -->
             <div class="input-group mb-3">
@@ -25,6 +29,9 @@
 
             <!-- Submit button -->
             <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
+            <div class="text-center">
+            <a href="/Austin-sIMS-POS/Login/index.php" style="color: #6a4413;">Back to Login</a>
+        </div>
         </form>
     </div>
 </div>
