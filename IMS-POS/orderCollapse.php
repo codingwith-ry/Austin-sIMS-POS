@@ -1,33 +1,56 @@
-<div class="collapse order-collapse" id="orderDetails1">
+<div class="collapse order-collapse" id="orderDetails<?php echo $order['orderID']; ?>">
     <div class="order-details">
-        <!-- Dine In Section -->
-        <div class="dine-in-section">
-            <p class="font-weight-bold mb-2" style="color: #7E7E7E;">Dine In</p>
-            <ul class="list-unstyled">
-                <li><input type="checkbox" class="mr-2 item-checkbox">1x Four Cheese Pizza</li>
-                <li><input type="checkbox" class="mr-2 item-checkbox">3x Iced Spanish Latte</li>
-                <li><input type="checkbox" class="mr-2 item-checkbox">2x Overload Fries</li>
-                <li><input type="checkbox" class="mr-2 item-checkbox">1x Lasagna</li>
-            </ul>
-        </div>
-        <!-- Notes/Remarks Section -->
-        <div class="notes-section">
-            <p class="font-weight-bold mb-2" style="color: #7E7E7E;">Notes/Remarks:</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-        </div>
-        <!-- Add-Ons Section -->
-        <div class="addons-section" style="margin-left: 50px;">
-            <p class="font-weight-bold mb-2" style="color: #7E7E7E;">Add-Ons:</p>
-            <ul class="list-unstyled">
-                <li><input type="checkbox" class="mr-2 item-checkbox">1x Extra Cheese</li>
-                <li><input type="checkbox" class="mr-2 item-checkbox">2x Garlic Bread</li>
-                <li><input type="checkbox" class="mr-2 item-checkbox">1x Coleslaw</li>
-            </ul>
-        </div>
-        <!-- Time Section -->
-        <div class="time-section">
-            <p class="font-weight-bold mb-2" style="color: #7E7E7E;">Time Left:</p>
-            <p class="text-center">25 minutes</p>
-        </div>
+        <!-- Table for Order Details -->
+        <table class="table-borderless">
+            <tr>
+                <!-- Order Description -->
+                <td>
+                    <strong>Order Description:</strong>
+                    <ul style="padding-left: 20px; margin: 0;"> 
+                        <li>
+                            <?php 
+                                echo !empty($order['productName'])
+                                        ? htmlspecialchars($order['productName']) . ' (₱' . number_format($order['productPrice'], 2) . ')'
+                                        : 'N/A';
+                            ?>
+                        </li>
+                    </ul>
+                </td>
+                <!-- Order Type -->
+                <td>
+                    <strong>Order Type:</strong><br>
+                    <?php 
+                        echo !empty($order['orderClass'])
+                                ? htmlspecialchars($order['orderClass']) 
+                                : 'N/A'; 
+                    ?>
+                </td>
+                <!-- Add-Ons -->
+                <td>
+                    <strong>Add-Ons:</strong>
+                    <ul style="padding-left: 20px; margin: 0;"> 
+                        <?php 
+                        if (!empty($order['addonList'])) {
+                            $addonItems = explode('<br>', $order['addonList']); 
+                            foreach ($addonItems as $addon) {
+                                echo "<li>" . $addon . "</li>"; 
+                            }
+                        } else {
+                            echo "<li>No Add-Ons</li>";
+                        }
+                        ?>
+                    </ul>
+                </td>
+                <!-- Notes/Remarks -->
+                <td>
+                    <strong>Notes/Remarks:</strong><br>
+                    <?php 
+                        echo !empty($order['orderRemarks'])
+                                ? htmlspecialchars($order['orderRemarks'])
+                                : 'No remarks.'; 
+                    ?>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>

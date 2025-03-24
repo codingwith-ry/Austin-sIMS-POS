@@ -3,7 +3,7 @@
 
 try {
     $pdo = new PDO($attrs, $db_user, $db_pass,$opts);
-    echo 'database connected';    
+    //echo 'database connected';    
 } catch (Exception $e) {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
 }
@@ -15,6 +15,11 @@ $item_categories = $pdo->query($fetchCategoryQuery)->fetchAll(PDO::FETCH_ASSOC);
 /* Fetching Item Name from the database */
 $fetchItemQuery = "SELECT * FROM tbl_item";
 $items = $pdo->query($fetchItemQuery)->fetchAll(PDO::FETCH_ASSOC);
+
+/* Fetching Unit of Measurement from the database */
+
+$fetchUnitQuery = "SELECT * FROM tbl_unitofmeasurments";
+$unitOfMeasurementList = $pdo -> query($fetchUnitQuery) -> fetchAll(PDO::FETCH_ASSOC);
 
 /* Fetching Employee List from the database */
 $fetchEmployeeQuery = "SELECT * FROM employees";
@@ -80,11 +85,12 @@ if (isset($_POST['add_record'])) {
 
 /* PUSHING ITEM DATA TO THE DATABASE */
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST["item_name"]) && isset($_POST["item_category"]) ) {
+    if (isset($_POST["item_name"]) && isset($_POST["item_category"]) && isset($_POST["item_unit"])) {
 
         // Assign POST data to variables
         $item_Name = $_POST["item_name"];
         $item_Category = $_POST["item_category"];
+        $item_Unit = $_POST["item_unit"];
 
         // File upload handling
         $file_name = $_FILES["image"]["name"];
@@ -95,8 +101,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (move_uploaded_file($tempname, $folder)) {
             try {
                 // Insert query without prepared statement
-                $sql = "INSERT INTO tbl_item (Item_Name, Item_Category, Item_Image) 
-                        VALUES ('$item_Name', '$item_Category', '$folder')";
+                $sql = "INSERT INTO tbl_item (Item_Name, Item_Category, Item_Image, Unit_ID) 
+                        VALUES ('$item_Name', '$item_Category', '$folder', '$item_Unit')";
 
                 // Execute query
                 $pdo->exec($sql);
@@ -114,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $fetchInventoryQuery = "
-    SELECT r.Record_ID, r.Record_ItemPurchaseDate, r.Record_EmployeeAssigned, 
+    SELECT r.Record_ID, r.Record_ItemPurchaseDate, r.Record_EmployeeAssigned, r.Record_ItemVolume,
            i.Item_Name, i.Item_Image, ic.Category_Name, u.Unit_Name, r.Record_ItemQuantity, r.Record_ItemExpirationDate, r.Record_ItemPrice
     FROM tbl_record r
     JOIN tbl_item i ON r.Item_ID = i.Item_ID
@@ -125,5 +131,43 @@ $fetchInventoryQuery = "
 
 $inventoryRecords = $pdo->query($fetchInventoryQuery)->fetchAll(PDO::FETCH_ASSOC);
 
+$fetchItemDataQuery = "
+    SELECT 
+        i.Item_ID,
+        i.Item_Name, 
+        i.Item_Image, 
+        i.Item_Category, 
+        ic.Category_Name, 
+        um.Unit_Acronym, 
+        r.Record_ItemQuantity, 
+        r.Record_ItemVolume
+    FROM tbl_item i
+    JOIN tbl_itemcategories ic ON i.Item_Category = ic.Category_ID
+    JOIN tbl_record r ON i.Item_ID = r.Item_ID
+    LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
+";
+
+$itemData = $pdo -> query($fetchItemDataQuery) -> fetchAll(PDO::FETCH_ASSOC);
+
+
+
+if (isset($_GET['item_id'])) {
+    $item_id = $_GET['item_id'];
+
+    // Fetch the records of the clicked item
+    $query = "
+        SELECT i.Item_Name, r.Record_ItemQuantity, r.Record_ItemPurchaseDate, 
+               e.Employee_Name, r.Record_ID
+        FROM tbl_record r
+        JOIN tbl_item i ON i.Item_ID = r.Item_ID
+        LEFT JOIN employees e ON r.Record_EmployeeAssigned = e.Employee_ID
+        WHERE i.Item_ID = :item_id
+    ";
+
+    $stmt = $pdo->prepare($query);
+    $stmt->execute(['item_id' => $item_id]);
+    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+?>
 
 ?>

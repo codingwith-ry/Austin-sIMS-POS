@@ -19,7 +19,6 @@ body, html {
 .main-content {
     display: flex;
     height: 100%;
-    margin-left: 15%; 
 }
 
 .content {
@@ -70,10 +69,9 @@ body, html {
     background-color: #CACACA !important;
 }
 
-/* Table Headers */
 .table.order-table th,
 .table.order-history-table th {
-    background-color: #cacaca !important;
+    background-color: #EBEBEB !important;
     padding: 8px; 
     text-align: center; 
     height: 60px; 

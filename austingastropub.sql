@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Mar 20, 2025 at 03:58 AM
+-- Host: 127.0.0.1
+-- Generation Time: Mar 24, 2025 at 06:32 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -58,6 +58,17 @@ CREATE TABLE `tbl_addons` (
   `addonName` varchar(25) NOT NULL,
   `addonPrice` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_addons`
+--
+
+INSERT INTO `tbl_addons` (`addonID`, `addonName`, `addonPrice`) VALUES
+(1, 'Creamy Beef with Mushroom', 80.00),
+(2, 'Beef Salpicao', 105.00),
+(3, 'Chicken Alfredo', 105.00),
+(4, 'Spicy Beef Caldereta', 105.00),
+(5, 'Lengua with Mushroom', 105.00);
 
 -- --------------------------------------------------------
 
@@ -135,8 +146,10 @@ CREATE TABLE `tbl_item` (
 --
 
 INSERT INTO `tbl_item` (`Item_ID`, `Item_Name`, `Item_Image`, `Item_Category`, `Unit_ID`) VALUES
-(1, 'Magnolia Fresh Milk', 'itemImages/Magnolia Fresh Milk.png', 4, NULL),
-(2, 'Bounty Chicken Breast Fillet', 'itemImages/Bounty Chicken Breast Fillet.webp', 9, NULL);
+(3, 'Stawberry', 'itemImages/strawberry.webp', 1, 5),
+(4, 'Bounty Chicken Breast Fillet', 'itemImages/bounty chicken breast.webp', 9, 5),
+(5, 'Nestle Bear Brand', 'itemImages/bearbrand.jpg', 4, 5),
+(6, 'Coke', 'itemImages/coke.webp', 6, 10);
 
 -- --------------------------------------------------------
 
@@ -146,23 +159,24 @@ INSERT INTO `tbl_item` (`Item_ID`, `Item_Name`, `Item_Image`, `Item_Category`, `
 
 CREATE TABLE `tbl_itemcategories` (
   `Category_ID` int(11) NOT NULL,
-  `Category_Name` varchar(150) DEFAULT NULL
+  `Category_Name` varchar(150) DEFAULT NULL,
+  `Category_Icon` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_itemcategories`
 --
 
-INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`) VALUES
-(1, 'Fruits'),
-(2, 'Vegetables'),
-(3, 'Grains'),
-(4, 'Dairy'),
-(5, 'Fats & Oils'),
-(6, 'Beverages'),
-(7, 'Sweeteners & Condiments'),
-(8, 'Herbs & Spices'),
-(9, 'Protein');
+INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`, `Category_Icon`) VALUES
+(1, 'Fruits', 'fi fi-rr-apple-whole'),
+(2, 'Vegetables', 'fi fi-rr-carrot'),
+(3, 'Grains', 'fi fi-rr-bread-slice'),
+(4, 'Dairy', 'fi fi-rr-milk-alt'),
+(5, 'Fats & Oils', 'fi fi-rr-oil-can'),
+(6, 'Beverages', 'fi fi-rr-coffee'),
+(7, 'Sweeteners & Condiments', 'fi fi-rr-salt-shaker'),
+(8, 'Herbs & Spices', 'fi fi-rr-pepper-hot'),
+(9, 'Protein', 'fi fi-rr-egg-fried');
 
 -- --------------------------------------------------------
 
@@ -222,6 +236,18 @@ CREATE TABLE `tbl_menutoaddons` (
   `addonID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `tbl_menutoaddons`
+--
+
+INSERT INTO `tbl_menutoaddons` (`menuAddonID`, `productID`, `addonID`) VALUES
+(1, 1, 1),
+(2, 1, 4),
+(3, 2, 2),
+(4, 3, 3),
+(5, 4, 4),
+(6, 5, 5);
+
 -- --------------------------------------------------------
 
 --
@@ -232,7 +258,6 @@ CREATE TABLE `tbl_orderitems` (
   `orderItemID` int(11) NOT NULL,
   `orderID` int(11) DEFAULT NULL,
   `productID` int(11) DEFAULT NULL,
-  `productAddons` text DEFAULT NULL,
   `productQuantity` int(11) NOT NULL,
   `productTotal` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -241,22 +266,12 @@ CREATE TABLE `tbl_orderitems` (
 -- Dumping data for table `tbl_orderitems`
 --
 
-INSERT INTO `tbl_orderitems` (`orderItemID`, `orderID`, `productID`, `productAddons`, `productQuantity`, `productTotal`) VALUES
-(1, 1, NULL, NULL, 3, 0.00),
-(2, 2, NULL, NULL, 7, 0.00),
-(3, 3, NULL, NULL, 12, 0.00),
-(4, 4, NULL, NULL, 15, 0.00),
-(5, 5, NULL, NULL, 25, 0.00),
-(6, 1, NULL, NULL, 3, 0.00),
-(7, 2, NULL, NULL, 7, 0.00),
-(8, 3, NULL, NULL, 12, 0.00),
-(9, 4, NULL, NULL, 15, 0.00),
-(10, 5, NULL, NULL, 25, 0.00),
-(11, 1, NULL, NULL, 3, 0.00),
-(12, 2, NULL, NULL, 7, 0.00),
-(13, 3, NULL, NULL, 12, 0.00),
-(14, 4, NULL, NULL, 15, 0.00),
-(15, 5, NULL, NULL, 25, 0.00);
+INSERT INTO `tbl_orderitems` (`orderItemID`, `orderID`, `productID`, `productQuantity`, `productTotal`) VALUES
+(1, 1, 1, 3, 0.00),
+(2, 2, 2, 7, 0.00),
+(3, 3, 3, 12, 0.00),
+(4, 4, 4, 15, 0.00),
+(5, 5, 5, 25, 0.00);
 
 -- --------------------------------------------------------
 
@@ -272,19 +287,20 @@ CREATE TABLE `tbl_orders` (
   `orderClass` varchar(8) NOT NULL,
   `orderStatus` enum('IN PROCESS','DONE','CANCELLED') NOT NULL,
   `salesOrderNumber` varchar(50) DEFAULT NULL,
-  `employeeID` varchar(9) NOT NULL
+  `employeeID` varchar(9) NOT NULL,
+  `orderRemarks` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_orders`
 --
 
-INSERT INTO `tbl_orders` (`orderID`, `orderNumber`, `orderDate`, `orderTime`, `orderClass`, `orderStatus`, `salesOrderNumber`, `employeeID`) VALUES
-(1, 1002, '2025-03-02', '10:15:00', '', 'IN PROCESS', 'ORD-0001', '123456789'),
-(2, 1003, '2025-03-03', '12:45:00', '', 'IN PROCESS', 'ORD-0002', '123456789'),
-(3, 1004, '2025-03-04', '18:30:00', '', 'IN PROCESS', 'ORD-0003', '123456789'),
-(4, 1005, '2025-03-05', '20:00:00', '', 'IN PROCESS', 'ORD-0004', '123456789'),
-(5, 1006, '2025-03-06', '08:10:00', '', 'IN PROCESS', 'ORD-0005', '123456789');
+INSERT INTO `tbl_orders` (`orderID`, `orderNumber`, `orderDate`, `orderTime`, `orderClass`, `orderStatus`, `salesOrderNumber`, `employeeID`, `orderRemarks`) VALUES
+(1, 1002, '2025-03-02', '10:15:00', 'DINE IN', 'IN PROCESS', 'ORD-0001', '123456789', 'Please prepare the order as soon as possible.'),
+(2, 1003, '2025-03-02', '12:45:00', 'DINE IN', 'IN PROCESS', 'ORD-0002', '123456789', 'Please prepare the order as soon as possible.'),
+(3, 1004, '2025-03-02', '18:30:00', 'TAKE OUT', 'IN PROCESS', 'ORD-0003', '123456789', 'Please prepare the order as soon as possible.'),
+(4, 1005, '2025-03-02', '20:00:00', 'TAKE OUT', 'IN PROCESS', 'ORD-0004', '123456789', 'Please prepare the order as soon as possible.'),
+(5, 1006, '2025-03-02', '21:10:00', 'DINE IN', 'IN PROCESS', 'ORD-0005', '123456789', 'Please prepare the order as soon as possible.');
 
 --
 -- Triggers `tbl_orders`
@@ -294,15 +310,14 @@ CREATE TRIGGER `before_insert_salesOrderNumber` BEFORE INSERT ON `tbl_orders` FO
     DECLARE lastOrderNumber INT DEFAULT 0;
     DECLARE newOrderNumber VARCHAR(50);
 
-    -- Fetch the last order number
-    SELECT MAX(CAST(SUBSTRING(salesOrderNumber, 5) AS UNSIGNED))
+    /* Reset orders logic */
+    SELECT IFNULL(MAX(CAST(SUBSTRING(salesOrderNumber, 5) AS UNSIGNED)), 0)
     INTO lastOrderNumber
-    FROM tbl_orders;
+    FROM tbl_orders
+    WHERE orderDate = CURDATE();
 
-    -- Increment the last order number and create new order number
     SET newOrderNumber = CONCAT('ORD-', LPAD(lastOrderNumber + 1, 4, '0'));
 
-    -- Set the new salesOrderNumber value
     SET NEW.salesOrderNumber = newOrderNumber;
 END
 $$
@@ -331,9 +346,11 @@ CREATE TABLE `tbl_record` (
 --
 
 INSERT INTO `tbl_record` (`Record_ID`, `Item_ID`, `Record_ItemVolume`, `Record_ItemQuantity`, `Record_ItemPrice`, `Record_ItemExpirationDate`, `Record_ItemPurchaseDate`, `Record_ItemSupplier`, `Record_EmployeeAssigned`) VALUES
-(217802, 2, 23, 15, 22, '2025-06-20', '2025-02-20', 'Bounty', '123456789'),
-(486387, 1, 5, 3, 30, '2025-07-22', '2025-05-22', 'Magnolia', '123456789'),
-(556037, 2, 15, 5, 300, '2025-02-20', '2025-01-20', 'Bounty', '123456789');
+(239507, 6, 355, 20, 150, '2025-03-27', '2025-03-20', 'Coca-cola', '123456789'),
+(593638, 4, 180, 5, 205, '2028-07-21', '2025-03-21', 'Bounty Fresh', '987654321'),
+(700457, 3, 10, 10, 350, '2029-07-26', '2025-03-19', 'N/A', '395635613'),
+(822860, 3, 10, 6, 50, '2027-03-21', '2025-03-21', 'N/A', '123456789'),
+(962088, 5, 1200, 15, 350, '2028-07-06', '2025-03-25', 'Nestle', '123456789');
 
 -- --------------------------------------------------------
 
@@ -359,7 +376,8 @@ INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VAL
 (6, 'Pound', 'lb'),
 (7, 'Kilogram', 'kg'),
 (8, 'Sack', 's'),
-(9, 'Pieces', 'p');
+(9, 'Pieces', 'p'),
+(10, 'Millimiliters', 'ml');
 
 --
 -- Indexes for dumped tables
@@ -468,7 +486,7 @@ ALTER TABLE `tbl_unitofmeasurments`
 -- AUTO_INCREMENT for table `tbl_addons`
 --
 ALTER TABLE `tbl_addons`
-  MODIFY `addonID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `addonID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tbl_categories`
@@ -480,7 +498,7 @@ ALTER TABLE `tbl_categories`
 -- AUTO_INCREMENT for table `tbl_item`
 --
 ALTER TABLE `tbl_item`
-  MODIFY `Item_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Item_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_itemcategories`
@@ -504,7 +522,7 @@ ALTER TABLE `tbl_menuclass`
 -- AUTO_INCREMENT for table `tbl_menutoaddons`
 --
 ALTER TABLE `tbl_menutoaddons`
-  MODIFY `menuAddonID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `menuAddonID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_orderitems`
@@ -522,7 +540,7 @@ ALTER TABLE `tbl_orders`
 -- AUTO_INCREMENT for table `tbl_unitofmeasurments`
 --
 ALTER TABLE `tbl_unitofmeasurments`
-  MODIFY `Unit_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `Unit_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
