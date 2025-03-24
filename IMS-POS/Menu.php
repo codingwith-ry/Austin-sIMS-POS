@@ -4,6 +4,8 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
     header("Location: /Austin-sIMS-POS/Login/index.php");
     exit();
 }
+$employeeID = $_SESSION['employeeID'];
+
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +29,7 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                 <div class="row" style="width: 100%; margin-left: 1px;">
                     <div class="col-10" style="padding-left: 0px;">
                             <span id="" class="fw-bold fs-3">Order Bar</span>
-                            <span>Employee: 20240001</span>
+                            <span>Employee: <?php echo $employeeID; ?></span>
                     </div>
                     <div class="col-2" style="justify-content: right; display: flex; padding: 20px; padding-right: 0px; padding-top: 0px;">
                         <button type="button" id="resetOrdersButton" class="btn btn-success"><i class="fi fi-rr-rotate-right"></i></button>
@@ -37,9 +39,9 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
             <hr />
             <div class="offcanvas-body overflow-y-auto" style="padding-top: 0px;">
                 <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="width: 100%;">
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" style="width: 100%;" checked>
+                    <input type="radio" class="btn-check dineStatus" name="btnradio" id="btnradio1" autocomplete="off" style="width: 100%;" checked>
                     <label class="btn btn-outline-primary" for="btnradio1">Dine In</label>
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" style="width: 100%;" autocomplete="off">
+                    <input type="radio" class="btn-check dineStatus" name="btnradio" id="btnradio2" style="width: 100%;" autocomplete="off">
                     <label class="btn btn-outline-primary" for="btnradio2">Take Out</label>
                 </div>
                 
@@ -145,7 +147,7 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                         $isActiveCat = "fw-bold active";
                         echo'
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link '.$isActiveCat.'  flex-shrink-0 align-baseline me-3 nav-item"  style="width: 12rem; text-align: left; padding:15px;" data-bs-toggle="pill" data-bs-target="#all'.$menuCategoryName.'Row" role="tab" aria-selected="true">
+                            <button class="nav-link '.$isActiveCat.'  flex-shrink-0 align-baseline me-3 nav-item "  style="width: 12rem; text-align: left; padding:15px;" data-bs-toggle="pill" data-bs-target="#all'.$menuCategoryName.'Row" role="tab" aria-selected="true">
                                 <span>
                                     <i class="fi fi-ss-apps" id="categoryIcon"></i>
                                 </span>
@@ -186,7 +188,7 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                     $allRow = false;
                     if(!$allRow){
                         $ifShow = "show active";
-                        $searchProducts = "SELECT tbl_menu.productID, tbl_menu.productName, tbl_menu.productImage, tbl_menu.productPrice, tbl_categories.categoryName, tbl_categories.categoryIcon FROM tbl_menu INNER JOIN tbl_categories ON tbl_menu.categoryID = tbl_categories.categoryID  WHERE tbl_menu.menuID = $currID;";
+                        $searchProducts = "SELECT tbl_menu.productID, tbl_menu.menuID, tbl_menu.productName, tbl_menu.productImage, tbl_menu.productPrice, tbl_categories.categoryName, tbl_categories.categoryIcon FROM tbl_menu INNER JOIN tbl_categories ON tbl_menu.categoryID = tbl_categories.categoryID  WHERE tbl_menu.menuID = $currID ORDER BY tbl_menu.productName ASC;";
                         $products = $conn->prepare("$searchProducts");
                         $products->execute();
                         echo'<div class="tab-pane fade '.$ifShow.'" id="all'.$menuCategoryName.'Row">
@@ -204,10 +206,10 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                                         <img src="resources/nachos.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
                                         <div class="card-body" id="productBody">
                                             <div class="row">
-                                                <div class="col-8 flex-shrink-0 pe-0">
+                                                <div class="col-xl-8 col-lg-6 flex-shrink-0">
                                                     <span id="productName">'.$product['productName'].'</span>
                                                 </div>
-                                                <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
+                                                <div class="col-xl-4 col-lg-6 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
                                                     <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="'.$product['categoryIcon'].'" style="margin-top: 1px; padding-right: 3px;"></i>'.$product['categoryName'].'</span>
                                                 </div>
                                             </div>
@@ -215,7 +217,7 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                                             <div class="row">
                                                 <div class="col-12">
                                                     <span id="foodPrice">₱'.$product['productPrice'].'</span>
-                                                    <button type="button" id="addtoOrderModal" class="btn btn-primary" data-product-id="'.$product['productID'].'" data-product-name="'.$product['productName'].'" 
+                                                    <button type="button" id="addtoOrderModal" class="btn btn-primary" data-product-id="'.$product['productID'].'" data-menu-id="'.$product['menuID'].'" data-menu-name="'.$row['menuName'].'" data-product-name="'.$product['productName'].'" 
                                                         data-product-price="'.$product['productPrice'].'"  data-product-image="resources/nachos.jpg"  data-product-category="'.$product['categoryName'].'" 
                                                         data-product-icon="'.$product['categoryIcon'].'" data-bs-toggle="modal" data-bs-target="#addItemModal" style="width: 100%; margin-top: 10px;">
                                                         Add to Order
@@ -239,9 +241,9 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                         $products;
                         $categoryCont = $categoryArr[$index][$x];
                         $ifShow = "";
-                        $searchProducts = "SELECT tbl_menu.productID, tbl_menu.productName, tbl_menu.productImage, tbl_menu.productPrice, tbl_menu.menuID, tbl_categories.categoryName, tbl_categories.categoryIcon FROM tbl_menu 
+                        $searchProducts = "SELECT tbl_menu.productID, tbl_menu.menuID, tbl_menu.productName, tbl_menu.productImage, tbl_menu.productPrice, tbl_menu.menuID, tbl_categories.categoryName, tbl_categories.categoryIcon FROM tbl_menu 
                                             INNER JOIN tbl_categories ON tbl_menu.categoryID = tbl_categories.categoryID 
-                                            WHERE tbl_menu.menuID = $currID AND tbl_categories.categoryName = '$categoryCont';";
+                                            WHERE tbl_menu.menuID = $currID AND tbl_categories.categoryName = '$categoryCont' ORDER BY tbl_menu.productName ASC;";
                             
                         $products = $conn->prepare("$searchProducts");
                         $products->execute();
@@ -261,10 +263,10 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                                             <img src="resources/nachos.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
                                             <div class="card-body" id="productBody">
                                                 <div class="row">
-                                                    <div class="col-8 flex-shrink-0 pe-0">
+                                                    <div class="col-xl-8 col-lg-6 flex-shrink-0">
                                                         <span id="productName">'.$product['productName'].'</span>
                                                     </div>
-                                                    <div class="col-4 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
+                                                    <div class="col-xl-4 col-lg-6 col-md-6 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
                                                         <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="'.$product['categoryIcon'].'" style="margin-top: 1px; padding-right: 3px;"></i>'.$product['categoryName'].'</span>
                                                     </div>
                                                 </div>
@@ -272,7 +274,7 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <span id="foodPrice">₱'.$product['productPrice'].'</span>
-                                                        <button id="addtoOrderModal" type="button" data-product-id="'.$product['productID'].'" data-product-name="'.$product['productName'].'" 
+                                                        <button id="addtoOrderModal" type="button" data-product-id="'.$product['productID'].'" data-menu-id="'.$product['menuID'].'" data-menu-name="'.$row['menuName'].'" data-product-name="'.$product['productName'].'" 
                                                         data-product-price="'.$product['productPrice'].'"  data-product-icon="'.$product['categoryIcon'].'" data-product-image="resources/nachos.jpg"  data-product-category="'.$product['categoryName'].'"
                                                         class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
                                                     </div>
@@ -338,6 +340,11 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                                 </div>  
                             </div>
                             <hr />
+                            <span style="font-weight: bold; font-size: 18px;">Variations</span>
+                            <div class="row mb-3" id="variationSection">
+                                
+                            </div>
+                            <hr />
                             <span style="font-weight: bold; font-size: 18px;">Addons</span>
                             <div class="row" id="addonSection">
                                                                
@@ -361,12 +368,12 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
             </div>
         </div>
 
-        <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">Add to Order</h1>
-                        <button id="closeAddModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">Edit Order</h1>
+                        <button id="closeEditModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                             <div class="row">
@@ -374,24 +381,24 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                                     <img src="resources/nachos.jpg" class="card-img-top img-fluid rounded-start rounded-end mb-2" id="foodImage" alt="...">
                                 </div>
                                 <div class="col-8">
-                                    <h4 id="prodName" class="modal-title fs-5 fw-bold"></h4>
-                                    <span class="text-success" style="font-size: 12px;"><i id="catIcon" class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i><span id="prodCategory"></span></span>
+                                    <h4 id="prodNameEdit" class="modal-title fs-5 fw-bold"></h4>
+                                    <span class="text-success" style="font-size: 12px;"><i id="catIconEdit" class="fi fi-rr-french-fries" style="margin-top: 1px; padding-right: 3px;"></i><span id="prodCategoryEdit"></span></span>
                                     <br />
-                                    <span id="prodPrice"></span>
+                                    <span id="prodPriceEdit"></span>
                                     <br />
                                     <br />
                                     <nav aria-label="Page navigation example">
                                         <ul class="pagination align-items-center">
                                             <li class="page-item">
-                                                <button type="button" id="subtractButton" class="btn-sm rounded-circle border-0 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; padding: 0;" >
+                                                <button type="button" id="subtractButtonEdit" class="btn-sm rounded-circle border-0 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; padding: 0;" >
                                                     −
                                                 </button>
                                             </li>
                                             <li class="page-item mx-2">
-                                                <span id="prodQuantity" class="fw-bold"></span>
+                                                <span id="prodQuantityEdit" class="fw-bold"></span>
                                             </li>
                                             <li class="page-item">
-                                                <button type="button" id="addButton" class="btn-sm rounded-circle border-0 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; padding: 0;">
+                                                <button type="button" id="addButtonEdit" class="btn-sm rounded-circle border-0 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; padding: 0;">
                                                     +
                                                 </button>
                                             </li>
@@ -399,9 +406,16 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                                     </nav>
                                 </div>  
                             </div>
+
+                            <hr />
+                            <span style="font-weight: bold; font-size: 18px;">Variations</span>
+                            <div class="row mb-3" id="variationSectionEdit">
+                                
+                            </div>
+
                             <hr />
                             <span style="font-weight: bold; font-size: 18px;">Addons</span>
-                            <div class="row" id="addonSection">
+                            <div class="row" id="addonSectionEdit">
                                                                
                             </div>
                             <hr>
@@ -409,19 +423,18 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
                                 <div class="col">
                                     <span style="font-weight: bold; font-size: 16px;">Total Amount</span>
                                 </div>
-                                <div id="totalAmount" class="col" style="text-align: right;">
+                                <div id="totalAmountEdit" class="col" style="text-align: right;">
                                     ₱280.00
                                 </div>
                             </div>
                     </div>
                     <div class="modal-footer">
-                        <button id="closeButton2" type="button"  class="btn btn-secondary closeAddModal" data-bs-dismiss="modal">Close</button>
-                        <button id ="addtoOrder" type="button" class="btn btn-primary">Add to Order</button>
+                        <button id="closeEditButton" type="button"  class="btn btn-secondary closeEditModal2" data-bs-dismiss="modal">Close</button>
+                        <button id ="saveItemOrder" type="button" class="btn btn-primary">Save Order</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </div>
 
 

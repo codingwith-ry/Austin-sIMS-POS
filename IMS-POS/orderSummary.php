@@ -1,3 +1,7 @@
+
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,7 +85,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Load order items from localStorage
     const orderItems = JSON.parse(localStorage.getItem('orderItems')) || [];
-    const orderType = localStorage.getItem('orderType') || 'Take Out';
+    const orderType = localStorage.getItem('orderType');
     const orderItemsContainer = document.getElementById('orderItemsContainer');
     const totalAmountElement = document.getElementById('totalAmount');
     const amountPaidElement = document.getElementById('amountPaid');
@@ -94,8 +98,11 @@ document.addEventListener('DOMContentLoaded', function() {
         itemElement.classList.add('border', 'rounded', 'p-4', 'mb-2');
         itemElement.innerHTML = `
             <div class="d-flex justify-content-between mb-2">
-                <span class="fw-bold">${item.productQuantity} × ${item.productName}</span>
-                <span>₱${(item.productPrice * item.productQuantity).toFixed(2)}</span>
+                <span class="fw-bold">${item.menuName} (${item.productCategory})</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-bold">${item.productQuantity} × ${item.productName} </span>
+                <span class="">₱${(item.productPrice * item.productQuantity).toFixed(2)} </span>
             </div>
             <div id="addonsSection">
                 ${item.productAddons.map(addon => `
@@ -155,47 +162,186 @@ document.addEventListener('DOMContentLoaded', function() {
             confirmButtonText: 'Proceed'
         }).then((result) => {
             if (result.isConfirmed) {
-                const queueNumber = String(Math.floor(Math.random() * 100) + 1).padStart(3, '0'); // Generate a random queue number and pad with zeros
-                
-                // Generate receipt details
-                let receiptDetails = `
-                    <h4>Order Summary</h4>
-                    <p><strong>Customer Name:</strong> ${customerName}</p>
-                    <p><strong>Order Type:</strong> ${orderType}</p>
-                    <p><strong>Date:</strong> ${now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                    <p><strong>Time:</strong> ${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
-                    <hr>
-                    <h5>Order Details</h5>
-                `;
+                const date = new Date(); // Current date (March 25, 2025)
+                const year = date.getFullYear(); // 2025
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // "03" (March is month 3, padded to two digits)
+                const day = String(date.getDate()).padStart(2, '0'); // "25" (today's day)
 
-                orderItems.forEach(item => {
-                    receiptDetails += `
-                        <p>${item.productQuantity} × ${item.productName} - ₱${(item.productPrice * item.productQuantity).toFixed(2)}</p>
-                        ${item.productAddons.map(addon => `
-                            <p>+${addon.addonName} - ₱${(addon.addonPrice * item.productQuantity).toFixed(2)}</p>
-                        `).join('')}
-                    `;
-                });
+                const now = new Date(); // Current date and time
+                const hours = String(now.getHours()).padStart(2, '0');   // "18" (24-hour format)
+                const minutes = String(now.getMinutes()).padStart(2, '0'); // "30"
+                const seconds = String(now.getSeconds()).padStart(2, '0'); // "00"
 
-                receiptDetails += `
-                    <hr>
-                    <p><strong>Order Total:</strong> ₱${totalAmount.toFixed(2)}</p>
-                    <p><strong>Amount Paid:</strong> ₱${amountPaid.toFixed(2)}</p>
-                    <p><strong>Change:</strong> ₱${(amountPaid - totalAmount).toFixed(2)}</p>
-                    <hr>
-                    <p><strong>Additional Notes:</strong> ${additionalNotes}</p>
-                    <hr>
-                    <p><strong>Queue Number:</strong> ${queueNumber}</p>
-                `;
+                    
+                const dateNow  = `${year}-${month}-${day}`;
+                const timeNow = `${hours}:${minutes}:${seconds}`;
 
+                orderObj = {
+                    orderID: 1,
+                    orderType: orderType,
+                    orderDate: dateNow,
+                    orderTime: timeNow,
+                    customerName: customerName,
+                    orderItems: orderItems,
+                    totalAmount: totalAmount,
+                    amountPaid: amountPaid,
+                    changeAmount: amountPaid - totalAmount,
+                    additionalNotes: additionalNotes,
+                    paymentMode: document.getElementById('paymentMethod').value
+                }
+
+                // Inside your payNowBtn click event handler, replace the Swal.fire with this:
                 Swal.fire({
                     title: 'Payment Successful!',
-                    html: receiptDetails,
-                    icon: 'success'
-                }).then(() => {
-                    window.location.href = 'Menu.php';
-                    localStorage.removeItem('orderItems');
+                    html: generateReceiptHTML(orderObj),
+                    icon: 'success',
+                    showConfirmButton: true,
+                    confirmButtonText: 'Print Receipt',
+                    showCancelButton: true,
+                    cancelButtonText: 'Close',
+                    customClass: {
+                        popup: 'receipt-popup',
+                        htmlContainer: 'receipt-html-container'
+                    },
+                    width: '600px'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('generate_receipt.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(orderObj)
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.blob();
+                        })
+                        .then(blob => {
+                            // Create a URL for the PDF blob
+                            const pdfUrl = URL.createObjectURL(blob);
+                            
+                            // Open the PDF in a new tab
+                            window.open(pdfUrl, '_blank');
+                            
+                            // Clean up by revoking the blob URL
+                            URL.revokeObjectURL(pdfUrl);
+                            window.location.href = 'Menu.php';
+                            localStorage.removeItem('orderItems');
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Error', 'Failed to generate receipt', 'error');
+                        });
+                    }
+                    
                 });
+
+                // Add this function to generate the receipt HTML
+                function generateReceiptHTML(order) {
+                    return `
+                        <div class="receipt-container" style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
+                            <div class="receipt-header" style="text-align: center; margin-bottom: 20px;">
+                                <h2 style="margin: 0;">Austin's Cafe & Gastro Pub</h2>
+                                <p style="margin: 5px 0; font-size: 14px;">Sitio Looban, Tabang Plaridel, 3004<br> Bulacan<br></p>
+                                <p style="margin: 5px 0; font-size: 14px;">CHRISTIAN G MENDOZA - Prop.<br></p>
+                                <p style="margin: 5px 0; font-size: 14px;">TIN: 434-872-844-000</p>
+                            </div>
+                            
+                            <div class="receipt-info" style="margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span><strong>Order #:</strong></span>
+                                    <span>${order.orderID}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span><strong>Date:</strong></span>
+                                    <span>${order.orderDate}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span><strong>Time:</strong></span>
+                                    <span>${order.orderTime}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span><strong>Type:</strong></span>
+                                    <span>${order.orderType}</span>
+                                </div>
+                                ${order.customerName ? `
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span><strong>Customer:</strong></span>
+                                    <span>${order.customerName}</span>
+                                </div>
+                                ` : ''}
+
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
+                                    <span><strong>Payment Method:</strong></span>
+                                    <span><strong>${order.paymentMode}</strong></span>
+                                </div>
+                                
+                            </div>
+                            
+                            <hr style="border-top: 1px dashed; margin: 15px 0;">
+                            
+                            <div class="receipt-items" style="margin-bottom: 15px;">
+                                <h4 style="margin-bottom: 10px; text-align: center;">Order Items</h4>
+                                <hr style="border: 1px dashed;" />
+                                ${order.orderItems.map(item => `
+                                    <div style="margin-bottom: 20px;">
+                                        <div style="font-size: 14px; text-align: left;">
+                                            ${item.menuName} (${item.productCategory})
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                                            <span>${item.productQuantity} × ${item.productName}</span>
+                                            <span>₱${(item.productPrice * item.productQuantity).toFixed(2)}</span>
+                                        </div>
+                                        
+                                        ${item.productAddons.length > 0 ? `
+                                            <div style="margin-left: 20px; font-size: 14px;">
+                                                ${item.productAddons.map(addon => `
+                                                    <div style="display: flex; justify-content: space-between;">
+                                                        <span>+ ${addon.addonName}</span>
+                                                        <span>₱${(addon.addonPrice * item.productQuantity).toFixed(2)}</span>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <hr style="border: 1px dashed;" />
+                            
+                            <div class="receipt-totals" style="margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span><strong>Total Amount:</strong></span>
+                                    <span>₱${order.totalAmount.toFixed(2)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span><strong>Amount Paid:</strong></span>
+                                    <span>₱${order.amountPaid.toFixed(2)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
+                                    <span><strong>Change:</strong></span>
+                                    <span><strong>₱${order.changeAmount.toFixed(2)}</strong></span>
+                                </div>
+                                
+                            </div>
+                            
+                            ${order.additionalNotes ? `
+                                <div class="receipt-notes" style="margin-top: 20px; font-size: 14px;">
+                                    <p><strong>Notes:</strong> ${order.additionalNotes}</p>
+                                </div>
+                            ` : ''}
+                            
+                            <hr />
+                            
+                            <div class="receipt-footer" style="text-align: center; font-size: 14px; color: #666;">
+                                
+                            </div>
+                        </div>
+                    `;
+                }
             }
         });
     });

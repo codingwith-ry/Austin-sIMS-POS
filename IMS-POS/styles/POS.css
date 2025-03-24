@@ -44,20 +44,23 @@ body{
 }
 
 #prodName, #foodName {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
 }
 
 #prodQuantity,
 #prodPrice,
-#prodAddon, 
+#prodAddon,
+#prodQuantityEdit,
+#prodPriceEdit,
+#prodAddonEdit, 
 #foodQuantity,
 #foodPrice,
 #foodAddon {
   font-size: 14px;
 }
 
-#prodPrice, #foodPrice, #addonPrice {
+#prodPrice,#prodPriceEdit,  #foodPrice, #addonPrice {
   font-weight: bold;
   color: green;
   font-size: 14px;

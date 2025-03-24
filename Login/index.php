@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Please fill in all fields";
     } else {
         try {
-            $stmt = $conn->prepare("SELECT Employee_PassKey, Employee_Role FROM employees WHERE Employee_Email = :email");
+            $stmt = $conn->prepare("SELECT Employee_PassKey, Employee_Role, Employee_ID FROM employees WHERE Employee_Email = :email");
             $stmt->bindParam(':email', $email);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -20,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Password is correct
                 $_SESSION['userRole'] = $role;
                 $_SESSION['email'] = $email;
+                $_SESSION['employeeID'] = $user['Employee_ID'];
 
                 if ($role === 'administrator') {
                     header("Location: /Austin-sIMS-POS/Admin/adminDashboard.php");
