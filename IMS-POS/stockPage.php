@@ -309,7 +309,7 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
 
     $(document).ready(function () {
         let table = new DataTable('#stockTable', {
-            ajax: 'IMS_process.php',   // Fetch data from PHP backend
+            ajax: 'fetchRecentStockPurchases.php',   // Fetch data from PHP backend
             responsive: true,
             columns: [
                 { 
