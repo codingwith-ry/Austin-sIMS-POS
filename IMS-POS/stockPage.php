@@ -1,3 +1,34 @@
+<?php 
+include '../Login/database.php';
+
+// Query to count distinct items based on Item_ID and Record_ItemVolume
+$query = "
+    SELECT COUNT(*) AS total_items
+    FROM (
+        SELECT DISTINCT Item_ID, Record_ItemVolume
+        FROM tbl_record
+    ) AS distinct_items
+"; 
+$stmt = $conn->prepare($query);
+$stmt->execute();
+$totalItems = $stmt->fetch(PDO::FETCH_ASSOC)['total_items'];
+
+// Query to calculate total expenses
+$expenseQuery = "SELECT SUM(Record_ItemPrice) AS total_expenses FROM tbl_record";
+$expenseStmt = $conn->prepare($expenseQuery);
+$expenseStmt->execute();
+$totalExpenses = $expenseStmt->fetch(PDO::FETCH_ASSOC)['total_expenses'];
+
+// Query to fetch Total_Stock_Budget for Stock_ID = 1
+$budgetQuery = "SELECT Total_Stock_Budget FROM tbl_stocks WHERE Stock_ID = 1";
+$budgetStmt = $conn->prepare($budgetQuery);
+$budgetStmt->execute();
+$totalStockBudget = $budgetStmt->fetch(PDO::FETCH_ASSOC)['Total_Stock_Budget'];
+
+// Calculate the adjusted stock budget
+$adjustedStockBudget = $totalStockBudget - $totalExpenses;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,12 +76,18 @@
                             </div>
                             <div> 
                                 <h6 class="card-title" style="font-size: 20px;">Remaining Stock Budget</h6>
-                                <h5 class="card-subtitle" style="font-size: x-large; font-weight:bold">Number</h5>
+                                <h5 class="card-subtitle" style="font-size: x-large; font-weight:bold">
+                                ₱<?= htmlspecialchars(number_format($adjustedStockBudget, 2)) ?>
+                                </h5>
+                            </div>
+                            <div style="display: flex; justify-content: flex-end; margin-bottom: 10px; margin-left: 50px;">
+                                <button class="btn btn-primary" id="addBudgetButton" style="font-size: 16px; font-weight: bold;">Add Budget</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="col">
                 <div class="card">
                     <div class="card-body">
@@ -60,29 +97,32 @@
                             </div>
                             <div>
                                 <h6 class="card-title" style="font-size: 20px;">Total Expenses</h6>
-                                <h5 class="card-subtitle" style="font-size: x-large; font-weight:bold">Number</h5>
+                                <h5 class="card-subtitle" style="font-size: x-large; font-weight:bold">
+                                    ₱<?= htmlspecialchars(number_format($totalExpenses, 2)) ?>
+                                </h5>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <div style="display: flex; gap:20px">
-                            <div style="margin-top: 10px;">
-                                <i class="fa-solid fa-box fa-3x"></i>
-                            </div>
-                            <div>
-                                <h6 class="card-title" style="font-size: 20px;">Total Items In Stock</h6>
-                                <h6 class="card-subtitle" style="font-size: x-large; font-weight:bold">Number</h6>
-                            </div>
-                        </div>
-                    </div>
+
+<div class="col" style="margin-bottom: 20px;">
+    <div class="card">
+        <div class="card-body">
+            <div style="display: flex; gap:20px">
+                <div style="margin-top: 10px;">
+                    <i class="fa-solid fa-box fa-3x"></i>
+                </div>
+                <div>
+                    <h6 class="card-title" style="font-size: 20px;">Total Items In Stock</h6>
+                    <h6 class="card-subtitle" style="font-size: x-large; font-weight:bold">
+                        <?= htmlspecialchars($totalItems) ?>
+                    </h6>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <div class="charts" style="margin-bottom: 20px;">
         <div class="row">
@@ -154,46 +194,73 @@
 
 <?php include 'footer.php' ?>
 
+
+
 <script>
     /*************Date Picker Set Up Start****************/
-    document.addEventListener("DOMContentLoaded", function(){
+    document.addEventListener("DOMContentLoaded", function () {
         flatpickr(".flatpickr input", {
             enableTime: false,
             dateFormat: "Y-M-D",
         });
+
+        // Add Budget Button Functionality
+        const addBudgetButton = document.getElementById("addBudgetButton");
+        addBudgetButton.addEventListener("click", function () {
+            // Prompt the user for a budget amount
+            const budgetToAdd = prompt("Enter the amount to add to the Remaining Stock Budget:");
+
+            // Validate the input
+            if (budgetToAdd && !isNaN(budgetToAdd) && Number(budgetToAdd) > 0) {
+                // Send the budget amount to the server via AJAX
+                fetch("updateBudget.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `budget=${encodeURIComponent(budgetToAdd)}`,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            alert("Budget updated successfully!");
+                            // Optionally, update the Remaining Stock Budget on the page
+                            const remainingBudgetElement = document.querySelector(
+                                ".card-title + .card-subtitle"
+                            );
+                            remainingBudgetElement.textContent = `₱${data.new_budget.toLocaleString()}`;
+                        } else {
+                            alert("Failed to update budget: " + data.message);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An error occurred while updating the budget.");
+                    });
+            } else {
+                alert("Please enter a valid positive number.");
+            }
+        });
     });
     /*************Date Picker Set Up End****************/
 
-    
     const stockChart = document.getElementById('stockAnalyticsChart')
     const stockDoughnutChart = document.getElementById('stockdoughnutChart')
 
-    
     /*************Bar Chart Set Up Start****************/
-    new Chart( stockChart,
-        {
-            type: 'bar',
-            data:{
-                labels: [
-                    'Mon', 
-                    'Tue', 
-                    'Wed', 
-                    'Thu', 
-                    'Fri', 
-                    'Sat', 
-                    'Sun'
-                ],
-                datasets: [{
-                    label: 'Daily Expenses',
-                    data: [1000, 3000, 5000, 7000, 10000, 500, 600],
-                    borderWidth: 1
-                }]
-            }
+    new Chart(stockChart, {
+        type: 'bar',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Daily Expenses',
+                data: [1000, 3000, 5000, 7000, 10000, 500, 600],
+                borderWidth: 1
+            }]
         }
-    )
-    /*************Bart Chart Set Up End****************/
+    });
+    /*************Bar Chart Set Up End****************/
 
-    
     /*************Doughnut Chart Set Up Start****************/
     const doughnutChartData = {
         labels: [
@@ -201,43 +268,38 @@
             'Total Expenses',
             'Total Items in Stock'
         ],
-        data: [
-            20,
-            70,
-            100
-        ],
-    }
+        data: [20, 70, 100],
+    };
 
     new Chart(stockDoughnutChart, {
-    type: 'doughnut',
-    data: {
-        labels: doughnutChartData.labels,
-        datasets: [
-            {
+        type: 'doughnut',
+        data: {
+            labels: doughnutChartData.labels,
+            datasets: [{
                 data: doughnutChartData.data
-            }
-        ]
-    },
-    options: {
-        borderRadius: 2,
-        hoverBorderWidth: 0,
-        plugins:{
-            legend:{
-                display: false
-            }
+            }]
         },
-        spacing: 5, 
-        weight: 1,
-        cutout: '80%'
-    }
-});
+        options: {
+            borderRadius: 2,
+            hoverBorderWidth: 0,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            spacing: 5,
+            weight: 1,
+            cutout: '80%'
+        }
+    });
     /*************Doughnut Chart Set Up End****************/
 
-    
-    /*************Stock Table Set up Start****************/
+    /*************Stock Table Set Up Start****************/
     let table = new DataTable('#stockTable', {
         responsive: true
-    })
+    });
+    /*************Stock Table Set Up End****************/
 </script>
+
 </body>
 </html>

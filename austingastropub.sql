@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Mar 24, 2025 at 06:32 AM
+-- Host: 127.0.0.1:3306
+-- Generation Time: Mar 25, 2025 at 04:43 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -723,10 +723,29 @@ CREATE TABLE `tbl_record` (
 
 INSERT INTO `tbl_record` (`Record_ID`, `Item_ID`, `Record_ItemVolume`, `Record_ItemQuantity`, `Record_ItemPrice`, `Record_ItemExpirationDate`, `Record_ItemPurchaseDate`, `Record_ItemSupplier`, `Record_EmployeeAssigned`) VALUES
 (239507, 6, 355, 20, 150, '2025-03-27', '2025-03-20', 'Coca-cola', '123456789'),
+(301176, 3, 40, 100, 100, '2025-06-25', '2025-05-23', 'EverFruit', '987654321'),
 (593638, 4, 180, 5, 205, '2028-07-21', '2025-03-21', 'Bounty Fresh', '987654321'),
 (700457, 3, 10, 10, 350, '2029-07-26', '2025-03-19', 'N/A', '395635613'),
 (822860, 3, 10, 6, 50, '2027-03-21', '2025-03-21', 'N/A', '123456789'),
 (962088, 5, 1200, 15, 350, '2028-07-06', '2025-03-25', 'Nestle', '123456789');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_stocks`
+--
+
+CREATE TABLE `tbl_stocks` (
+  `Stock_ID` int(32) NOT NULL,
+  `Total_Stock_Budget` int(32) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tbl_stocks`
+--
+
+INSERT INTO `tbl_stocks` (`Stock_ID`, `Total_Stock_Budget`) VALUES
+(1, 3050);
 
 -- --------------------------------------------------------
 
@@ -847,6 +866,12 @@ ALTER TABLE `tbl_record`
   ADD PRIMARY KEY (`Record_ID`) USING BTREE,
   ADD KEY `FK__tbl_item` (`Item_ID`) USING BTREE,
   ADD KEY `FK__employees` (`Record_EmployeeAssigned`) USING BTREE;
+
+--
+-- Indexes for table `tbl_stocks`
+--
+ALTER TABLE `tbl_stocks`
+  ADD PRIMARY KEY (`Stock_ID`);
 
 --
 -- Indexes for table `tbl_unitofmeasurments`
