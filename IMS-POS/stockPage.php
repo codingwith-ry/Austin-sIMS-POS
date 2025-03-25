@@ -2,6 +2,8 @@
 include '../Login/database.php';
 include 'IMS_process.php';
 
+
+
 // Query to count distinct items based on Item_ID and Record_ItemVolume
 $query = "
     SELECT COUNT(*) AS total_items
@@ -28,6 +30,8 @@ $totalStockBudget = $budgetStmt->fetch(PDO::FETCH_ASSOC)['Total_Stock_Budget'];
 
 // Calculate the adjusted stock budget
 $adjustedStockBudget = $totalStockBudget - $totalExpenses;
+
+
 ?>
 
 <!DOCTYPE html>
@@ -253,19 +257,51 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
         const stockChart = document.getElementById('stockAnalyticsChart')
         const stockDoughnutChart = document.getElementById('stockdoughnutChart')
 
-        /*************Bar Chart Set Up Start****************/
-        new Chart(stockChart, {
-            type: 'bar',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Daily Expenses',
-                    data: [1000, 3000, 5000, 7000, 10000, 500, 600],
-                    borderWidth: 1
-                }]
-            }
-        });
-        /*************Bar Chart Set Up End****************/
+/*************Bar Chart Set Up Start****************/
+fetch('fetchWeeklyExpenses.php') // Fetch data from the new PHP endpoint
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Prepare the data for the bar chart
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const expensesByDay = Array(7).fill(0); // Initialize an array for the week
+
+            data.data.forEach(record => {
+                const purchaseDate = new Date(record.purchase_date);
+                const dayIndex = purchaseDate.getDay(); // Get the day index (0 = Sunday, 6 = Saturday)
+                expensesByDay[dayIndex] += parseFloat(record.total_expenses); // Add the expenses for the day
+            });
+
+            // Update the bar chart
+            const ctx = document.getElementById('stockAnalyticsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: daysOfWeek,
+                    datasets: [{
+                        label: 'Daily Expenses',
+                        data: expensesByDay,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        } else {
+            console.error('Error fetching weekly expenses:', data.message);
+        }
+    })
+    .catch(error => console.error('Error fetching data:', error));
+/*************Bar Chart Set Up End****************/
 
         /*************Doughnut Chart Set Up Start****************/
         fetch('stockBudgetGraph.php') // replace with the path to your PHP file
