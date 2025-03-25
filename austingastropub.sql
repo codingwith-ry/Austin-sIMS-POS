@@ -89,7 +89,39 @@ CREATE TABLE `tbl_categories` (
 --
 -- Dumping data for table `tbl_categories`
 --
-
+INSERT INTO `tbl_categories` (`categoryID`, `categoryName`, `categoryIcon`, `menuID`) VALUES
+	(1, 'Hot', 'fi fi-rr-mug-hot-alt', 1),
+	(2, 'Iced', 'fi fi-rr-coffee', 1),
+	(3, 'Tea and Refresher', 'fi fi-rr-mug-tea', 1),
+	(4, 'Slushies', 'fi fi-rr-blender', 1),
+	(5, 'Signature Drinks', 'fi fi-rr-sparkles', 1),
+	(6, 'Non-Coffee', 'fi fi-rr-milk', 1),
+	(7, 'Iced Blended Coffee', 'fi fi-rr-snowflake', 1),
+	(8, 'Signature Cocktails', 'fi fi-rr-sparkles', 2),
+	(9, 'Classic Cocktails', 'fi fi-rr-martini-glass-citrus', 2),
+	(10, 'Shooters', 'fi fi-rr-glass-whiskey-rocks', 2),
+	(11, 'Beers', 'fi fi-rr-beer', 2),
+	(12, 'Premium Bottles', 'fi fi-rr-wine-bottle', 2),
+	(13, 'Drinks', 'fi fi-rr-jug-alt', 2),
+	(14, 'Starter', 'fi fi-rr-sandwich', 2),
+	(15, 'Chicken', 'fi fi-rr-drumstick', 2),
+	(16, 'Pork', 'fi fi-rr-bacon', 2),
+	(17, 'Seafoods', 'fi fi-rr-shrimp', 2),
+	(18, 'Rice and Noodles', 'fi fi-rr-bowl-rice', 2),
+	(19, 'Beef', 'fi fi-rr-steak', 2),
+	(20, 'Vegetables', 'fi fi-rr-leafy-green', 2),
+	(21, 'Dessert', 'fi fi-rr-cupcake-alt', 2),
+	(26, 'Beef', 'fi fi-rr-steak', 3),
+	(27, 'Pork', 'fi fi-rr-bacon', 3),
+	(28, 'Chicken', 'fi fi-rr-drumstick', 3),
+	(29, 'Seafoods', 'fi fi-rr-shrimp', 3),
+	(30, 'Vegetables', 'fi fi-rr-leafy-green', 3),
+	(31, 'Pasta and Noodles', 'fi fi-rr-fusilli', 3),
+	(33, 'Starters', 'fi fi-rr-french-fries', 1),
+	(34, 'Pancakes', 'fi fi-rr-pancakes', 1),
+	(35, 'Rice Meal', 'fi fi-rr-bowl-rice', 1),
+	(36, 'Pasta', 'fi fi-rr-fusilli', 1),
+	(37, 'Salad', 'fi fi-rr-salad', 1);
 -- --------------------------------------------------------
 
 --
