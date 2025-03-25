@@ -1,5 +1,6 @@
 <?php 
 include '../Login/database.php';
+include 'IMS_process.php';
 
 // Query to count distinct items based on Item_ID and Record_ItemVolume
 $query = "
@@ -174,21 +175,21 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
     </div>
 
     <div class="stockTable">
-        <div class="card" style="padding: 5px;">
-            <table id="stockTable" class="display">
-                <thead>
-                    <tr>
-                        <th>Stock Items</th>
-                        <th>Date Purchased</th>
-                        <th>Employee Assigned</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-            </table>
-        </div>
+    <div class="card" style="padding: 5px;">
+        <table id="stockTable" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Item Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Volume</th>
+                </tr>
+            </thead>
+        </table>
     </div>
+</div>
+
 
 </main>
 
@@ -295,8 +296,62 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
     /*************Doughnut Chart Set Up End****************/
 
     /*************Stock Table Set Up Start****************/
-    let table = new DataTable('#stockTable', {
-        responsive: true
+    function format(data) {
+        return `
+            <table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
+                <tr><td><strong>Description:</strong></td><td>${data.description}</td></tr>
+                <tr><td><strong>Quantity:</strong></td><td>${data.quantity}</td></tr>
+                <tr><td><strong>Volume:</strong></td><td>${data.volume} ${data.unit}</td></tr>
+                <tr><td><strong>Image:</strong></td><td><img class="item-img" src="${data.image}" alt="Item Image" style="height: 150px; width: 100%; object-fit: contain;"></td></tr>
+            </table>
+        `;
+    }
+
+    $(document).ready(function () {
+        let table = new DataTable('#stockTable', {
+            ajax: 'IMS_process.php',   // Fetch data from PHP backend
+            responsive: true,
+            columns: [
+                { 
+                    data: null,
+                    className: "details-control",
+                    defaultContent: "Details",
+                    orderable: false
+                },
+                { data: "Item_Name" },
+                { data: "Category_Name" },
+                { data: "Record_ItemQuantity" },
+                { 
+                    data: null,
+                    render: function(data, type, row) {
+                        return `${row.Record_ItemVolume} ${row.Unit_Acronym}`;
+                    }
+                }
+            ]
+        });
+
+        // Toggle child rows
+        $('#stockTable tbody').on('click', 'td.details-control', function () {
+            let tr = $(this).closest('tr');
+            let row = table.row(tr);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                // Use full row data for dynamic child generation
+                let data = row.data();
+                let childData = {
+                    description: "Category: " + data.Category_Name,
+                    image: data.Item_Image,
+                    unit: data.Unit_Acronym,
+                    volume: data.Record_ItemVolume,
+                    quantity: data.Record_ItemQuantity
+                };
+                row.child(format(childData)).show();
+                tr.addClass('shown');
+            }
+        });
     });
     /*************Stock Table Set Up End****************/
 </script>
