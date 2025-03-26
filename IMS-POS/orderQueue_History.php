@@ -101,7 +101,7 @@ if ($page == "orderQueue_History.php") {
                            menu.productID AS productID, 
                            menu.productPrice AS productPrice, 
                            (
-                             SELECT GROUP_CONCAT(CONCAT(addon.addonName, ' (₱', FORMAT(addon.addonPrice,2), ')') SEPARATOR '<br>')
+                             SELECT GROUP_CONCAT(CONCAT(addon.addonName, ' (₱', FORMAT(addon.addonPrice,2), ')') SEPARATOR ', ') AS addonList
                              FROM tbl_menutoaddons menuaddon
                              INNER JOIN tbl_addons addon ON menuaddon.addonID = addon.addonID
                              WHERE menuaddon.productID = menu.productID
@@ -121,8 +121,8 @@ if ($page == "orderQueue_History.php") {
                             <td>{$order['orderTime']}</td>
                             <td>IN PROCESS</td>
                             <td>
-                              <button class='btn btn-success btn-sm done'><i class='fas fa-check'></i> Done</button>
-                              <button class='btn btn-danger btn-sm cancel'><i class='fas fa-times'></i> Cancel</button>
+                              <button class='btn btn-success btn-sm mr-2'><i class='fas fa-check'></i> Done</button>
+                              <button class='btn btn-danger btn-sm'><i class='fas fa-times'></i> Cancel</button>
                             </td>
                           </tr>";
                     echo "<tr class='no-border'><td colspan='7' class='p-0'>";

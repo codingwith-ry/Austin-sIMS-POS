@@ -49,8 +49,7 @@ const tableData = Object.keys(groupedData).map((purchaseDate, index) => {
   return {
     groupId: index,
     Record_ItemPurchaseDate: purchaseDate,
-    Record_EmployeeAssigned:
-      groupedData[purchaseDate][0].Record_EmployeeAssigned,
+    Record_EmployeeAssigned: groupedData[purchaseDate][0].Employee_Name,
     items: groupedData[purchaseDate],
     Record_IDs: groupedData[purchaseDate]
       .map((item) => item.Record_ID)
@@ -74,7 +73,11 @@ let itemRecords = new DataTable("#itemRecords", {
     },
     { data: "groupId", title: "Group ID" },
     { data: "Record_ItemPurchaseDate", title: "Purchase Date" },
-    { data: "Record_EmployeeAssigned", title: "Employee Assigned" },
+    {
+      data: "Record_EmployeeAssigned",
+      title: "Employee Assigned",
+      className: "text-end",
+    },
     {
       className: "dt-control",
       orderable: false,

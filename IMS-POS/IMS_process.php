@@ -121,11 +121,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $fetchInventoryQuery = "
     SELECT r.Record_ID, r.Record_ItemPurchaseDate, r.Record_EmployeeAssigned, r.Record_ItemVolume,
-           i.Item_Name, i.Item_Image, ic.Category_Name, u.Unit_Name, r.Record_ItemQuantity, r.Record_ItemExpirationDate, r.Record_ItemPrice
+           i.Item_Name, i.Item_Image, ic.Category_Name, u.Unit_Name, 
+           r.Record_ItemQuantity, r.Record_ItemExpirationDate, r.Record_ItemPrice,
+           e.Employee_Name
     FROM tbl_record r
     JOIN tbl_item i ON r.Item_ID = i.Item_ID
     LEFT JOIN tbl_itemcategories ic ON i.Item_Category = ic.Category_ID
     LEFT JOIN tbl_unitofmeasurments u ON i.Unit_ID = u.Unit_ID
+    LEFT JOIN employees e ON r.Record_EmployeeAssigned = e.Employee_ID
     ORDER BY r.Record_ItemPurchaseDate DESC
 ";
 
@@ -168,6 +171,4 @@ if (isset($_GET['item_id'])) {
     $stmt->execute(['item_id' => $item_id]);
     $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-?>
-
 ?>

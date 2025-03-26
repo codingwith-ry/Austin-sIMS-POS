@@ -13,6 +13,13 @@
     padding: 15px; 
 }
 
+.order-collapse .order-details td {
+    white-space: normal; 
+    word-wrap: break-word; 
+    overflow-wrap: break-word;
+    max-width: 300px;
+}
+
 /* Table Styling */
 
 
