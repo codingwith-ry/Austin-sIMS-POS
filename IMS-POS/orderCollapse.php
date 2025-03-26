@@ -42,7 +42,7 @@
                     </ul>
                 </td>
                 <!-- Notes/Remarks -->
-                <td>
+                <td class="text-break">
                     <strong>Notes/Remarks:</strong><br>
                     <?php 
                         echo !empty($order['orderRemarks'])

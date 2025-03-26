@@ -1,10 +1,68 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .table-container {
-        overflow-x: scroll !important;
+        overflow-x: auto; /* Enable horizontal scrolling for smaller screens */
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile devices */
     }
     .btn {
-        width: auto;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    .btn img {
+        width: 14px;
+        height: 14px;
+        margin-right: 4px;
+    }
+    .table.order-table,
+    .table.order-history-table {
+        width: 100%; /* Ensure the table takes full width */
+        font-size: 14px; /* Adjust font size for smaller screens */
+    }
+    .table.order-table th,
+    .table.order-history-table th {
+        font-size: 14px; /* Reduce header font size */
+        padding: 6px; /* Adjust padding for smaller screens */
+    }
+    .table.order-table td,
+    .table.order-history-table td {
+        font-size: 12px; /* Reduce cell font size */
+        padding: 6px; /* Adjust padding for smaller screens */
+    }
+    .order-row td,
+    .history-row td {
+        height: auto; /* Allow rows to adjust height dynamically */
+        white-space: nowrap; /* Prevent text wrapping */
+    }
+    .collapse {
+        padding: 8px; /* Adjust padding for collapsible content */
+    }
+}
+
+/* Responsive Design for Very Small Screens */
+@media (max-width: 576px) {
+    .table-container {
+        padding: 0; /* Remove extra padding for smaller screens */
+    }
+    .table.order-table th,
+    .table.order-history-table th {
+        font-size: 12px; /* Further reduce header font size */
+    }
+    .table.order-table td,
+    .table.order-history-table td {
+        font-size: 10px; /* Further reduce cell font size */
+    }
+    .btn {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+    .btn img {
+        width: 12px;
+        height: 12px;
+        margin-right: 3px;
+    }
+    .order-row td,
+    .history-row td {
+        white-space: normal; /* Allow text wrapping for very small screens */
     }
 }
 
@@ -130,35 +188,69 @@ body, html {
     justify-content: space-between;
 }
 
-.btn.cancel {
-    background-color: #D95151;
-    color: #000;
-    border: none;
-    border-radius: 10px;
+/* Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
     padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-sm {
+    display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 90px;
+  /* Remove gap: 5px; */
+  margin-right: 5px; /* Add a right margin */
+}
+
+.btn-sm:last-child {
+  margin-right: 0; /* Remove margin from the last button */
+}
+
+.btn-sm i {
+    font-size: 14px;
+}
+
+.btn td {
+    padding: auto;
 }
 
 .btn.done {
     background-color: #5EBC8E;
-    color: #000;
+    color: #fff;
     border: none;
-    border-radius: 10px;
-    padding: 5px 10px;
 }
 
-.btn {
-    width: 38%;
-    height: 105%;
-    border-radius: 10px !important;
-    display: inline-flex !important;
+.btn.cancel {
+    background-color: #D95151;
+    color: #fff;
+    border: none;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn img {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    vertical-align: middle;
 }
 
 .btn.done img,
 .btn.cancel img {
     width: 16px;
     height: 16px;
-    margin-top: 3px;
-    margin-right: 6px !important;
+    margin-top: 5px;
+    margin-right: 10px !important;
     vertical-align: middle; 
 }
 
@@ -240,4 +332,44 @@ body, html {
 
 #historyCollapseContainer.show {
     display: block;
+}
+
+/* Ensure proper alignment for collapsible order rows */
+.order-row {
+  cursor: pointer;
+  background-color: #f9f9f9;
+}
+
+.order-row:hover {
+  background-color: #f1f1f1;
+}
+
+.no-border {
+  border: none !important;
+}
+
+.no-border td {
+  padding: 0 !important;
+}
+
+.collapse {
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-top: none;
+}
+
+.collapse td {
+  text-align: left;
+}
+
+/* Ensure buttons fit properly in the table cell */
+.table td {
+  vertical-align: middle; /* Align content vertically in the middle */
+  text-align: center; /* Center-align text and buttons */
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.table td:last-child {
+  width: 150px; /* Set a fixed width for the Action column */
 }
