@@ -31,7 +31,7 @@ function generateReceiptHTML($order) {
             <td></td>
         </tr>
         <tr>
-            <td> ' . $item['productName'] . '</td>
+            <td> ' . $item['productName'] . '(' . $item['productVariationName'] . ')</td>
             <td>' . $item['productQuantity'] . ' x ₱' . number_format($item['productPrice'], 2) . '</td>
         </tr>';
         

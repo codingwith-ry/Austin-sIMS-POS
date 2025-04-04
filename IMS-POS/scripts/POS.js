@@ -89,8 +89,6 @@ document.addEventListener('click', function (event) {
                 document.querySelectorAll(".addon-checkbox").forEach(checkbox => {
                     checkbox.addEventListener("change", updateTotal);
                 });
-
-                
             } else {
                 addonContainer.innerHTML = "<p class='text-muted'>No addons available.</p>";
             }
@@ -111,7 +109,7 @@ document.addEventListener('click', function (event) {
                 data.forEach(variation => {
                     variationContainer.innerHTML += `
                         <div class="col-xl-4 col-lg-4 col-md-4">
-                            <input class="form-check-input variation-radio" type="radio" name="variation" value="${variation.variationName}" data-price="${variation.variationPrice}" ${variation.variationID === data[0].variationID ? 'checked' : ''}>
+                            <input class="form-check-input variation-radio" type="radio" name="variation" value="${variation.variationID}" data-varname ="${variation.variationName}" data-price="${variation.variationPrice}" ${variation.variationID === data[0].variationID ? 'checked' : ''}>
                             <label class="form-check-label mt-1">
                                 ${variation.variationName} <br />
                                 <span id="variationPrice">₱${variation.variationPrice}</span>
@@ -209,6 +207,7 @@ document.addEventListener('click', function (event) {
                 productPrice: basePrice,
                 productName: productName,
                 productVariation: document.querySelector(".variation-radio:checked")?.value || null,
+                productVariationName: selectedVariation? selectedVariation.getAttribute("data-varname") : null,
                 productImage: productImage,
                 productCategory: productCategory,
                 productAddons: addons,
@@ -602,7 +601,7 @@ function updateOrderBar(){
                                     ${item.productName}
                                 </span>
                                 <span id=""  style="font-size: 14px;">
-                                    ${item.productVariation ? `(${item.productVariation})` : ''}
+                                    ${item.productVariationName ? `(${item.productVariationName})` : ''}
                                 </span>
                             </div>
                             <div class="col-4" style="justify-content: right; padding-left: 0px;">
