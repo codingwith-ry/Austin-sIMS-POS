@@ -2,18 +2,18 @@
     require_once('../../Login/database.php');
     
     $currentDate = date('Y-m-d');
-    $checkID = $conn->prepare("SELECT MAX(orderNumber) AS maxOrderNumber, MAX(salesOrderNumber) AS maxSalesOrderNumber, orderDate FROM tbl_orders");
+    $checkID = $conn->prepare("SELECT orderNumber,salesOrderNumber,orderDate FROM tbl_orders ORDER BY orderDate DESC LIMIT 1;");
     $checkID->execute();
     $row = $checkID->fetch(PDO::FETCH_ASSOC);
 
 
-    if ($row['maxOrderNumber']) {
+    if (isset($row['orderNumber'])) {
         if ($row['orderDate'] == $currentDate) {
-            $orderNumber = $row['maxOrderNumber'] + 1;
-            $salesOrderNumber = $row['maxSalesOrderNumber'] + 1;
+            $orderNumber = $row['orderNumber'] + 1;
+            $salesOrderNumber = $row['salesOrderNumber'] + 1;
         } else {
             $orderNumber = 1001;
-            $salesOrderNumber = $row['maxSalesOrderNumber'] + 1;
+            $salesOrderNumber = $row['salesOrderNumber'] + 1;
         }
     } else {
         $orderNumber = 1001;

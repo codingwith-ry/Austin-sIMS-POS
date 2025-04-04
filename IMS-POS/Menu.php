@@ -31,6 +31,7 @@ $employeeID = $_SESSION['employeeID'];
                     <div class="col-10" style="padding-left: 0px;">
                             <span id="" class="fw-bold fs-3">Order Bar</span>
                             <span>Employee: <?php echo $employeeID; ?></span>
+                            
                     </div>
                     <div class="col-2" style="justify-content: right; display: flex; padding: 20px; padding-right: 0px; padding-top: 0px;">
                         <button type="button" id="resetOrdersButton" class="btn btn-success"><i class="fi fi-rr-rotate-right"></i></button>

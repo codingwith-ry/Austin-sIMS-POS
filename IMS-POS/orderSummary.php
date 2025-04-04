@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span class="fw-bold">${item.menuName} (${item.productCategory})</span>
             </div>
             <div class="d-flex justify-content-between mb-2">
-                <span class="fw-bold">${item.productQuantity} × ${item.productName} </span>
+                <span class="fw-bold">${item.productQuantity} × ${item.productName}${item.productVariationName? '('+item.productVariationName+')': ""} </span>
                 <span class="">₱${(item.productPrice * item.productQuantity).toFixed(2)} </span>
             </div>
             <div id="addonsSection">
