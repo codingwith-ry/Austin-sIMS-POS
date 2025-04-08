@@ -92,225 +92,14 @@ if ($page == "orderQueue_History.php") {
                 </tr>
               </thead>
               <tbody>
-                <?php
-                  require_once('../Login/database.php');
-                  $queue_orders = $conn->query("
-                    SELECT 
-                    tbl_orders.orderID,
-                    tbl_orders.orderNumber, 
-                    tbl_orders.salesOrderNumber, 
-                    tbl_orders.orderTime, 
-                    tbl_orders.orderClass, 
-                    tbl_orders.orderStatus,
-                    tbl_orders.additionalNotes, 
-                    COALESCE(SUM(tbl_orderItems.productQuantity), 0) AS productQuantity
-                    FROM tbl_orders
-                    LEFT JOIN tbl_orderItems ON tbl_orders.orderNumber = tbl_orderItems.orderNumber
-                    GROUP BY 
-                    tbl_orders.orderNumber, 
-                    tbl_orders.salesOrderNumber, 
-                    tbl_orders.orderTime, 
-                    tbl_orders.orderClass, 
-                    tbl_orders.orderStatus;
-                  ");
-                  while ($order = $queue_orders->fetch(PDO::FETCH_ASSOC)) {
-                    echo "<tr class='order-row' data-toggle='collapse' data-target='#orderDetails{$order['orderID']}' aria-expanded='false' aria-controls='orderDetails{$order['orderID']}'>
-                            <td>{$order['orderID']}</td>
-                            <td>{$order['orderNumber']}</td>
-                            <td>{$order['salesOrderNumber']}</td>
-                            <td>{$order['productQuantity']}</td>
-                            <td>{$order['orderTime']}</td>
-                            <td>IN PROCESS</td>
-                            <td class='p-3'>
-                              <button class='btn btn-success'><i class='fas fa-check'></i> Done</button>
-                              <button class='btn btn-danger'><i class='fas fa-times'></i> Cancel</button>
-                            </td>
-                          </tr>";
-                    $orderCollapse = $conn->query("
-                      SELECT
-                      tbl_orderitems.orderItemID,
-                      tbl_orderitems.orderNumber,
-                      tbl_menuclass.menuName,
-                      tbl_categories.categoryName,
-                      tbl_variations.variationName,
-                      tbl_menu.productName,
-                      tbl_orderitems.productQuantity
-                      FROM tbl_orderitems
-                      LEFT JOIN tbl_variations ON tbl_orderitems.variationID = tbl_variations.variationID
-                      LEFT JOIN tbl_menu ON tbl_orderitems.productID = tbl_menu.productID
-                      LEFT JOIN tbl_menuClass ON tbl_menu.menuID = tbl_menuClass.menuID
-                      LEFT JOIN tbl_categories ON tbl_menu.categoryID = tbl_categories.categoryID
-                      WHERE tbl_orderitems.orderNumber = '{$order['orderNumber']}';
-                    ");
-                    // Collapsible Order Details
-                    // This is a placeholder for the order details. You can replace it with actual data.
-                    $rowCount = $orderCollapse->rowCount();
-
-
-                    echo "
-                    <tr>
-                      <td colspan='8' class='p-0'>
-                        <div class='collapse order-collapse' id='orderDetails{$order['orderID']}'>
-                          <div class='order-details'>
-                              <!-- Table for Order Details -->
-                              <table id='collapsible' class='border-bottom'>
-                                  <tr>
-                                    <thead>
-                                      <th>Order Type</th>
-                                      <th>Order Items</th>
-                                      <th>Add-Ons</th>
-                                      <th colspan='3'>Notes/Remarks</th>
-                                    </thead>
-                                  </tr>
-
-
-                                  ";
-                                    $counter = 0;
-                                      while($orderDetails = $orderCollapse->fetch(PDO::FETCH_ASSOC)) {
-                                      $variation = isset($orderDetails['variationName']) ? '('.$orderDetails['variationName'].')' :"";
-                                      
-                                      if($counter == 0) {
-                                        echo"
-                                        <tr>
-                                          <!-- Order Type -->
-                                          <td id='orderType' rowspan='{$rowCount}'>
-                                          <span>{$order['orderClass']}</span>
-                                          </td>
-                                          
-                                            <td class='' colspan='1'>
-                                                <span class='fw-bold'>{$orderDetails['menuName']}({$orderDetails['categoryName']})</span>
-                                                <br />
-                                                <span>{$orderDetails['productQuantity']} x {$orderDetails['productName']}{$variation}</span>
-                                            </td>
-
-                                            <!-- Add-Ons -->
-                                            <td colspan='2'>
-                                              <br />
-                                              <ul>
-                                        ";
-                                        $orderAdd = $conn->query("
-                                          SELECT
-                                          tbl_addons.addonName
-                                          FROM tbl_orderaddons
-                                          LEFT JOIN tbl_addons ON tbl_orderaddons.addonID = tbl_addons.addonID
-                                          WHERE tbl_orderaddons.orderItemID = '{$orderDetails['orderItemID']}';
-                                        ");
-
-                                        if($orderAdd->rowCount() > 0) {
-                                          while ($addon = $orderAdd->fetch(PDO::FETCH_ASSOC)) {
-                                            echo "<li>+{$addon['addonName']}</li>";
-                                          }
-                                        } else {
-                                          echo "<li>No Add-Ons</li>";
-                                        }
-
-                                      
-
-                                        echo "
-                                              </ul>
-                                            </td>
-                                            <!-- Notes/Remarks -->
-                                            <td id='remarks' class='text-break' colspan='2' rowspan='{$rowCount}'>
-                                                <span>{$order['additionalNotes']}</span>
-                                            </td>
-                                        </tr>
-                                      ";
-                                      } else {
-                                          echo "
-                                          <tr>
-                                            <td class='' colspan='1'>
-                                                <span class='fw-bold'>{$orderDetails['menuName']}({$orderDetails['categoryName']})</span>
-                                                <br />
-                                                <span>{$orderDetails['productQuantity']} x {$orderDetails['productName']}{$variation}</span>
-                                            </td>
-
-                                            <!-- Add-Ons -->
-                                            <td colspan='2'>
-                                              <br />
-                                              <ul>
-                                        ";
-                                        $orderAdd = $conn->query("
-                                          SELECT
-                                          tbl_addons.addonName
-                                          FROM tbl_orderaddons
-                                          LEFT JOIN tbl_addons ON tbl_orderaddons.addonID = tbl_addons.addonID
-                                          WHERE tbl_orderaddons.orderItemID = '{$orderDetails['orderItemID']}';
-                                        ");
-
-                                        if($orderAdd->rowCount() > 0) {
-                                          while ($addon = $orderAdd->fetch(PDO::FETCH_ASSOC)) {
-                                            echo "<li>+{$addon['addonName']}</li>";
-                                          }
-                                        } else {
-                                          echo "<li>No Add-Ons</li>";
-                                        }
-                                        echo"
-                                              </ul>
-                                            </td>
-                                          </tr>
-                                          ";
-                                      }
-                                      $counter++;
-                                      }
-                                      echo"
-                              </table>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>";
-                  }
-                ?>
+                
               </tbody>
             </table>
           </div>
         </div>
   
-        <!-- PICK UP TAB (Placeholder) -->
-  
-        <!-- HISTORY TAB -->
-        <div class="tab-pane fade <?php echo ($activeTab=='history') ? 'show active' : ''; ?>" id="history" role="tabpanel" aria-labelledby="history-tab">
-          <!-- Search and Filter Controls -->
-          <div class="d-flex align-items-center mb-3">
-            <input type="text" id="searchBox" class="form-control mr-2" placeholder="Search orders..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-            <i id="filterToggle" class="fas fa-sliders-h filter-icon"></i>
-          </div>
-          <div id="filterPanel" class="mb-3" style="display: none; padding: 10px;">
-    <label for="sortOrder">Sort Order:</label>
-    <select id="sortOrder" class="form-control w-auto d-inline-block ml-2">
-        <option value="desc"<?php if (!isset($_GET['sort_order']) || $_GET['sort_order'] === 'desc') echo ' selected'; ?>>Newest first</option>
-        <option value="asc"<?php if (isset($_GET['sort_order']) && $_GET['sort_order'] === 'asc') echo ' selected'; ?>>Oldest first</option>
-    </select>
-</div>
-          <div class="table-container mt-3">
-            <table class="table table-bordered" id="historyTable">
-              <thead>
-                <tr>
-                  <th>Order Number</th>
-                  <th>Sales Order Number</th>
-                  <th>Employee ID</th>
-                  <th>Date Purchased</th>
-                  <th>Order Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php
-                  // Load all matching history orders (used for DataTables)
-                  $history_orders = $conn->query("SELECT * FROM tbl_orders WHERE orderStatus IN ('DONE', 'CANCELLED') ORDER BY orderDate DESC");
-                  while ($order = $history_orders->fetch(PDO::FETCH_ASSOC)) {
-                    echo "<tr class='history-row' data-order-id='{$order['orderID']}' data-order-number='{$order['orderNumber']}' data-order-date='{$order['orderDate']}'>
-                            <td>{$order['orderNumber']}</td>
-                            <td>{$order['salesOrderNumber']}</td>
-                            <td>{$order['employeeID']}</td>
-                            <td>{$order['orderDate']} {$order['orderTime']}</td>
-                            <td>{$order['orderStatus']}</td>
-                          </tr>";
-                  }
-                ?>
-              </tbody>
-            </table>
-          </div>
-        </div>
-  
+      
+        
       </div>
     </main>
   </div>
@@ -348,6 +137,137 @@ if ($page == "orderQueue_History.php") {
   <!-- Custom JS -->
   <script>
     $(document).ready(function() {
+      function refreshTable() {
+          $.ajax({
+              url: 'scripts/fetchOrders.php',
+              type: 'GET',
+              dataType: 'json',
+              data: {
+                orderStatus: 'IN PROCESS',
+              },
+              success: function (data) {
+                  console.log(data);
+                  // Clear the existing table body
+                  const tableBody = $('#queue tbody');
+                  tableBody.empty();
+
+                  // Populate the table with the updated data
+                  data.forEach(order => {
+                      var row = `
+                          <tr class="order-row" data-toggle="collapse" data-target="#orderDetails${order.orderID}" aria-expanded="false" aria-controls="orderDetails${order.orderID}">
+                              <td>${order.orderID}</td>
+                              <td>${order.orderNumber}</td>
+                              <td>${order.salesOrderNumber}</td>
+                              <td>${order.productQuantity}</td>
+                              <td>${order.orderTime}</td>
+                              <td>${order.orderStatus}</td>
+                              <td class="p-3">
+                                  ${order.orderStatus === 'IN PROCESS' ? `
+                                      <button class="btn btn-success"><i class="fas fa-check"></i> Done</button>
+                                      <button class="btn btn-danger"><i class="fas fa-times"></i> Cancel</button>
+                                  ` : ''}
+                              </td>
+                          </tr>
+                          <tr>
+                          <td colspan='8' class='p-0'>
+                            <div class='collapse order-collapse' id='orderDetails${order.orderID}'>
+                              <div class='order-details'>
+                                  <!-- Table for Order Details -->
+                                  <table id='collapsible' class='border-bottom'>
+                                      <tr>
+                                        <thead>
+                                          <th>Order Type</th>
+                                          <th>Order Items</th>
+                                          <th>Add-Ons</th>
+                                          <th colspan='3'>Notes/Remarks</th>
+                                        </thead>
+                                      </tr>
+                                      
+                      `;
+
+                      $.ajax({
+                          url: 'scripts/fetchOrderItems.php',
+                          type: 'GET',
+                          dataType: 'json',
+                          data: {
+                              orderNumber: order.orderNumber,
+                          },
+                          success: function (orderItems) {
+                              let counter = 0;
+                              let rowCount = orderItems.length;
+                              orderItems.forEach(item => {
+                                  variationName = item.variationName ? item.variationName : '';
+                                  if(counter == 0) {
+                                    row += `
+                                      <tr>
+                                          <!-- Order Type -->
+                                            <td id='orderType' rowspan=${rowCount}>
+                                            <span>${order.orderClass}</span>
+                                            </td>
+                
+                                            <td class='' colspan='1'>
+                                                <span class='fw-bold'>${item.menuName}(${item.categoryName})</span>
+                                                <br />
+                                                <span>${item.productQuantity} x ${item.productName}${variationName? "("+variationName+")" : ""}</span>
+                                            </td>
+
+                                            <!-- Add-Ons -->
+                                            <td colspan='2'>
+                                              <br />
+                                              <ul>
+                                              </ul>
+                                            </td>
+
+                                             <td id='remarks' class='text-break' colspan='2' rowspan=${rowCount}>
+                                                <span>${order.additionalNotes}</span>
+                                            </td>
+                                          </tr>
+                                  `;
+                                  }else{
+                                    row += `
+                                      <tr>
+                                          <!-- Order Type -->
+
+                                            <td class='' colspan='1'>
+                                                <span class='fw-bold'>${item.menuName}(${item.categoryName})</span>
+                                                <br />
+                                                <span>${item.productQuantity} x ${item.productName}${variationName? "("+variationName+")" : ""}</span>
+                                            </td>
+
+                                            <!-- Add-Ons -->
+                                            <td colspan='2'>
+                                              <br />
+                                              <ul>
+                                              </ul>
+                                            </td>
+                                          </tr>
+                                  `;
+                                  }
+                                  counter++;
+                              });
+                              row += `
+                                  </table>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>`;
+                        tableBody.append(row);
+                          },
+                          error: function () {
+                              console.error('Failed to fetch order items.');
+                          }
+                      });
+                      
+                  });
+              },
+              error: function () {
+                  console.error('Failed to fetch orders.');
+              }
+          });
+      }
+      setInterval(refreshTable, 5000);
+      refreshTable();
+
       let selectedOrder;
       let actionType = "";
   
@@ -367,35 +287,35 @@ if ($page == "orderQueue_History.php") {
       });
   
       // Tie custom search to DataTables API
-      $("#searchBox").on("keyup", function() {
-        historyTable.search(this.value).draw();
-      });
-  
-      // Toggle filter panel
-      $("#filterToggle").on("click", function() {
-        $("#filterPanel").toggle();
-      });
-  
-      // Re-order DataTables when sort order changes
-      $("#sortOrder").on("change", function() {
-        var orderVal = $(this).val();
-        historyTable.order([3, orderVal]).draw();
-      });
-  
-      // Manages click event on any history row to load sidebar content dynamically
-      $(document).on("click", ".history-row", function() {
-        let orderID = $(this).data("order-id");
-        if (orderID) {
-          $.ajax({
-            url: "sideBar.php",
-            type: "GET",
-            data: { orderID: orderID },
-            success: function(response) {
-              $("#historySidebar").html(response).show();
-            }
-          });
-        }
-      });
+        $("#searchBox").on("keyup", function() {
+          historyTable.search(this.value).draw();
+        });
+    
+        // Toggle filter panel
+        $("#filterToggle").on("click", function() {
+          $("#filterPanel").toggle();
+        });
+    
+        // Re-order DataTables when sort order changes
+        $("#sortOrder").on("change", function() {
+          var orderVal = $(this).val();
+          historyTable.order([3, orderVal]).draw();
+        });
+    
+        // Manages click event on any history row to load sidebar content dynamically
+        $(document).on("click", ".history-row", function() {
+          let orderID = $(this).data("order-id");
+          if (orderID) {
+            $.ajax({
+              url: "sideBar.php",
+              type: "GET",
+              data: { orderID: orderID },
+              success: function(response) {
+                $("#historySidebar").html(response).show();
+              }
+            });
+          }
+        });
   
       // Hide sidebar when clicking outside
       $(document).mouseup(function(e) {
@@ -406,103 +326,90 @@ if ($page == "orderQueue_History.php") {
       });
   
       // Handle Done/Cancel button clicks with confirmation
-        $(".done, .cancel").click(function(e) {
-        e.stopPropagation();
-        selectedOrder = $(this).closest("tr");
-        actionType = $(this).hasClass("done") ? "done" : "cancel";
+      // Handle Done/Cancel button clicks with SweetAlert
+      $(document).on('click', '.btn-success, .btn-danger', function () {
+          event.stopPropagation();
 
-        Swal.fire({
-            title: actionType === "done" ? "Mark as Done?" : "Cancel Order?",
-            text: actionType === "done"
-                ? "Are you sure you want to mark this order as completed?"
-                : "Are you sure you want to cancel this order? This action cannot be undone.",
-            icon: actionType === "done" ? "success" : "warning",
-            showCancelButton: true,
-            confirmButtonText: actionType === "done" ? "Yes, mark as done" : "Yes, cancel order",
-            cancelButtonText: "No, keep it",
-            confirmButtonColor: actionType === "done" ? "#28a745" : "#dc3545",
-            cancelButtonColor: "#6c757d"
-        }).then((result) => {
-            if (result.isConfirmed) {
-            const orderID = selectedOrder.find("td:first").text();
-            const orderStatus = actionType === "done" ? "DONE" : "CANCELLED";
+          const isDone = $(this).hasClass('btn-success'); // Check if the button is "Done"
+          const orderRow = $(this).closest('tr'); // Get the row of the clicked button
+          const orderNum = orderRow.find('td:eq(1)').text(); // Get the Order ID from the first column
 
-            $.ajax({
-                url: "updateOrder.php",
-                type: "POST",
-                data: { orderID: orderID, orderStatus: orderStatus },
-                success: function(response) {
-                try {
-                    const res = JSON.parse(response);
-                    if (res.success) {
-                     // Remove the order from the Queue view
-                    selectedOrder.remove();
-                    // Update the DataTables-managed History tab.
-                    // Get the history table instance
-                    var historyTable = $('#historyTable').DataTable();
-                    let orderDetails = res.orderDetails;
-                    // Generate a new row HTML for the updated order information
-                    let newRow = `<tr class='history-row' data-order-id='${orderDetails.orderID}' data-order-number='${orderDetails.orderNumber}' data-order-date='${orderDetails.orderDate}'>
-                              <td>${orderDetails.orderNumber}</td>
-                              <td>${orderDetails.salesOrderNumber}</td>
-                              <td>${orderDetails.employeeID}</td>
-                              <td>${orderDetails.orderDate} ${orderDetails.orderTime}</td>
-                              <td>${orderDetails.orderStatus}</td>
-                            </tr>`;
-                    // Add new row to the DataTable and redraw
-                    historyTable.row.add($(newRow)).draw();
-  
-                    Swal.fire({
-                        title: "Success!",
-                        text: `The order has been ${orderStatus.toLowerCase()}.`,
-                        icon: "success",
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    } else {
-                     Swal.fire({
-                        title: "Error!",
-                        text: res.error,
-                        icon: "error",
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    }
-                } catch (e) {
-                    console.error("Parsing error:", e);
-                    Swal.fire({
-                    title: "Error!",
-                    text: "Response parsing failed.",
-                    icon: "error",
-                    timer: 2000,
-                    showConfirmButton: false
-                    });
-                }
-                },
-                error: function() {
-                Swal.fire({
-                    title: "Error!",
-                    text: "There was an issue with the request.",
-                    icon: "error",
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                }
-            });
-            }
-        });
-        });
+          // SweetAlert confirmation dialog
+          Swal.fire({
+              title: isDone ? 'Mark as Done?' : 'Cancel Order?',
+              text: isDone
+              ? `Are you sure you want to mark Order #${orderNum} to be for pickup?`
+              : `Are you sure you want to cancel Order #${orderNum}?`,
+              icon: isDone ? 'success' : 'warning',
+              showCancelButton: true,
+              confirmButtonColor: isDone ? '#28a745' : '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: isDone ? 'Yes' : 'No',
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  // Send AJAX request to update the order status
+                  $.ajax({
+                      url: 'scripts/updateOrder.php', // PHP script to handle the update
+                      type: 'POST',
+                      data: {
+                          orderNum: orderNum,
+                          status: 'PICKUP',
+                      },
+                      success: function (response) {
+                          response = JSON.parse(response); // Parse the JSON response
+                          if (response.success) {
+                              // Show success message
+                              Swal.fire({
+                                  title: 'Success!',
+                                  text: response.message,
+                                  icon: 'success',
+                                  timer: 2000,
+                                  showConfirmButton: false,
+                              });
+
+                              // Optionally, remove the row or update the status in the table
+                              refreshTable();
+                          } else {
+                              Swal.fire({
+                                  title: 'Error!',
+                                  text: response.message,
+                                  icon: 'error',
+                              });
+                          }
+                      },
+                      error: function () {
+                          Swal.fire({
+                              title: 'Error!',
+                              text: 'An error occurred while updating the order status.',
+                              icon: 'error',
+                          });
+                      },
+                  });
+              }else {
+                  // User clicked "No" or closed the modal
+                
+              }
+          });
+      });
+      
   
       // Toggle collapse for order rows on click
-      $(".order-row").on("click", function() {
-        var collapseElement = $(this).next().find(".collapse");
-        collapseElement.collapse("toggle");
+      $(document).on('click', '.order-row', function (event) {
+        // Check if the click target is NOT a button
+        if (!$(event.target).closest('.btn-success, .btn-danger').length) {
+            var collapseElement = $(this).next().find('.collapse');
+            collapseElement.collapse('toggle');
+        }
       });
   
       // Hide sidebar when switching to Queue or Pick Up tabs
       $("#queue-tab, #pickup-tab").on("click", function() {
         $("#historySidebar").hide();
       });
+
+
+
+
     });
   </script>
 </body>

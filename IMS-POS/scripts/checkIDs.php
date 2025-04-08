@@ -1,8 +1,10 @@
 <?php
     require_once('../../Login/database.php');
     
+    date_default_timezone_set('Asia/Manila');
+    
     $currentDate = date('Y-m-d');
-    $checkID = $conn->prepare("SELECT orderNumber,salesOrderNumber,orderDate FROM tbl_orders ORDER BY orderDate DESC LIMIT 1;");
+    $checkID = $conn->prepare("SELECT orderNumber,salesOrderNumber,orderDate FROM tbl_orders ORDER BY orderTime DESC LIMIT 1;");
     $checkID->execute();
     $row = $checkID->fetch(PDO::FETCH_ASSOC);
 
