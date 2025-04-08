@@ -201,27 +201,36 @@ include("IMS_process.php");
                                         <strong style="font-size: 25px">Inventory Items</strong>
                                         <!-- Loop through each item to display in the desired format -->
                                         <?php
-                                        // Loop through and display each item
+                                        $groupedItems = [];
+
                                         foreach ($itemData as $row) {
+                                            $itemKey = $row['Item_Name'] . '_' . $row['Record_ItemVolume'];
+
+                                            if (!isset($groupedItems[$itemKey])) {
+                                                // First time adding this item+volume combo
+                                                $groupedItems[$itemKey] = $row;
+                                            } else {
+                                                // Sum the quantities
+                                                $groupedItems[$itemKey]['Record_ItemQuantity'] += $row['Record_ItemQuantity'];
+                                            }
+                                        }
+
+                                        // Loop through and display each item
+                                        foreach ($groupedItems as $row) {
                                             $itemID = htmlspecialchars($row['Item_ID']);
                                             $itemName = htmlspecialchars($row['Item_Name']);
                                             $itemQty = htmlspecialchars($row['Record_ItemQuantity']);
-                                            $modalID = "decreaseModal_" . $itemID;
-
-                                            $cardBorderClass = ($itemQty <= 3) ? 'border border-warning' : '';
-                                            $tooltipAttr = ($itemQty <= 3) ? 'data-bs-toggle="tooltip" data-bs-title="Quantity of this item is low"' : '';
+                                            $volume = htmlspecialchars($row['Record_ItemVolume']);
+                                            $uniqueKey = $itemID . '_' . $volume;
+                                            $modalID = "decreaseModal_" . $uniqueKey;
 
                                             $cardBorderClass = ($itemQty == 0) ? 'border border-danger' : (($itemQty <= 3) ? 'border border-warning' : '');
-
-                                            // Tooltip for low stock items
                                             $tooltipAttr = ($itemQty <= 3) ? 'data-bs-toggle="tooltip" data-bs-title="Quantity of this item is low"' : '';
-
-                                            // For image dimming if qty is 0
                                             $imageStyle = ($itemQty == 0) ? 'filter: grayscale(100%) brightness(60%);' : 'object-fit: contain;';
                                             $outOfStockOverlay = ($itemQty == 0) ? '
-                                            <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
-                                                Out of Stock
-                                            </div>' : '';
+                                                <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
+                                                    Out of Stock
+                                                </div>' : '';
 
                                             echo '
                                                 <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0 product-item" data-category="' . htmlspecialchars($row['Item_Category']) . '">
@@ -235,63 +244,61 @@ include("IMS_process.php");
                                                                 <span style="font-weight: bold; opacity: 0.5; font-size:10px;">' . htmlspecialchars($row['Category_Name']) . '</span><br />
                                                                 <span style="font-size: 20px; font-weight:bold;">' . $itemName . '</span><br />
                                                                 <span style="font-weight: bold; font-size:15px;">' . $itemQty . ' pcs</span><br />
-                                                                <span style="opacity: 0.5; font-size:15px;">' . htmlspecialchars($row['Record_ItemVolume']) . ' (' . htmlspecialchars($row['Unit_Acronym']) . ')</span>
+                                                                <span style="opacity: 0.5; font-size:15px;">' . $volume . ' (' . htmlspecialchars($row['Unit_Acronym']) . ')</span>
                                                             </div>
                                                             <button class="btn btn-warning mt-3 w-100" data-bs-toggle="modal" data-bs-target="#' . $modalID . '">
                                                                 Decrease Quantity
                                                             </button>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div>';
 
-                                                <!-- Modal -->
+                                            // Modal (keep using unique modal ID using volume)
+                                            echo '
                                                 <div class="modal fade" id="' . $modalID . '" tabindex="-1" aria-labelledby="' . $modalID . 'Label" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <form method="post" action="decreaseItemQuantity.php">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header bg-warning">
-                                                                <h5 class="modal-title" id="' . $modalID . 'Label">Decrease Quantity</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <p><strong>' . $itemName . '</strong></p>
-                                                                <p>Available Quantity: <strong>' . $itemQty . ' pcs</strong></p>
-
-                                                                <div class="mb-3">
-                                                                    <label for="slider_' . $itemID . '" class="form-label">Select amount to decrease:</label>
-                                                                    <input type="range" class="form-range" min="1" max="' . $itemQty . '" value="1" id="slider_' . $itemID . '" name="decrease_amount" oninput="updatePreview_' . $itemID . '()">
-                                                                    <div>
-                                                                        Decreasing by: <strong id="decreasePreview_' . $itemID . '">1</strong> pcs
-                                                                    </div>
-                                                                    <div>
-                                                                        Quantity after decrease: <strong id="afterQty_' . $itemID . '">' . ($itemQty - 1) . '</strong> pcs
-                                                                    </div>
+                                                    <div class="modal-dialog">
+                                                        <form method="post" action="decreaseItemQuantity.php">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header bg-warning">
+                                                                    <h5 class="modal-title" id="' . $modalID . 'Label">Decrease Quantity</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                                 </div>
-
-                                                                <input type="hidden" name="item_id" value="' . $itemID . '">
+                                                                <div class="modal-body">
+                                                                    <p><strong>' . $itemName . '</strong></p>
+                                                                    <p>Available Quantity: <strong>' . $itemQty . ' pcs</strong></p>
+                                                                    <div class="mb-3">
+                                                                        <label for="slider_' . $itemID . '" class="form-label">Select amount to decrease:</label>
+                                                                        <input type="range" class="form-range" min="1" max="' . $itemQty . '" value="1" id="slider_' . $uniqueKey . '" name="decrease_amount" oninput="updatePreview_' . $uniqueKey . '()">
+                                                                        <div>Decreasing by: <strong id="decreasePreview_' . $uniqueKey . '">1</strong> pcs</div>
+                                                                        <div>Quantity after decrease: <strong id="afterQty_' . $uniqueKey . '">' . ($itemQty - 1) . '</strong> pcs</div>
+                                                                    </div>
+                                                                    <input type="hidden" name="item_id" value="' . $itemID . '">
+                                                                    <input type="hidden" name="volume" value="' . $volume . '">
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                    <button type="submit" name="confirm_decrease" class="btn btn-danger">Confirm Decrease</button>
+                                                                </div>
                                                             </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                <button type="submit" name="confirm_decrease" class="btn btn-danger" >Confirm Decrease</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>';
+                                                        </form>
+                                                    </div>
+                                                </div>';
 
-                                            echo '<script>
-                                                    function updatePreview_' . $itemID . '() {
-                                                        const slider = document.getElementById("slider_' . $itemID . '");
-                                                        const preview = document.getElementById("decreasePreview_' . $itemID . '");
-                                                        const afterQty = document.getElementById("afterQty_' . $itemID . '");
-
-                                                        const decreaseVal = parseInt(slider.value);
-                                                        preview.textContent = decreaseVal;
-                                                        afterQty.textContent = ' . $itemQty . ' - decreaseVal;
-                                                    }
+                                            // Slider JS
+                                            echo '
+                                                <script>
+                                                function updatePreview_' . $uniqueKey . '() {
+                                                    const slider = document.getElementById("slider_' . $uniqueKey . '");
+                                                    const preview = document.getElementById("decreasePreview_' . $uniqueKey . '");
+                                                    const afterQty = document.getElementById("afterQty_' . $uniqueKey . '");
+                                                    const decreaseVal = parseInt(slider.value);
+                                                    preview.textContent = decreaseVal;
+                                                    afterQty.textContent = ' . $itemQty . ' - decreaseVal;
+                                                }
                                                 </script>';
                                         }
                                         ?>
+
                                     </div>
                                 </div>
                             </div>

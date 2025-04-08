@@ -1,28 +1,29 @@
 <?php
-
 include '../Login/database.php';
 
 if (isset($_POST['confirm_decrease'])) {
-    require '../Login/database.php'; // your PDO connection file
+    $itemID = $_POST['item_id'];
+    $volume = $_POST['volume'];
+    $amountToDecrease = (int) $_POST['decrease_amount'];
 
-    $item_id = $_POST['item_id'];
-    $decrease_amount = intval($_POST['decrease_amount']);
+    // Fetch current quantity for this item+volume
+    $stmt = $conn->prepare("SELECT Record_ItemQuantity, Record_ID FROM tbl_record WHERE Item_ID = ? AND Record_ItemVolume = ? ORDER BY Record_ItemQuantity DESC LIMIT 1");
+    $stmt->execute([$itemID, $volume]);
 
-    // Fetch current quantity
-    $stmt = $conn->prepare("SELECT Record_ItemQuantity FROM tbl_record WHERE Item_ID = ?");
-    $stmt->execute([$item_id]);
     $record = $stmt->fetch();
 
-    if ($record && $record['Record_ItemQuantity'] >= $decrease_amount) {
-        $newQty = $record['Record_ItemQuantity'] - $decrease_amount;
-
-        $update = $conn->prepare("UPDATE tbl_record SET Record_ItemQuantity = ? WHERE Item_ID = ?");
-        $update->execute([$newQty, $item_id]);
+    if ($record && $record['Record_ItemQuantity'] >= $amountToDecrease) {
+        // Use the Record_ID of the specific record to decrease the quantity
+        $update = $conn->prepare("UPDATE tbl_record SET Record_ItemQuantity = Record_ItemQuantity - :amount WHERE Record_ID = :record_id");
+        $update->execute([
+            ':amount' => $amountToDecrease,
+            ':record_id' => $record['Record_ID']
+        ]);
 
         header("Location: Inventory_Item-Records.php");
         exit;
     } else {
-        header("Location: your_items_page.php?error=not_enough_quantity");
+        header("Location: Inventory_Item-Records.php?error=Insufficient quantity or item not found.");
         exit;
     }
 }
