@@ -92,6 +92,8 @@ $employeeID = $_SESSION['employeeID'];
     <div class="container">
         <ul class="nav nav-pills" id="pills-tab" role="tablist">
             <?php 
+            
+            
             $arrTabs = array();
             $index = 0;
             $getMenu = "SELECT * from tbl_menuclass;";
@@ -124,6 +126,7 @@ $employeeID = $_SESSION['employeeID'];
             $result->execute();
             if($result->rowCount() > 0){
                 $categoryArr = [];
+                $categoryIDArr = [];
                 while($row = $result->fetch()){
                     $currID = $row['menuID'];
                     $searchCategories = "SELECT categoryID, categoryName, categoryIcon FROM tbl_categories WHERE menuID = $currID;";
@@ -161,11 +164,13 @@ $employeeID = $_SESSION['employeeID'];
                         ';
                         $allTab = true;
                     }
+                    
                     while($category = $categories->fetch()){
                         $isActiveCat = "";
                         $explodeCategory = explode(' ', trim($category['categoryName']))[0];
-                        $tabName = strtolower($explodeCategory).$menuCategoryName."Row";
+                        $tabName = strtolower($explodeCategory).$category['categoryID'].$menuCategoryName."Row";
                         $categoryArr[$index][$catIndex]= $category['categoryName'];
+                        $categoryIDArr[$index][$catIndex]= $category['categoryID'];
                         echo'
                         <li class="nav-item" role="presentation">
                             <button class="nav-item nav-link flex-shrink-0 align-baseline me-3 "  style="width: 12rem; text-align: left; padding:15px;" data-bs-toggle="pill" data-bs-target="#'.$tabName.'" role="tab" aria-selected="true">
@@ -238,7 +243,7 @@ $employeeID = $_SESSION['employeeID'];
                     }
                     while($x < count($categoryArr[$index])){
                         $explodeRow = explode(' ', trim($categoryArr[$index][$x]))[0];
-                        $tabName = strtolower($explodeRow).$menuCategoryName."Row";
+                        $tabName = strtolower($explodeRow).$categoryIDArr[$index][$x].$menuCategoryName."Row";
                         $searchCategories;
                         $products;
                         $categoryCont = $categoryArr[$index][$x];

@@ -202,10 +202,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         const orderNumber = data.orderNumber;
                         const salesOrderNumber = data.salesOrderNumber;
 
-                        const date = new Date(); // Current date (March 25, 2025)
-                        const year = date.getFullYear(); // 2025
-                        const month = String(date.getMonth() + 1).padStart(2, '0'); // "03" (March is month 3, padded to two digits)
-                        const day = String(date.getDate()).padStart(2, '0'); // "25" (today's day)
+                        const formatter = new Intl.DateTimeFormat('en-CA', {
+                            timeZone: 'Asia/Manila',
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        });
+
+                        // Format the date
+                        const parts = formatter.formatToParts(new Date());
+                        const year = parts.find(part => part.type === 'year').value; // Extract year
+                        const month = parts.find(part => part.type === 'month').value; // Extract month
+                        const day = parts.find(part => part.type === 'day').value; // Extract day
+                    
 
                         const now = new Date(); // Current date and time
                         const hours = String(now.getHours()).padStart(2, '0');   // "18" (24-hour format)
@@ -230,8 +239,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             additionalNotes: additionalNotes,
                             paymentMode: document.getElementById('paymentMethod').value
                         };
+                        
 
                         console.log('Order Object:', orderObj);
+
 
                         // Inside your payNowBtn click event handler, replace the Swal.fire with this:
                         Swal.fire({

@@ -148,7 +148,7 @@ function generateReceiptHTML($order) {
         </div>' : '') . '
         <div class="footer">
             THANK YOU!<br>
-            ' . date('m/d/Y h:i A') . '
+            ' .$order['orderDate'] . '
         </div>
     </body>
     </html>';
