@@ -7,6 +7,33 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'inventory staff 
 
 include("../Login/database.php");
 include("IMS_process.php");
+
+$groupedItemsQuery = $conn->prepare("
+    SELECT 
+        i.Item_Name, 
+        SUM(r.Record_ItemQuantity) AS Total_Quantity, 
+        r.Record_ItemVolume, 
+        COALESCE(u.Unit_Acronym, '') AS Unit_Acronym
+    FROM tbl_record r
+    JOIN tbl_item i ON r.Item_ID = i.Item_ID
+    LEFT JOIN tbl_unitofmeasurments u ON i.Unit_ID = u.Unit_ID
+    GROUP BY i.Item_Name, r.Record_ItemVolume
+    ORDER BY i.Item_Name ASC
+");
+$groupedItemsQuery->execute();
+$groupedItems = $groupedItemsQuery->fetchAll(PDO::FETCH_ASSOC);
+
+// Separate items into "Out of Stock" and "Low Stock"
+$outOfStockItems = [];
+$lowStockItems = [];
+
+foreach ($groupedItems as $item) {
+    if ($item['Total_Quantity'] == 0) {
+        $outOfStockItems[] = $item;
+    } elseif ($item['Total_Quantity'] > 0 && $item['Total_Quantity'] < 4) {
+        $lowStockItems[] = $item;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +50,51 @@ include("IMS_process.php");
 <body>
     <?php include 'verticalNav.php' ?>
     <main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
+    <?php if (!empty($outOfStockItems) || !empty($lowStockItems)): ?>
+    <div class="modal fade" id="lowStockModal" tabindex="-1" aria-labelledby="lowStockModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: rgb(50, 50, 50); color: white;">
+                    <h5 class="modal-title" id="lowStockModalLabel">Stock Alerts</h5>
+                </div>
+                <div class="modal-body">
+                    <?php if (!empty($outOfStockItems)): ?>
+                        <h5 class="text-danger">Out of Stock</h5>
+                        <ul class="list-group mb-3">
+                            <?php foreach ($outOfStockItems as $item): ?>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong>
+                                    <span>
+                                        <?php echo htmlspecialchars($item['Total_Quantity']); ?> pcs 
+                                        (<?php echo htmlspecialchars($item['Record_ItemVolume']) . ' ' . htmlspecialchars($item['Unit_Acronym']); ?>)
+                                    </span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+
+                    <?php if (!empty($lowStockItems)): ?>
+                        <h5 class="text-warning">Low Stock</h5>
+                        <ul class="list-group">
+                            <?php foreach ($lowStockItems as $item): ?>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong>
+                                    <span>
+                                        <?php echo htmlspecialchars($item['Total_Quantity']); ?> pcs 
+                                        (<?php echo htmlspecialchars($item['Record_ItemVolume']) . ' ' . htmlspecialchars($item['Unit_Acronym']); ?>)
+                                    </span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" style="background-color: rgb(50, 50, 50); color: white;" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
         <div class="title">
             <div class="row">
                 <div>
@@ -491,6 +563,15 @@ include("IMS_process.php");
             tooltipTriggerList.forEach(function(tooltipTriggerEl) {
                 new bootstrap.Tooltip(tooltipTriggerEl)
             });
+        });
+    </script>
+    <script>
+        // Automatically show the modal if there are low-stock or out-of-stock items
+        document.addEventListener('DOMContentLoaded', function () {
+            <?php if (!empty($outOfStockItems) || !empty($lowStockItems)): ?>
+                var lowStockModal = new bootstrap.Modal(document.getElementById('lowStockModal'));
+                lowStockModal.show();
+            <?php endif; ?>
         });
     </script>
 </body>
