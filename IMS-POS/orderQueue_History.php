@@ -95,22 +95,23 @@ if ($page == "orderQueue_History.php") {
                 <?php
                   require_once('../Login/database.php');
                   $queue_orders = $conn->query("
-                    SELECT ord.*, 
-                           ordit.productQuantity AS productQuantity, 
-                           menu.productName AS productName, 
-                           menu.productID AS productID, 
-                           menu.productPrice AS productPrice, 
-                           (
-                             SELECT GROUP_CONCAT(CONCAT(addon.addonName, ' (₱', FORMAT(addon.addonPrice,2), ')') SEPARATOR '<br>')
-                             FROM tbl_menutoaddons menuaddon
-                             INNER JOIN tbl_addons addon ON menuaddon.addonID = addon.addonID
-                             WHERE menuaddon.productID = menu.productID
-                           ) AS addonList
-                    FROM tbl_orders ord
-                    LEFT JOIN tbl_orderitems ordit ON ord.orderID = ordit.orderID
-                    LEFT JOIN tbl_menu menu ON ordit.productID = menu.productID
-                    WHERE ord.orderStatus = 'IN PROCESS'
-                    ORDER BY ord.orderTime ASC
+                    SELECT 
+                    tbl_orders.orderID,
+                    tbl_orders.orderNumber, 
+                    tbl_orders.salesOrderNumber, 
+                    tbl_orders.orderTime, 
+                    tbl_orders.orderClass, 
+                    tbl_orders.orderStatus,
+                    tbl_orders.additionalNotes, 
+                    COALESCE(SUM(tbl_orderItems.productQuantity), 0) AS productQuantity
+                    FROM tbl_orders
+                    LEFT JOIN tbl_orderItems ON tbl_orders.orderNumber = tbl_orderItems.orderNumber
+                    GROUP BY 
+                    tbl_orders.orderNumber, 
+                    tbl_orders.salesOrderNumber, 
+                    tbl_orders.orderTime, 
+                    tbl_orders.orderClass, 
+                    tbl_orders.orderStatus;
                   ");
                   while ($order = $queue_orders->fetch(PDO::FETCH_ASSOC)) {
                     echo "<tr class='order-row' data-toggle='collapse' data-target='#orderDetails{$order['orderID']}' aria-expanded='false' aria-controls='orderDetails{$order['orderID']}'>
@@ -120,14 +121,143 @@ if ($page == "orderQueue_History.php") {
                             <td>{$order['productQuantity']}</td>
                             <td>{$order['orderTime']}</td>
                             <td>IN PROCESS</td>
-                            <td>
-                              <button class='btn btn-success btn-sm done'><i class='fas fa-check'></i> Done</button>
-                              <button class='btn btn-danger btn-sm cancel'><i class='fas fa-times'></i> Cancel</button>
+                            <td class='p-3'>
+                              <button class='btn btn-success'><i class='fas fa-check'></i> Done</button>
+                              <button class='btn btn-danger'><i class='fas fa-times'></i> Cancel</button>
                             </td>
                           </tr>";
-                    echo "<tr class='no-border'><td colspan='7' class='p-0'>";
-                      include 'orderCollapse.php';
-                    echo "</td></tr>";
+                    $orderCollapse = $conn->query("
+                      SELECT
+                      tbl_orderitems.orderItemID,
+                      tbl_orderitems.orderNumber,
+                      tbl_menuclass.menuName,
+                      tbl_categories.categoryName,
+                      tbl_variations.variationName,
+                      tbl_menu.productName,
+                      tbl_orderitems.productQuantity
+                      FROM tbl_orderitems
+                      LEFT JOIN tbl_variations ON tbl_orderitems.variationID = tbl_variations.variationID
+                      LEFT JOIN tbl_menu ON tbl_orderitems.productID = tbl_menu.productID
+                      LEFT JOIN tbl_menuClass ON tbl_menu.menuID = tbl_menuClass.menuID
+                      LEFT JOIN tbl_categories ON tbl_menu.categoryID = tbl_categories.categoryID
+                      WHERE tbl_orderitems.orderNumber = '{$order['orderNumber']}';
+                    ");
+                    // Collapsible Order Details
+                    // This is a placeholder for the order details. You can replace it with actual data.
+                    $rowCount = $orderCollapse->rowCount();
+
+
+                    echo "
+                    <tr>
+                      <td colspan='8' class='p-0'>
+                        <div class='collapse order-collapse' id='orderDetails{$order['orderID']}'>
+                          <div class='order-details'>
+                              <!-- Table for Order Details -->
+                              <table id='collapsible' class='border-bottom'>
+                                  <tr>
+                                    <thead>
+                                      <th>Order Type</th>
+                                      <th>Order Items</th>
+                                      <th>Add-Ons</th>
+                                      <th colspan='3'>Notes/Remarks</th>
+                                    </thead>
+                                  </tr>
+
+
+                                  ";
+                                    $counter = 0;
+                                      while($orderDetails = $orderCollapse->fetch(PDO::FETCH_ASSOC)) {
+                                      $variation = isset($orderDetails['variationName']) ? '('.$orderDetails['variationName'].')' :"";
+                                      
+                                      if($counter == 0) {
+                                        echo"
+                                        <tr>
+                                          <!-- Order Type -->
+                                          <td id='orderType' rowspan='{$rowCount}'>
+                                          <span>{$order['orderClass']}</span>
+                                          </td>
+                                          
+                                            <td class='' colspan='1'>
+                                                <span class='fw-bold'>{$orderDetails['menuName']}({$orderDetails['categoryName']})</span>
+                                                <br />
+                                                <span>{$orderDetails['productQuantity']} x {$orderDetails['productName']}{$variation}</span>
+                                            </td>
+
+                                            <!-- Add-Ons -->
+                                            <td colspan='2'>
+                                              <br />
+                                              <ul>
+                                        ";
+                                        $orderAdd = $conn->query("
+                                          SELECT
+                                          tbl_addons.addonName
+                                          FROM tbl_orderaddons
+                                          LEFT JOIN tbl_addons ON tbl_orderaddons.addonID = tbl_addons.addonID
+                                          WHERE tbl_orderaddons.orderItemID = '{$orderDetails['orderItemID']}';
+                                        ");
+
+                                        if($orderAdd->rowCount() > 0) {
+                                          while ($addon = $orderAdd->fetch(PDO::FETCH_ASSOC)) {
+                                            echo "<li>+{$addon['addonName']}</li>";
+                                          }
+                                        } else {
+                                          echo "<li>No Add-Ons</li>";
+                                        }
+
+                                      
+
+                                        echo "
+                                              </ul>
+                                            </td>
+                                            <!-- Notes/Remarks -->
+                                            <td id='remarks' class='text-break' colspan='2' rowspan='{$rowCount}'>
+                                                <span>{$order['additionalNotes']}</span>
+                                            </td>
+                                        </tr>
+                                      ";
+                                      } else {
+                                          echo "
+                                          <tr>
+                                            <td class='' colspan='1'>
+                                                <span class='fw-bold'>{$orderDetails['menuName']}({$orderDetails['categoryName']})</span>
+                                                <br />
+                                                <span>{$orderDetails['productQuantity']} x {$orderDetails['productName']}{$variation}</span>
+                                            </td>
+
+                                            <!-- Add-Ons -->
+                                            <td colspan='2'>
+                                              <br />
+                                              <ul>
+                                        ";
+                                        $orderAdd = $conn->query("
+                                          SELECT
+                                          tbl_addons.addonName
+                                          FROM tbl_orderaddons
+                                          LEFT JOIN tbl_addons ON tbl_orderaddons.addonID = tbl_addons.addonID
+                                          WHERE tbl_orderaddons.orderItemID = '{$orderDetails['orderItemID']}';
+                                        ");
+
+                                        if($orderAdd->rowCount() > 0) {
+                                          while ($addon = $orderAdd->fetch(PDO::FETCH_ASSOC)) {
+                                            echo "<li>+{$addon['addonName']}</li>";
+                                          }
+                                        } else {
+                                          echo "<li>No Add-Ons</li>";
+                                        }
+                                        echo"
+                                              </ul>
+                                            </td>
+                                          </tr>
+                                          ";
+                                      }
+                                      $counter++;
+                                      }
+                                      echo"
+                              </table>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>";
                   }
                 ?>
               </tbody>
@@ -136,50 +266,6 @@ if ($page == "orderQueue_History.php") {
         </div>
   
         <!-- PICK UP TAB (Placeholder) -->
-        <div class="tab-pane fade <?php echo ($activeTab=='pickup') ? 'show active' : ''; ?>" id="pickup" role="tabpanel" aria-labelledby="pickup-tab">
-          <div class="table-container mt-3">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Queue</th>
-                  <th>Order Number</th>
-                  <th>Sales Order Number</th>
-                  <th>Product Quantity</th>
-                  <th>Time</th>
-                  <th>Order Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Placeholder rows for Pick Up -->
-                <tr>
-                  <td>1</td>
-                  <td>1001</td>
-                  <td>ORD-001</td>
-                  <td>5</td>
-                  <td>10:30 AM</td>
-                  <td>PICK UP</td>
-                  <td>
-                    <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Done</button>
-                    <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Cancel</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>1002</td>
-                  <td>ORD-002</td>
-                  <td>3</td>
-                  <td>11:15 AM</td>
-                  <td>PICK UP</td>
-                  <td>
-                    <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Done</button>
-                    <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i> Cancel</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
   
         <!-- HISTORY TAB -->
         <div class="tab-pane fade <?php echo ($activeTab=='history') ? 'show active' : ''; ?>" id="history" role="tabpanel" aria-labelledby="history-tab">

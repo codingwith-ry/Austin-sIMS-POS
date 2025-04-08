@@ -16,8 +16,45 @@
         <?php include 'adminNavBar.php'; ?>
     </header>
 
-    <div id="adminContent">
-        <h2>Products</h2>
+    <main id="adminContent">
+        <div class="row mb-2">
+        <div class="col-md-6 d-flex align-items-center">
+        <h1 class="mb-0">Products</h1>
+    </div>
+    <div class="col-md-6 d-flex justify-content-end align-items-center gap-3">
+    <!-- Notification Dropdown -->
+    <div class="dropdown me-2">
+        <button class="btn btn-outline-secondary position-relative dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-bell"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                3
+                <span class="visually-hidden">unread notifications</span>
+            </span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationDropdown" style="width: 300px; max-height: 300px; overflow-y: auto;">
+            <li><strong class="dropdown-header">Notifications</strong></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">🛒 New order received</a></li>
+            <li><a class="dropdown-item" href="#">📦 Inventory stock low</a></li>
+            <li><a class="dropdown-item" href="#">👤 New employee registered</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-center text-primary" href="#">View all</a></li>
+        </ul>
+    </div>
+
+    <!-- Administrator Dropdown -->
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" id="accountDropdownBtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Administrator
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+        </ul>
+    </div>
+</div>
+        </div>
         <hr />
         <div class="row" style="margin-bottom: 20px;">
             <ul class="nav nav-tabs" id="myTab" role="tablist" style="padding-left: 12px;">

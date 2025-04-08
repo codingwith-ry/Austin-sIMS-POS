@@ -31,7 +31,7 @@ function generateReceiptHTML($order) {
             <td></td>
         </tr>
         <tr>
-            <td> ' . $item['productName'] . '</td>
+            <td> ' . $item['productName'] . '(' . $item['productVariationName'] . ')</td>
             <td>' . $item['productQuantity'] . ' x ₱' . number_format($item['productPrice'], 2) . '</td>
         </tr>';
         
@@ -113,8 +113,8 @@ function generateReceiptHTML($order) {
         </div>
         <div class="details">
             BILL<br>
-            Order: ' . $order['orderID'] . ' - ' . date('g:i A', strtotime($order['orderTime'])) . '<br>
-            Employee: 20240001<br>
+            Order: ' . $order['orderNumber'] . ' - ' . date('g:i A', strtotime($order['orderTime'])) . '<br>
+            Employee: ' . $order['employeeID'] . '<br>
             POS: POS 1<br>
             Order Type: ' . $order['orderType'] . '<br>
             Customer Name:' . ($order['customerName'] ? htmlspecialchars($order['customerName']) : 'Unknown') . '
