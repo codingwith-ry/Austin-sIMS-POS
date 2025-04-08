@@ -21,56 +21,77 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'administrator') 
 
     <main id="adminContent">
         <div class="row mb-2">
-        <div id="accountDropdown" class="d-flex justify-content-end">
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" id="accountDropdownBtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Administrator
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
+        <div class="col-md-6 d-flex align-items-center">
+        <h1 class="mb-0">Dashboard</h1>
+    </div>
+    <div class="col-md-6 d-flex justify-content-end align-items-center gap-3">
+    <!-- Notification Dropdown -->
+    <div class="dropdown me-2">
+        <button class="btn btn-outline-secondary position-relative dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-bell"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                3
+                <span class="visually-hidden">unread notifications</span>
+            </span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationDropdown" style="width: 300px; max-height: 300px; overflow-y: auto;">
+            <li><strong class="dropdown-header">Notifications</strong></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">🛒 New order received</a></li>
+            <li><a class="dropdown-item" href="#">📦 Inventory stock low</a></li>
+            <li><a class="dropdown-item" href="#">👤 New employee registered</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-center text-primary" href="#">View all</a></li>
+        </ul>
+    </div>
+
+    <!-- Administrator Dropdown -->
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" id="accountDropdownBtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Administrator
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+        </ul>
+    </div>
+</div>
+        </div>
+        </div>
+
+        <hr>
+        <div class="row align-items-center mb-3">
+    <!-- Search Input -->
+    <div class="col-md-6">
+        <form role="search">
+            <div class="input-group">
+                <span class="input-group-text" id="basic-addon1">
+                    <span class="material-symbols-outlined">search</span>
+                </span>
+                <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
             </div>
+        </form>
+    </div>
+
+    <!-- Date Selector Tabs -->
+    <div class="col-md-6 d-flex justify-content-end">
+        <div class="date-selector">
+            <ul class="nav nav-underline">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Weekly</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Monthly</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Yearly</a>
+                </li>
+            </ul>
         </div>
-        </div>
-        
-        <div class="row">
-        <div id="searchButtonContainer" class="d-flex justify-content-end">
-            <form role="search">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">
-                        <span class="material-symbols-outlined">
-                            search
-                        </span>
-                    </span>
-                    <input type="text" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-            </form>
-        </div>
-        </div>
-        <div class="row align-items-stretch">
-            <div class="d-flex justify-content-between">
-                <div style="padding-left: 10px;">
-                    <h1>Dashboard</h1>
-                </div>
-                <div class="ml-auto">
-                    <div class="date-selector mb-3" style="width: 100%;">
-                        <ul class="nav nav-underline" style="width: 100%;">
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page">Weekly</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link">Monthly</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link">Yearly</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+    </div>
+</div>
+
         <div class="row" style="padding-left: 10px;">
             <div class="col-3 d-flex align-items-stretch">
                 <div class="card h-100">
