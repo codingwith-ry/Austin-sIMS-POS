@@ -21,6 +21,25 @@ $orders = $conn->query("
 
 $data = [];
 while ($order = $orders->fetch(PDO::FETCH_ASSOC)) {
+    // Fetch add-ons for the current orderItemID
+    $addonsQuery = $conn->prepare("
+        SELECT
+            tbl_addons.addonName
+        FROM tbl_orderaddons
+        LEFT JOIN tbl_addons ON tbl_orderaddons.addonID = tbl_addons.addonID
+        WHERE tbl_orderaddons.orderItemID = :orderItemID
+    ");
+    $addonsQuery->bindParam(':orderItemID', $order['orderItemID'], PDO::PARAM_INT);
+    $addonsQuery->execute();
+
+    $addons = [];
+    while ($addon = $addonsQuery->fetch(PDO::FETCH_ASSOC)) {
+        $addons[] = $addon['addonName'];
+    }
+
+    // Add the add-ons as a new attribute to the order
+    $order['addons'] = $addons;
+
     $data[] = $order;
 }
 
