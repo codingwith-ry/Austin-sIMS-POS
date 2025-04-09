@@ -81,6 +81,7 @@ include("../Login/database.php");
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Email</th> 
                         <th>Position</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -89,13 +90,14 @@ include("../Login/database.php");
                 <tbody>
                     <?php
                     try {
-                        $stmt = $conn->prepare("SELECT Employee_ID, Employee_Name, Employee_Role, Employee_Status FROM employees");
+                        $stmt = $conn->prepare("SELECT Employee_ID, Employee_Name, Employee_Role, Employee_Status, Employee_Email FROM employees");
                         $stmt->execute();
                         $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         foreach ($employees as $employee) {
                             echo "<tr data-id='" . $employee['Employee_ID'] . "'>";
                             echo "<td class='editable' data-field='Employee_Name'>" . htmlspecialchars($employee['Employee_Name']) . "</td>";
+                            echo "<td class='editable' data-field='Employee_Email'>" . htmlspecialchars($employee['Employee_Email']) . "</td>"; // New email field
                             echo "<td class='editable' data-field='Employee_Role'>" . htmlspecialchars($employee['Employee_Role']) . "</td>";
                             echo "<td class='editable' data-field='Employee_Status'>" . htmlspecialchars($employee['Employee_Status']) . "</td>";
                             echo "<td>
@@ -120,73 +122,72 @@ include("../Login/database.php");
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
-    $(document).ready(function() {
-        $('#employeeTable').DataTable();
+$(document).ready(function() {
+    $('#employeeTable').DataTable();
 
-        // Handle edit button click
-        $(document).on('click', '.edit-btn', function() {
-            const row = $(this).closest('tr');
-            const id = row.data('id');
+    // Handle edit button click
+    $(document).on('click', '.edit-btn', function() {
+        const row = $(this).closest('tr');
 
-            row.find('.editable').each(function() {
-                const field = $(this).data('field');
-                const value = $(this).text();
+        row.find('.editable').each(function() {
+            const field = $(this).data('field');
+            const value = $(this).text();
 
-                if (field === 'Employee_Role') {
-                    // Dropdown for Position
-                    $(this).html(`
-                        <select class="form-control" name="${field}">
-                            <option value="Inventory Staff Management" ${value === 'Inventory Staff Management' ? 'selected' : ''}>Inventory Staff Management</option>
-                            <option value="Administrator" ${value === 'Administrator' ? 'selected' : ''}>Administrator</option>
-                            <option value="POS Staff Management" ${value === 'POS Staff Management' ? 'selected' : ''}>POS Staff Management</option>
-                        </select>
-                    `);
-                } else if (field === 'Employee_Status') {
-                    // Dropdown for Status
-                    $(this).html(`
-                        <select class="form-control" name="${field}">
-                            <option value="Active" ${value === 'Active' ? 'selected' : ''}>Active</option>
-                            <option value="Inactive" ${value === 'Inactive' ? 'selected' : ''}>Inactive</option>
-                        </select>
-                    `);
-                } else {
-                    // Default input field for other fields
-                    $(this).html(`<input type="text" class="form-control" name="${field}" value="${value}">`);
-                }
-            });
-
-            $(this).removeClass('edit-btn btn-outline-secondary').addClass('save-btn btn-outline-success').html('<i class="bi bi-check"></i> Save');
+            if (field === 'Employee_Role') {
+                // Dropdown for Position
+                $(this).html(`
+                    <select class="form-control" name="${field}">
+                        <option value="Inventory Staff Management" ${value === 'Inventory Staff Management' ? 'selected' : ''}>Inventory Staff Management</option>
+                        <option value="Administrator" ${value === 'Administrator' ? 'selected' : ''}>Administrator</option>
+                        <option value="POS Staff Management" ${value === 'POS Staff Management' ? 'selected' : ''}>POS Staff Management</option>
+                    </select>
+                `);
+            } else if (field === 'Employee_Status') {
+                // Dropdown for Status
+                $(this).html(`
+                    <select class="form-control" name="${field}">
+                        <option value="Active" ${value === 'Active' ? 'selected' : ''}>Active</option>
+                        <option value="Inactive" ${value === 'Inactive' ? 'selected' : ''}>Inactive</option>
+                    </select>
+                `);
+            } else {
+                // Default input field for other fields (including email)
+                $(this).html(`<input type="text" class="form-control" name="${field}" value="${value}">`);
+            }
         });
 
-        // Handle save button click
-        $(document).on('click', '.save-btn', function() {
-            const row = $(this).closest('tr');
-            const id = row.data('id');
-            const data = {};
+        $(this).removeClass('edit-btn btn-outline-secondary').addClass('save-btn btn-outline-success').html('<i class="bi bi-check"></i> Save');
+    });
 
-            row.find('input, select').each(function() {
-                const field = $(this).attr('name');
-                const value = $(this).val();
-                data[field] = value;
-            });
+    // Handle save button click
+    $(document).on('click', '.save-btn', function() {
+        const row = $(this).closest('tr');
+        const id = row.data('id');
+        const data = {};
 
-            $.ajax({
-                url: 'updateEmployee.php',
-                type: 'POST',
-                data: { id: id, ...data },
-                success: function(response) {
-                    row.find('.editable').each(function() {
-                        const field = $(this).data('field');
-                        $(this).text(data[field]);
-                    });
-
-                    row.find('.save-btn').removeClass('save-btn btn-outline-success').addClass('edit-btn btn-outline-secondary').html('<i class="bi bi-pencil"></i> Edit');
-                },
-                error: function(xhr, status, error) {
-                    alert('Error updating employee: ' + error);
-                }
-            });
+        row.find('input, select').each(function() {
+            const field = $(this).attr('name');
+            const value = $(this).val();
+            data[field] = value;
         });
+
+        $.ajax({
+            url: 'updateEmployee.php',
+            type: 'POST',
+            data: { id: id, ...data },
+            success: function(response) {
+                row.find('.editable').each(function() {
+                    const field = $(this).data('field');
+                    $(this).text(data[field]);
+                });
+
+                row.find('.save-btn').removeClass('save-btn btn-outline-success').addClass('edit-btn btn-outline-secondary').html('<i class="bi bi-pencil"></i> Edit');
+            },
+            error: function(xhr, status, error) {
+                alert('Error updating employee: ' + error);
+            }
+        });
+    });
 
         // Handle delete button click
         $(document).on('click', '.delete-btn', function() {
