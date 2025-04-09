@@ -52,27 +52,26 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
                 <h1>Stock List Overview</h1>
             </div>
             <div class="col-md-2">
-                <div class="flatpickr">
-                    <div class="flatpickr">
-                        <input type="text" placeholder="Date" data-input class="dateInputField" style="font-weight: 600; font-size: 15px">
-                    </div>
+                <div>
+                    <label for="startDate">Select Date</label>
+                    <input type="date" id="startDate" name="startDate">
                 </div>
             </div>
         </div>
 
         <div class="date-selector" style="margin-bottom: 20px;">
-            <ul class="nav nav-underline">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page">Weekly</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link">Monthly</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link">Yearly</a>
-                </li>
-            </ul>
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="btnradio1">Weekly</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio2">Monthly</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio3">Yearly</label>
+            </div>
         </div>
+
 
         <div class="data-summary" style="margin-bottom: 20px;">
             <div class="row">
@@ -155,23 +154,22 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
                                                 <li>
                                                     <div style="display: flex; flex-direction: column;">
                                                         <span class="stockLabel" style="font-size: 15px; font-weight:bold">Remaining Stock Budget</span>
-                                                        <span id="remainingBudget" style="font-size: 40px; font-weight: bold">0%</span> <!-- Dynamically updated -->
+                                                        <span id="remainingBudget" style="font-size: 40px; font-weight: bold">0%</span>
                                                     </div>
                                                 </li>
                                                 <li>
                                                     <div style="display: flex; flex-direction: column;">
                                                         <span class="stockLabel" style="font-size: 15px; font-weight: bold">Total Expenses</span>
-                                                        <span id="totalExpenses" style="font-size: 40px; font-weight: bold">0%</span> <!-- Dynamically updated -->
+                                                        <span id="totalExpenses" style="font-size: 40px; font-weight: bold">0%</span>
                                                     </div>
                                                 </li>
                                                 <li>
                                                     <div style="display: flex; flex-direction: column;">
                                                         <span class="stockLabel" style="font-size: 15px; font-weight: bold">Total Items In Stock</span>
-                                                        <span id="itemsInStock" style="font-size: 40px; font-weight: bold">0%</span> <!-- Dynamically updated -->
+                                                        <span id="itemsInStock" style="font-size: 40px; font-weight: bold">0%</span>
                                                     </div>
                                                 </li>
                                             </ul>
-
                                         </div>
                                         <div id="doughnut-chart-Container">
                                             <canvas id="stockdoughnutChart"></canvas>
@@ -198,8 +196,8 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
                         </table>
                     </div>
                 </div>
-
-
+            </div>
+        </div>
     </main>
 
     <?php include 'footer.php' ?>
@@ -208,12 +206,7 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
 
     <script>
         /*************Date Picker Set Up Start****************/
-        document.addEventListener("DOMContentLoaded", function() {
-            flatpickr(".flatpickr input", {
-                enableTime: false,
-                dateFormat: "Y-M-D",
-            });
-
+        $(document).ready(function() {
             // Add Budget Button Functionality
             const addBudgetButton = document.getElementById("addBudgetButton");
             addBudgetButton.addEventListener("click", function() {
@@ -252,175 +245,319 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
                 }
             });
         });
-        /*************Date Picker Set Up End****************/
 
-        const stockChart = document.getElementById('stockAnalyticsChart')
-        const stockDoughnutChart = document.getElementById('stockdoughnutChart')
-
-/*************Bar Chart Set Up Start****************/
-fetch('fetchWeeklyExpenses.php') // Fetch data from the new PHP endpoint
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Prepare the data for the bar chart
-            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const expensesByDay = Array(7).fill(0); // Initialize an array for the week
-
-            data.data.forEach(record => {
-                const purchaseDate = new Date(record.purchase_date);
-                const dayIndex = purchaseDate.getDay(); // Get the day index (0 = Sunday, 6 = Saturday)
-                expensesByDay[dayIndex] += parseFloat(record.total_expenses); // Add the expenses for the day
-            });
-
-            // Update the bar chart
-            const ctx = document.getElementById('stockAnalyticsChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: daysOfWeek,
-                    datasets: [{
-                        label: 'Daily Expenses',
-                        data: expensesByDay,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        } else {
-            console.error('Error fetching weekly expenses:', data.message);
-        }
-    })
-    .catch(error => console.error('Error fetching data:', error));
-/*************Bar Chart Set Up End****************/
-
-        /*************Doughnut Chart Set Up Start****************/
-        fetch('stockBudgetGraph.php') // replace with the path to your PHP file
-            .then(response => response.json())
-            .then(data => {
-                const doughnutChartData = {
-                    labels: [
-                        'Remaining Stock Budget',
-                        'Total Expenses',
-                        'Total Items in Stock'
-                    ],
-                    data: [
-                        data.remaining_budget, // remaining stock budget percentage
-                        data.expenses, // total expenses percentage
-                        data.items_in_stock // total items in stock percentage
-                    ],
-                };
-
-                // Update the doughnut chart
-                const ctx = document.getElementById('stockdoughnutChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: doughnutChartData.labels,
-                        datasets: [{
-                            data: doughnutChartData.data,
-                            backgroundColor: ['#4CAF50', '#FF5722', '#2196F3'],
-                            borderColor: ['#ffffff', '#ffffff', '#ffffff'],
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        borderRadius: 2,
-                        hoverBorderWidth: 0,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        spacing: 5,
-                        weight: 1,
-                        cutout: '80%' // to make it a donut chart
-                    }
-                });
-
-                // Dynamically update the percentage labels
-                document.getElementById('remainingBudget').textContent = `${data.remaining_budget.toFixed(2)}%`;
-                document.getElementById('totalExpenses').textContent = `${data.expenses.toFixed(2)}%`;
-                document.getElementById('itemsInStock').textContent = `${data.items_in_stock.toFixed(2)}%`;
-            })
-            .catch(error => console.error('Error fetching data:', error));
-
-        /*************Doughnut Chart Set Up End****************/
-
-        /*************Stock Table Set Up Start****************/
-        function format(data) {
-            return `
-            <table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
-                <tr><td><strong>Description:</strong></td><td>${data.description}</td></tr>
-                <tr><td><strong>Quantity:</strong></td><td>${data.quantity}</td></tr>
-                <tr><td><strong>Volume:</strong></td><td>${data.volume} ${data.unit}</td></tr>
-                <tr><td><strong>Image:</strong></td><td><img class="item-img" src="${data.image}" alt="Item Image" style="height: 150px; width: 100%; object-fit: contain;"></td></tr>
-            </table>
-        `;
-        }
 
         $(document).ready(function() {
-            let table = new DataTable('#stockTable', {
-                ajax: 'fetchRecentStockPurchases.php', // Fetch data from PHP backend
-                responsive: true,
-                columns: [{
-                        data: null,
-                        className: "details-control",
-                        defaultContent: "Details",
-                        orderable: false
-                    },
-                    {
-                        data: "Item_Name"
-                    },
-                    {
-                        data: "Category_Name"
-                    },
-                    {
-                        data: "Record_ItemQuantity"
-                    },
-                    {
-                        data: null,
-                        render: function(data, type, row) {
-                            return `${row.Record_ItemVolume} ${row.Unit_Acronym}`;
+            const currentDate = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+            const startDateInput = document.getElementById('startDate');
+            startDateInput.value = currentDate;
+
+            let barChart, doughnutChart; // Store chart instances
+
+            function fetchDataAndUpdateCharts() {
+                const startDate = startDateInput.value;
+
+                // Log the selected start date (optional)
+                console.log("Selected Date:", startDate);
+
+                // Fetch bar chart data based on selected date
+                fetch(`fetchWeeklyExpenses.php?startDate=${startDate}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                            const expensesByDay = Array(7).fill(0);
+
+                            data.data.forEach(record => {
+                                const purchaseDate = new Date(record.purchase_date);
+                                const dayIndex = purchaseDate.getDay();
+                                expensesByDay[dayIndex] += parseFloat(record.total_expenses);
+                            });
+
+                            // Destroy the old bar chart before creating a new one
+                            if (barChart) {
+                                barChart.destroy();
+                            }
+
+                            const ctx = document.getElementById('stockAnalyticsChart').getContext('2d');
+                            barChart = new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: daysOfWeek,
+                                    datasets: [{
+                                        label: 'Daily Expenses',
+                                        data: expensesByDay,
+                                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            console.error('Error fetching weekly expenses:', data.message);
                         }
-                    }
-                ]
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+
+                // Fetch doughnut chart data based on selected date
+                fetch(`stockBudgetGraph.php?startDate=${startDate}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const doughnutChartData = {
+                            labels: [
+                                'Remaining Stock Budget',
+                                'Total Expenses',
+                                'Total Items in Stock'
+                            ],
+                            data: [
+                                data.remaining_budget,
+                                data.expenses,
+                                data.items_in_stock
+                            ],
+                        };
+
+                        // Destroy the old doughnut chart before creating a new one
+                        if (doughnutChart) {
+                            doughnutChart.destroy();
+                        }
+
+                        const ctx = document.getElementById('stockdoughnutChart').getContext('2d');
+                        doughnutChart = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: doughnutChartData.labels,
+                                datasets: [{
+                                    data: doughnutChartData.data,
+                                    backgroundColor: ['#4CAF50', '#FF5722', '#2196F3'],
+                                    borderColor: ['#ffffff', '#ffffff', '#ffffff'],
+                                    borderWidth: 2
+                                }]
+                            },
+                            options: {
+                                borderRadius: 2,
+                                hoverBorderWidth: 0,
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                },
+                                spacing: 5,
+                                weight: 1,
+                                cutout: '80%'
+                            }
+                        });
+
+                        document.getElementById('remainingBudget').textContent = `${data.remaining_budget.toFixed(2)}%`;
+                        document.getElementById('totalExpenses').textContent = `${data.expenses.toFixed(2)}%`;
+                        document.getElementById('itemsInStock').textContent = `${data.items_in_stock.toFixed(2)}%`;
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }
+
+            // Initial fetch on page load
+            fetchDataAndUpdateCharts();
+
+            // Listen for changes in the start date input field
+            startDateInput.addEventListener('change', function() {
+                // Re-fetch and update charts based on the new selected date
+                fetchDataAndUpdateCharts();
             });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            const startDateInput = document.getElementById('startDate');
+            const radioButtons = document.querySelectorAll('input[name="btnradio"]');
+            let barChart, doughnutChart; // Store chart instances
 
-            // Toggle child rows
-            $('#stockTable tbody').on('click', 'td.details-control', function() {
-                let tr = $(this).closest('tr');
-                let row = table.row(tr);
+            function fetchDataAndUpdateCharts(timeframe) {
+                const startDate = startDateInput.value;
 
-                if (row.child.isShown()) {
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } else {
-                    // Use full row data for dynamic child generation
-                    let data = row.data();
-                    let childData = {
-                        description: "Category: " + data.Category_Name,
-                        image: data.Item_Image,
-                        unit: data.Unit_Acronym,
-                        volume: data.Record_ItemVolume,
-                        quantity: data.Record_ItemQuantity
-                    };
-                    row.child(format(childData)).show();
-                    tr.addClass('shown');
+                // Log the selected timeframe (optional)
+                console.log("Selected Timeframe:", timeframe);
+
+                // Fetch bar chart data based on selected timeframe
+                fetch(`fetchExpenses.php?startDate=${startDate}&timeframe=${timeframe}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            const labels = data.labels; // Labels for the chart (e.g., days, months, years)
+                            const expenses = data.expenses; // Expenses data
+
+                            // Destroy the old bar chart before creating a new one
+                            if (barChart) {
+                                barChart.destroy();
+                            }
+
+                            const ctx = document.getElementById('stockAnalyticsChart').getContext('2d');
+                            barChart = new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        label: 'Expenses',
+                                        data: expenses,
+                                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true
+                                        }
+                                    }
+                                }
+                            });
+
+                            // Update total expenses
+                            document.querySelector('#totalExpenses').textContent = `${data.totalExpenses.toFixed(2)}%`;
+                        } else {
+                            console.error('Error fetching expenses:', data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }
+
+            // Initial fetch on page load (default to Weekly)
+            fetchDataAndUpdateCharts('Weekly');
+
+            // Add event listeners to radio buttons
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        fetchDataAndUpdateCharts(this.nextElementSibling.textContent.trim());
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        /*************Date Picker Set Up Start****************/
+        $(document).ready(function() {
+            const currentDate = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+            const startDateInput = document.getElementById('startDate');
+            startDateInput.value = currentDate;
+
+            let table; // Declare table variable
+
+            function fetchDataAndUpdateTable() {
+                const startDate = startDateInput.value;
+
+                // Destroy the old table if it exists
+                if (table) {
+                    table.clear().destroy();
                 }
+
+                // Initialize a new DataTable with updated data based on the selected date
+                table = new DataTable('#stockTable', {
+                    ajax: {
+                        url: 'fetchRecentStockPurchases.php',
+                        data: {
+                            startDate: startDate // Pass the selected date as a parameter
+                        },
+                        dataSrc: function(json) {
+                            return json.data; // Assuming the response contains an object with a 'data' property
+                        }
+                    },
+                    responsive: true,
+                    columns: [{
+                            data: null,
+                            className: "details-control",
+                            defaultContent: "Details",
+                            orderable: false
+                        },
+                        {
+                            data: "Item_Name"
+                        },
+                        {
+                            data: "Category_Name"
+                        },
+                        {
+                            data: "Record_ItemQuantity"
+                        },
+                        {
+                            data: null,
+                            render: function(data, type, row) {
+                                return `${row.Record_ItemVolume} ${row.Unit_Acronym}`;
+                            }
+                        }
+                    ]
+                });
+
+                // Toggle child rows
+                $('#stockTable tbody').on('click', 'td.details-control', function() {
+                    let tr = $(this).closest('tr');
+                    let row = table.row(tr);
+
+                    if (row.child.isShown()) {
+                        row.child.hide();
+                        tr.removeClass('shown');
+                    } else {
+                        // Use full row data for dynamic child generation
+                        let data = row.data();
+                        let childData = {
+                            description: "Category: " + data.Category_Name,
+                            image: data.Item_Image,
+                            unit: data.Unit_Acronym,
+                            volume: data.Record_ItemVolume,
+                            quantity: data.Record_ItemQuantity
+                        };
+                        row.child(format(childData)).show();
+                        tr.addClass('shown');
+                    }
+                });
+            }
+
+            // Initial fetch on page load
+            fetchDataAndUpdateTable();
+
+            // Listen for changes in the start date input field
+            startDateInput.addEventListener('change', function() {
+                // Re-fetch and update the table based on the new selected date
+                fetchDataAndUpdateTable();
             });
         });
         /*************Stock Table Set Up End****************/
+
+        /*************Stock Table Format Function Start****************/
+        function format(data) {
+            return `
+    <table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
+        <tr>
+            <td><strong>Description:</strong></td>
+            <td>${data.description}</td>
+        </tr>
+        <tr>
+            <td><strong>Quantity:</strong></td>
+            <td>${data.quantity}</td>
+        </tr>
+        <tr>
+            <td><strong>Volume:</strong></td>
+            <td>${data.volume} ${data.unit}</td>
+        </tr>
+        <tr>
+            <td><strong>Image:</strong></td>
+            <td><img class="item-img" src="${data.image}" alt="Item Image" style="height: 150px; width: 100%; object-fit: contain;"></td>
+        </tr>
+    </table>
+    `;
+        }
+        /*************Stock Table Format Function End****************/
     </script>
+
 
 </body>
 

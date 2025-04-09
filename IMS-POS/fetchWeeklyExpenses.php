@@ -2,9 +2,8 @@
 include '../Login/database.php';
 
 try {
-    // Get the start and end dates for the current week
-    $startOfWeek = date('Y-m-d', strtotime('sunday last week'));
-    $endOfWeek = date('Y-m-d', strtotime('saturday this week'));
+    // Get the start date from the request
+    $startDate = isset($_GET['startDate']) ? $_GET['startDate'] : date('Y-m-d');
 
     // Query to fetch and group data by day of the week
     $query = "
@@ -12,14 +11,13 @@ try {
             DATE(Record_ItemPurchaseDate) AS purchase_date,
             SUM(Record_ItemPrice) AS total_expenses
         FROM tbl_record
-        WHERE Record_ItemPurchaseDate BETWEEN :startOfWeek AND :endOfWeek
+        WHERE Record_ItemPurchaseDate = :startDate
         GROUP BY purchase_date
         ORDER BY purchase_date
     ";
 
     $stmt = $conn->prepare($query);
-    $stmt->bindParam(':startOfWeek', $startOfWeek);
-    $stmt->bindParam(':endOfWeek', $endOfWeek);
+    $stmt->bindParam(':startDate', $startDate);
     $stmt->execute();
 
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -29,4 +27,3 @@ try {
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
-?>
