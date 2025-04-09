@@ -8,29 +8,43 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'inventory staff 
 include("../Login/database.php");
 include("IMS_process.php");
 
-$groupedItemsQuery = $conn->prepare("
+$fetchItemDataQuery = "
     SELECT 
+        i.Item_ID,
         i.Item_Name, 
-        SUM(r.Record_ItemQuantity) AS Total_Quantity, 
-        r.Record_ItemVolume, 
-        COALESCE(u.Unit_Acronym, '') AS Unit_Acronym
-    FROM tbl_record r
-    JOIN tbl_item i ON r.Item_ID = i.Item_ID
-    LEFT JOIN tbl_unitofmeasurments u ON i.Unit_ID = u.Unit_ID
-    GROUP BY i.Item_Name, r.Record_ItemVolume
+        i.Item_Image, 
+        i.Item_Category, 
+        ic_cat.Category_Name, 
+        um.Unit_Acronym, 
+        r.Record_ItemQuantity, 
+        r.Record_ItemVolume,
+        IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change,  -- Sum of all changes for the item
+        IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease  -- Sum only decreases
+    FROM tbl_item i
+    JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
+    JOIN tbl_record r ON i.Item_ID = r.Item_ID
+    LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
+    LEFT JOIN tbl_inventory_changes ic ON r.Record_ID = ic.Record_ID
+    GROUP BY i.Item_ID, r.Record_ItemVolume
     ORDER BY i.Item_Name ASC
-");
-$groupedItemsQuery->execute();
-$groupedItems = $groupedItemsQuery->fetchAll(PDO::FETCH_ASSOC);
+";
 
-// Separate items into "Out of Stock" and "Low Stock"
+$itemData = $pdo->query($fetchItemDataQuery)->fetchAll(PDO::FETCH_ASSOC);
+
 $outOfStockItems = [];
 $lowStockItems = [];
 
-foreach ($groupedItems as $item) {
-    if ($item['Total_Quantity'] == 0) {
+foreach ($itemData as $item) {
+    // Calculate the current quantity by subtracting Total_Decrease from Record_ItemQuantity
+    $currentStock = $item['Record_ItemQuantity'] - $item['Total_Decrease'];
+
+    // Add Total_Quantity to the item for easy access
+    $item['Total_Quantity'] = $currentStock;
+
+    // Classify the items based on the stock
+    if ($currentStock <= 0) {
         $outOfStockItems[] = $item;
-    } elseif ($item['Total_Quantity'] > 0 && $item['Total_Quantity'] < 4) {
+    } elseif ($currentStock > 0 && $currentStock < 4) {
         $lowStockItems[] = $item;
     }
 }
@@ -327,7 +341,6 @@ foreach ($groupedItems as $item) {
                                                         </div>
                                                     </div>
                                                 </div>';
-
 
                                             // Modal (keep using unique modal ID using volume)
                                             echo '
