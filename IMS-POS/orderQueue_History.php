@@ -143,121 +143,132 @@ if ($page == "orderQueue_History.php") {
               type: 'GET',
               dataType: 'json',
               data: {
-                orderStatus: 'IN PROCESS',
+                  orderStatus: 'IN PROCESS',
               },
               success: function (data) {
-                  console.log(data);
                   // Clear the existing table body
                   const tableBody = $('#queue tbody');
                   tableBody.empty();
 
-                  // Populate the table with the updated data
-                  data.forEach(order => {
-                      var row = `
-                          <tr class="order-row" data-toggle="collapse" data-target="#orderDetails${order.orderID}" aria-expanded="false" aria-controls="orderDetails${order.orderID}">
-                              <td>${order.orderID}</td>
-                              <td>${order.orderNumber}</td>
-                              <td>${order.salesOrderNumber}</td>
-                              <td>${order.productQuantity}</td>
-                              <td>${order.orderTime}</td>
-                              <td>${order.orderStatus}</td>
-                              <td class="p-3">
-                                  ${order.orderStatus === 'IN PROCESS' ? `
-                                      <button class="btn btn-success"><i class="fas fa-check"></i> Done</button>
-                                      <button class="btn btn-danger"><i class="fas fa-times"></i> Cancel</button>
-                                  ` : ''}
-                              </td>
-                          </tr>
-                          <tr>
-                          <td colspan='8' class='p-0'>
-                            <div class='collapse order-collapse' id='orderDetails${order.orderID}'>
-                              <div class='order-details'>
-                                  <!-- Table for Order Details -->
-                                  <table id='collapsible' class='border-bottom'>
-                                      <tr>
-                                        <thead>
-                                          <th>Order Type</th>
-                                          <th>Order Items</th>
-                                          <th>Add-Ons</th>
-                                          <th colspan='3'>Notes/Remarks</th>
-                                        </thead>
+                  // Create an array of promises for nested AJAX calls
+                  const promises = data.map(order => {
+                      return new Promise((resolve, reject) => {
+                          // Fetch order items for each order
+                          $.ajax({
+                              url: 'scripts/fetchOrderItems.php',
+                              type: 'GET',
+                              dataType: 'json',
+                              data: {
+                                  orderNumber: order.orderNumber,
+                              },
+                              success: function (orderItems) {
+                                  let row = `
+                                      <tr class="order-row" data-toggle="collapse" data-target="#orderDetails${order.orderID}" aria-expanded="false" aria-controls="orderDetails${order.orderID}">
+                                          <td>${order.orderID}</td>
+                                          <td>${order.orderNumber}</td>
+                                          <td>${order.salesOrderNumber}</td>
+                                          <td>${order.productQuantity}</td>
+                                          <td>${order.orderTime}</td>
+                                          <td>${order.orderStatus}</td>
+                                          <td class="p-3">
+                                              ${order.orderStatus === 'IN PROCESS' ? `
+                                                  <button class="btn btn-success"><i class="fas fa-check"></i> Done</button>
+                                                  <button class="btn btn-danger"><i class="fas fa-times"></i> Cancel</button>
+                                              ` : ''}
+                                          </td>
                                       </tr>
-                                      
-                      `;
-
-                      $.ajax({
-                          url: 'scripts/fetchOrderItems.php',
-                          type: 'GET',
-                          dataType: 'json',
-                          data: {
-                              orderNumber: order.orderNumber,
-                          },
-                          success: function (orderItems) {
-                              let counter = 0;
-                              let rowCount = orderItems.length;
-                              orderItems.forEach(item => {
-                                  variationName = item.variationName ? item.variationName : '';
-                                  if(counter == 0) {
-                                    row += `
                                       <tr>
-                                          <!-- Order Type -->
-                                            <td id='orderType' rowspan=${rowCount}>
-                                            <span>${order.orderClass}</span>
-                                            </td>
-                
-                                            <td class='' colspan='1'>
-                                                <span class='fw-bold'>${item.menuName}(${item.categoryName})</span>
-                                                <br />
-                                                <span>${item.productQuantity} x ${item.productName}${variationName? "("+variationName+")" : ""}</span>
-                                            </td>
-
-                                            <!-- Add-Ons -->
-                                            <td colspan='2'>
-                                              <br />
-                                              <ul>
-                                              </ul>
-                                            </td>
-
-                                             <td id='remarks' class='text-break' colspan='2' rowspan=${rowCount}>
-                                                <span>${order.additionalNotes}</span>
-                                            </td>
-                                          </tr>
+                                          <td colspan="7" class="p-0">
+                                              <div class="collapse order-collapse" id="orderDetails${order.orderID}">
+                                                  <div class="order-details">
+                                                      <table class="table table-sm">
+                                                          <tr>
+                                                            <thead>
+                                                              <th>Order Type</th>
+                                                              <th>Order Items</th>
+                                                              <th>Add-Ons</th>
+                                                              <th colspan='3'>Notes/Remarks</th>
+                                                            </thead>
+                                                          </tr>
+                                                          
                                   `;
-                                  }else{
-                                    row += `
-                                      <tr>
-                                          <!-- Order Type -->
+                                  let counter = 0;
+                                  orderItems.forEach(item => {
+                                      const variationName = item.variationName ? `(${item.variationName})` : '';
+                                      if(counter == 0){
+                                        row += `
+                                          <tr>
+                                              <td rowspan=${orderItems.length}>${order.orderClass}</td>
+                                              <td style="text-align: left;">
+                                                  <span class="fw-bold">${item.menuName} (${item.categoryName})</span><br>
+                                                  <span>${item.productQuantity} x ${item.productName} ${variationName}</span>
+                                              </td>
+                                              <td colspan='2' style="text-align: left;">
+                                                  <ul>
+                                        `;
+                                        
+                                      }else{
+                                        row += `
+                                          <tr>
+                                              <td style="text-align: left;">
+                                                  <span class="fw-bold">${item.menuName} (${item.categoryName})</span><br>
+                                                  <span>${item.productQuantity} x ${item.productName} ${variationName}</span>
+                                              </td>
+                                              <td colspan='2' style="text-align: left;">
+                                                  <ul>
+                                        `;
+                                      }   
+                                        
+                                      console.log(item.addons);
+                                      item.addons.forEach(addon => {
+                                          row += `
+                                              <li>${addon}</li>
+                                          `;
+                                      });
 
-                                            <td class='' colspan='1'>
-                                                <span class='fw-bold'>${item.menuName}(${item.categoryName})</span>
-                                                <br />
-                                                <span>${item.productQuantity} x ${item.productName}${variationName? "("+variationName+")" : ""}</span>
-                                            </td>
+                                      row+=`    
+                                                  </ul>
+                                              </td>
+                                      `;
 
-                                            <!-- Add-Ons -->
-                                            <td colspan='2'>
-                                              <br />
-                                              <ul>
-                                              </ul>
-                                            </td>
+                                      counter == 0 ? row += `
+                                              <td colspan='2' rowspan=${orderItems.length}>${order.additionalNotes || 'No Notes'}</td>
                                           </tr>
+                                      ` : '';
+
+                                      row += `
+                                          </tr>
+                                      `;
+
+                                      counter++;
+                                  });
+
+                                  row += `
+           
+                                                      </table>
+                                                  </div>
+                                              </div>
+                                          </td>
+                                      </tr>
                                   `;
-                                  }
-                                  counter++;
-                              });
-                              row += `
-                                  </table>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>`;
-                        tableBody.append(row);
-                          },
-                          error: function () {
-                              console.error('Failed to fetch order items.');
-                          }
+                                  resolve(row); // Resolve the promise with the generated row
+                              },
+                              error: function () {
+                                  console.error(`Failed to fetch order items for orderNumber: ${order.orderNumber}`);
+                                  reject(); // Reject the promise on error
+                              }
+                          });
                       });
-                      
+                  });
+
+                  // Wait for all promises to complete
+                  Promise.all(promises).then(rows => {
+                      // Append all rows to the table in the correct order
+                      rows.forEach(row => {
+                          tableBody.append(row);
+                      });
+                  }).catch(() => {
+                      console.error('Failed to fetch some order items.');
                   });
               },
               error: function () {
@@ -265,7 +276,7 @@ if ($page == "orderQueue_History.php") {
               }
           });
       }
-      setInterval(refreshTable, 5000);
+      
       refreshTable();
 
       let selectedOrder;

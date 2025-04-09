@@ -25,13 +25,14 @@ $dompdf->stream("receipt.pdf", ["Attachment" => false]);
 function generateReceiptHTML($order) {
     $itemsHTML = '';
     foreach ($order['orderItems'] as $item) {
+        $variation = $item['productVariationName'] ? ' (' . $item['productVariationName'] . ')' : '';
         $itemsHTML .= '
         <tr>
             <td><span style="font-weight: bold;">' . $item['menuName'] . '(' . $item['productCategory'] . ')</span></td>
             <td></td>
         </tr>
         <tr>
-            <td> ' . $item['productName'] . '(' . $item['productVariationName'] . ')</td>
+            <td> ' . $item['productName'] . $variation . '</td>
             <td>' . $item['productQuantity'] . ' x ₱' . number_format($item['productPrice'], 2) . '</td>
         </tr>';
         

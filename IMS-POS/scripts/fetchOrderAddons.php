@@ -1,19 +1,19 @@
 <?php
 require_once('../../Login/database.php');
-$orderItem = json_decode(file_get_contents('php://input'), true);
+$orderItem = isset($_GET['orderItemID']) ? $_GET['orderItemID'] : '';
 
 $orders = $conn->query("
     SELECT
     tbl_addons.addonName
     FROM tbl_orderaddons
     LEFT JOIN tbl_addons ON tbl_orderaddons.addonID = tbl_addons.addonID
-    WHERE tbl_orderaddons.orderItemID = '{$orderItem['orderItemID']}';
+    WHERE tbl_orderaddons.orderItemID = $orderItem;
 ");
 
-$data = [];
+$dataAddons = [];
 while ($order = $orders->fetch(PDO::FETCH_ASSOC)) {
     $dataAddons[] = $order;
 }
 
-echo json_encode($data);
+echo json_encode($dataAddons);
 ?>
