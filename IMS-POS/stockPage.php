@@ -138,9 +138,11 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Stock Analytics</h5>
+
                                     <div id="stock-bar-Container">
                                         <canvas id="stockAnalyticsChart"></canvas>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -253,26 +255,73 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
             startDateInput.value = currentDate;
 
             let barChart, doughnutChart; // Store chart instances
+            let chartPeriod = 'weekly'; // Default chart period (weekly)
 
+            // Function to fetch data and update charts based on the selected period
             function fetchDataAndUpdateCharts() {
                 const startDate = startDateInput.value;
+                const period = chartPeriod; // Use the selected period (weekly/monthly/yearly)
 
-                // Log the selected start date (optional)
+                // Log the selected period and start date (optional)
+                console.log("Selected Period:", period);
                 console.log("Selected Date:", startDate);
 
-                // Fetch bar chart data based on selected date
-                fetch(`fetchWeeklyExpenses.php?startDate=${startDate}`)
+                // Fetch bar chart data based on the selected period and date
+                fetch(`fetchDailyExpense.php?startDate=${startDate}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                            const expensesByDay = Array(7).fill(0);
+                            let labels = [];
+                            let expensesData = [];
 
-                            data.data.forEach(record => {
-                                const purchaseDate = new Date(record.purchase_date);
-                                const dayIndex = purchaseDate.getDay();
-                                expensesByDay[dayIndex] += parseFloat(record.total_expenses);
-                            });
+                            // Process data based on the selected period
+                            if (period === 'weekly') {
+                                const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                                expensesData = Array(7).fill(0);
+
+                                data.data.forEach(record => {
+                                    const purchaseDate = new Date(record.purchase_date);
+                                    const dayIndex = purchaseDate.getDay();
+                                    expensesData[dayIndex] += parseFloat(record.total_expenses);
+                                });
+
+                                labels = daysOfWeek;
+                            }
+
+                            if (period === 'monthly') {
+                                const monthsOfYear = [
+                                    'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+                                ];
+                                expensesData = Array(12).fill(0);
+
+                                data.data.forEach(record => {
+                                    const purchaseDate = new Date(record.purchase_date);
+                                    const monthIndex = purchaseDate.getMonth(); // Get the month index (0-11)
+                                    expensesData[monthIndex] += parseFloat(record.total_expenses);
+                                });
+
+                                labels = monthsOfYear;
+                            }
+
+                            if (period === 'yearly') {
+                                // Handle the 'yearly' case similarly, adjust if needed
+                                // For simplicity, assuming you're aggregating yearly expenses
+                                const years = []; // Store unique years
+                                expensesData = [];
+
+                                data.data.forEach(record => {
+                                    const purchaseDate = new Date(record.purchase_date);
+                                    const year = purchaseDate.getFullYear();
+                                    if (!years.includes(year)) {
+                                        years.push(year);
+                                        expensesData.push(0); // Initialize for new year
+                                    }
+                                    const yearIndex = years.indexOf(year);
+                                    expensesData[yearIndex] += parseFloat(record.total_expenses);
+                                });
+
+                                labels = years;
+                            }
 
                             // Destroy the old bar chart before creating a new one
                             if (barChart) {
@@ -283,10 +332,10 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
                             barChart = new Chart(ctx, {
                                 type: 'bar',
                                 data: {
-                                    labels: daysOfWeek,
+                                    labels: labels,
                                     datasets: [{
-                                        label: 'Daily Expenses',
-                                        data: expensesByDay,
+                                        label: 'Expenses',
+                                        data: expensesData,
                                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                         borderColor: 'rgba(75, 192, 192, 1)',
                                         borderWidth: 1
@@ -303,12 +352,12 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
                                 }
                             });
                         } else {
-                            console.error('Error fetching weekly expenses:', data.message);
+                            console.error('Error fetching expenses:', data.message);
                         }
                     })
                     .catch(error => console.error('Error fetching data:', error));
 
-                // Fetch doughnut chart data based on selected date
+                // Fetch doughnut chart data based on the selected date
                 fetch(`stockBudgetGraph.php?startDate=${startDate}`)
                     .then(response => response.json())
                     .then(data => {
@@ -371,6 +420,20 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
                 // Re-fetch and update charts based on the new selected date
                 fetchDataAndUpdateCharts();
             });
+
+            // Listen for radio button changes and update chart period accordingly
+            $('input[name="btnradio"]').on('change', function() {
+                if ($('#btnradio1').is(':checked')) {
+                    chartPeriod = 'weekly';
+                } else if ($('#btnradio2').is(':checked')) {
+                    chartPeriod = 'monthly';
+                } else if ($('#btnradio3').is(':checked')) {
+                    chartPeriod = 'yearly';
+                }
+
+                // Re-fetch and update charts based on the selected period
+                fetchDataAndUpdateCharts();
+            });
         });
     </script>
     <script>
@@ -386,7 +449,7 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
                 console.log("Selected Timeframe:", timeframe);
 
                 // Fetch bar chart data based on selected timeframe
-                fetch(`fetchExpenses.php?startDate=${startDate}&timeframe=${timeframe}`)
+                fetch(`fetchWeeklyExpenses.php?startDate=${startDate}&timeframe=${timeframe}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
