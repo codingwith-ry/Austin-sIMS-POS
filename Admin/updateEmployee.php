@@ -4,13 +4,15 @@ include("../Login/database.php");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
     $name = filter_input(INPUT_POST, 'Employee_Name', FILTER_SANITIZE_STRING);
+    $email = filter_input(INPUT_POST, 'Employee_Email', FILTER_SANITIZE_EMAIL); // New email field
     $role = filter_input(INPUT_POST, 'Employee_Role', FILTER_SANITIZE_STRING);
     $status = filter_input(INPUT_POST, 'Employee_Status', FILTER_SANITIZE_STRING);
 
-    if ($id && $name && $role && $status) {
+    if ($id && $name && $email && $role && $status) {
         try {
-            $stmt = $conn->prepare("UPDATE employees SET Employee_Name = :name, Employee_Role = :role, Employee_Status = :status WHERE Employee_ID = :id");
+            $stmt = $conn->prepare("UPDATE employees SET Employee_Name = :name, Employee_Email = :email, Employee_Role = :role, Employee_Status = :status WHERE Employee_ID = :id");
             $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':email', $email); // Bind email
             $stmt->bindParam(':role', $role);
             $stmt->bindParam(':status', $status);
             $stmt->bindParam(':id', $id);
@@ -26,7 +28,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo json_encode(['success' => false, 'message' => 'Invalid input']);
     }
-} else {
-    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
 ?>
