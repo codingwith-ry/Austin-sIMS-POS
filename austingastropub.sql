@@ -757,4 +757,25 @@ COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
 
+INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`, `Category_Icon`) VALUES
+(1, 'Fruits', 'fi fi-rr-apple-whole'),
+(2, 'Vegetables', 'fi fi-rr-carrot'),
+(3, 'Grains', 'fi fi-rr-bread-slice'),
+(4, 'Dairy', 'fi fi-rr-milk-alt'),
+(5, 'Fats & Oils', 'fi fi-rr-oil-can'),
+(6, 'Beverages', 'fi fi-rr-coffee'),
+(7, 'Sweeteners & Condiments', 'fi fi-rr-salt-shaker'),
+(8, 'Herbs & Spices', 'fi fi-rr-pepper-hot'),
+(9, 'Protein', 'fi fi-rr-egg-fried');
 
+
+INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VALUES
+(2, 'Liters', 'L'),
+(3, 'Gallon', 'Gal'),
+(4, 'Carton', 'C'),
+(5, 'Grams', 'g'),
+(6, 'Pound', 'lb'),
+(7, 'Kilogram', 'kg'),
+(8, 'Sack', 's'),
+(9, 'Pieces', 'p'),
+(10, 'Milliliters', 'ml');
