@@ -92,14 +92,76 @@ if ($page == "orderQueue_History.php") {
                 </tr>
               </thead>
               <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-pane fade <?php echo ($activeTab=='pickup') ? 'show active' : ''; ?>" id="pickup" role="tabpanel" aria-labelledby="pickup-tab">
+          <div class="table-container mt-3">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Queue</th>
+                  <th>Order Number</th>
+                  <th>Sales Order Number</th>
+                  <th>Product Quantity</th>
+                  <th>Time</th>
+                  <th>Order Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
                 
               </tbody>
             </table>
           </div>
         </div>
-  
-      
-        
+
+
+        <div class="tab-pane fade <?php echo ($activeTab=='history') ? 'show active' : ''; ?>" id="history" role="tabpanel" aria-labelledby="history-tab">
+          <!-- Search and Filter Controls -->
+          <div class="d-flex align-items-center mb-3">
+              <input type="text" id="searchBox" class="form-control mr-2" placeholder="Search orders..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+              <i id="filterToggle" class="fas fa-sliders-h filter-icon"></i>
+          </div>
+          <div id="filterPanel" class="mb-3" style="display: none; padding: 10px;">
+              <label for="sortOrder">Sort Order:</label>
+              <select id="sortOrder" class="form-control w-auto d-inline-block ml-2">
+                  <option value="desc"<?php if (!isset($_GET['sort_order']) || $_GET['sort_order'] === 'desc') echo ' selected'; ?>>Newest first</option>
+                  <option value="asc"<?php if (isset($_GET['sort_order']) && $_GET['sort_order'] === 'asc') echo ' selected'; ?>>Oldest first</option>
+              </select>
+          </div>
+          <div class="table-container mt-3">
+              <table class="table table-bordered" id="historyTable">
+                  <thead>
+                      <tr>
+                          <th>Order Number</th>
+                          <th>Sales Order Number</th>
+                          <th>Employee ID</th>
+                          <th>Date Purchased</th>
+                          <th>Order Status</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <?php
+                      // Load all matching history orders (used for DataTables)
+                      require_once('../Login/database.php');
+                      $history_orders = $conn->query("SELECT * FROM tbl_orders ORDER BY orderDate AND orderTime DESC");
+                      while ($order = $history_orders->fetch(PDO::FETCH_ASSOC)) {
+                          echo "<tr class='history-row' data-order-id='{$order['orderID']}' data-order-number='{$order['orderNumber']}' data-order-date='{$order['orderDate']}'>
+                                  <td>{$order['orderNumber']}</td>
+                                  <td>{$order['salesOrderNumber']}</td>
+                                  <td>{$order['employeeID']}</td>
+                                  <td>{$order['orderDate']} {$order['orderTime']}</td>
+                                  <td>{$order['orderStatus']}</td>
+                                </tr>";
+                      }
+                      ?>
+                  </tbody>
+              </table>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -137,147 +199,152 @@ if ($page == "orderQueue_History.php") {
   <!-- Custom JS -->
   <script>
     $(document).ready(function() {
-      function refreshTable() {
-          $.ajax({
-              url: 'scripts/fetchOrders.php',
-              type: 'GET',
-              dataType: 'json',
-              data: {
-                  orderStatus: 'IN PROCESS',
-              },
-              success: function (data) {
-                  // Clear the existing table body
-                  const tableBody = $('#queue tbody');
-                  tableBody.empty();
+      function refreshTable(orderStatus, tableId) {
+        $.ajax({
+            url: 'scripts/fetchOrders.php',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                orderStatus: orderStatus,
+            },
+            success: function (data) {
+                // Clear the existing table body
+                const tableBody = $(`#${tableId} tbody`);
+                tableBody.empty();
 
-                  // Create an array of promises for nested AJAX calls
-                  const promises = data.map(order => {
-                      return new Promise((resolve, reject) => {
-                          // Fetch order items for each order
-                          $.ajax({
-                              url: 'scripts/fetchOrderItems.php',
-                              type: 'GET',
-                              dataType: 'json',
-                              data: {
-                                  orderNumber: order.orderNumber,
-                              },
-                              success: function (orderItems) {
-                                  let row = `
-                                      <tr class="order-row" data-toggle="collapse" data-target="#orderDetails${order.orderID}" aria-expanded="false" aria-controls="orderDetails${order.orderID}">
-                                          <td>${order.orderID}</td>
-                                          <td>${order.orderNumber}</td>
-                                          <td>${order.salesOrderNumber}</td>
-                                          <td>${order.productQuantity}</td>
-                                          <td>${order.orderTime}</td>
-                                          <td>${order.orderStatus}</td>
-                                          <td class="p-3">
-                                              ${order.orderStatus === 'IN PROCESS' ? `
-                                                  <button class="btn btn-success"><i class="fas fa-check"></i> Done</button>
-                                                  <button class="btn btn-danger"><i class="fas fa-times"></i> Cancel</button>
-                                              ` : ''}
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                          <td colspan="7" class="p-0">
-                                              <div class="collapse order-collapse" id="orderDetails${order.orderID}">
-                                                  <div class="order-details">
-                                                      <table class="table table-sm">
-                                                          <tr>
-                                                            <thead>
-                                                              <th>Order Type</th>
-                                                              <th>Order Items</th>
-                                                              <th>Add-Ons</th>
-                                                              <th colspan='3'>Notes/Remarks</th>
-                                                            </thead>
-                                                          </tr>
-                                                          
-                                  `;
-                                  let counter = 0;
-                                  orderItems.forEach(item => {
-                                      const variationName = item.variationName ? `(${item.variationName})` : '';
-                                      if(counter == 0){
+                // Create an array of promises for nested AJAX calls
+                const promises = data.map(order => {
+                    return new Promise((resolve, reject) => {
+                        // Fetch order items for each order
+                        $.ajax({
+                            url: 'scripts/fetchOrderItems.php',
+                            type: 'GET',
+                            dataType: 'json',
+                            data: {
+                                orderNumber: order.orderNumber,
+                            },
+                            success: function (orderItems) {
+                                let row = `
+                                    <tr class="order-row" data-toggle="collapse" data-target="#orderDetails${order.orderID}" aria-expanded="false" aria-controls="orderDetails${order.orderID}">
+                                        <td>${order.orderID}</td>
+                                        <td>${order.orderNumber}</td>
+                                        <td>${order.salesOrderNumber}</td>
+                                        <td>${order.productQuantity}</td>
+                                        <td>${order.orderTime}</td>
+                                        <td>${order.orderStatus}</td>
+                                        <td class="p-3">
+                                            ${orderStatus === 'IN PROCESS' || orderStatus === 'PICKUP' ? `
+                                                <button class="btn btn-success"><i class="fas fa-check"></i> Done</button>
+                                                <button class="btn btn-danger"><i class="fas fa-times"></i> Cancel</button>
+                                            ` : ''}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7" class="p-0">
+                                            <div class="collapse order-collapse" id="orderDetails${order.orderID}">
+                                                <div class="order-details">
+                                                    <table class="table table-sm">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Order Type</th>
+                                                                <th>Order Items</th>
+                                                                <th>Add-Ons</th>
+                                                                <th colspan='3'>Notes/Remarks</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                `;
+
+                                let counter = 0;
+                                orderItems.forEach(item => {
+                                    const variationName = item.variationName ? `(${item.variationName})` : '';
+                                    if (counter == 0) {
                                         row += `
-                                          <tr>
-                                              <td rowspan=${orderItems.length}>${order.orderClass}</td>
-                                              <td style="text-align: left;">
-                                                  <span class="fw-bold">${item.menuName} (${item.categoryName})</span><br>
-                                                  <span>${item.productQuantity} x ${item.productName} ${variationName}</span>
-                                              </td>
-                                              <td colspan='2' style="text-align: left;">
-                                                  <ul>
+                                            <tr>
+                                                <td rowspan=${orderItems.length}>${order.orderClass}</td>
+                                                <td style="text-align: left;">
+                                                    <span class="fw-bold">${item.menuName} (${item.categoryName})</span><br>
+                                                    <span>${item.productQuantity} x ${item.productName} ${variationName}</span>
+                                                </td>
+                                                <td colspan='2' style="text-align: left;">
+                                                    <ul>
                                         `;
-                                        
-                                      }else{
+                                    } else {
                                         row += `
-                                          <tr>
-                                              <td style="text-align: left;">
-                                                  <span class="fw-bold">${item.menuName} (${item.categoryName})</span><br>
-                                                  <span>${item.productQuantity} x ${item.productName} ${variationName}</span>
-                                              </td>
-                                              <td colspan='2' style="text-align: left;">
-                                                  <ul>
+                                            <tr>
+                                                <td style="text-align: left;">
+                                                    <span class="fw-bold">${item.menuName} (${item.categoryName})</span><br>
+                                                    <span>${item.productQuantity} x ${item.productName} ${variationName}</span>
+                                                </td>
+                                                <td colspan='2' style="text-align: left;">
+                                                    <ul>
                                         `;
-                                      }   
-                                        
-                                      console.log(item.addons);
-                                      item.addons.forEach(addon => {
-                                          row += `
-                                              <li>${addon}</li>
-                                          `;
-                                      });
+                                    }
 
-                                      row+=`    
-                                                  </ul>
-                                              </td>
-                                      `;
+                                    if (item.addons.length > 0) {
+                                        item.addons.forEach(addon => {
+                                            row += `<li>${addon}</li>`;
+                                        });
+                                    } else {
+                                        row += `<li>No Add-Ons</li>`;
+                                    }
+                                    row += `
+                                                    </ul>
+                                                </td>
+                                    `;
 
-                                      counter == 0 ? row += `
-                                              <td colspan='2' rowspan=${orderItems.length}>${order.additionalNotes || 'No Notes'}</td>
-                                          </tr>
-                                      ` : '';
+                                    counter == 0 ? row += `
+                                                <td colspan='2' rowspan=${orderItems.length}>${order.additionalNotes || 'No Notes'}</td>
+                                            </tr>
+                                    ` : '';
 
-                                      row += `
-                                          </tr>
-                                      `;
+                                    row += `
+                                            </tr>
+                                    `;
 
-                                      counter++;
-                                  });
+                                    counter++;
+                                });
 
-                                  row += `
-           
-                                                      </table>
-                                                  </div>
-                                              </div>
-                                          </td>
-                                      </tr>
-                                  `;
-                                  resolve(row); // Resolve the promise with the generated row
-                              },
-                              error: function () {
-                                  console.error(`Failed to fetch order items for orderNumber: ${order.orderNumber}`);
-                                  reject(); // Reject the promise on error
-                              }
-                          });
-                      });
-                  });
+                                row += `
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `;
+                                resolve(row); // Resolve the promise with the generated row
+                            },
+                            error: function () {
+                                console.error(`Failed to fetch order items for orderNumber: ${order.orderNumber}`);
+                                reject(); // Reject the promise on error
+                            }
+                        });
+                    });
+                });
 
-                  // Wait for all promises to complete
-                  Promise.all(promises).then(rows => {
-                      // Append all rows to the table in the correct order
-                      rows.forEach(row => {
-                          tableBody.append(row);
-                      });
-                  }).catch(() => {
-                      console.error('Failed to fetch some order items.');
-                  });
-              },
-              error: function () {
-                  console.error('Failed to fetch orders.');
-              }
-          });
+                // Wait for all promises to complete
+                Promise.all(promises).then(rows => {
+                    // Append all rows to the table in the correct order
+                    rows.forEach(row => {
+                        tableBody.append(row);
+                    });
+                }).catch(() => {
+                    console.error('Failed to fetch some order items.');
+                });
+            },
+            error: function () {
+                console.error('Failed to fetch orders.');
+            }
+        });
       }
-      
-      refreshTable();
+
+
+      setInterval(() => refreshTable('IN PROCESS', 'QUEUE'), 10000); // Refresh every 10 seconds
+      refreshTable('IN PROCESS', 'QUEUE');
+
+      setInterval(() => refreshTable('PICKUP', 'pickup'), 10000); // Refresh every 10 seconds
+      refreshTable('PICKUP', 'pickup');
 
       let selectedOrder;
       let actionType = "";
@@ -344,13 +411,20 @@ if ($page == "orderQueue_History.php") {
           const isDone = $(this).hasClass('btn-success'); // Check if the button is "Done"
           const orderRow = $(this).closest('tr'); // Get the row of the clicked button
           const orderNum = orderRow.find('td:eq(1)').text(); // Get the Order ID from the first column
+          const currentTab = $('#orderTabs .nav-link.active').attr('id').replace('-tab', ''); // Get the current tab (queue or pickup)
+          
+          const status = isDone
+              ? (currentTab === 'pickup' ? 'DONE' : 'PICKUP') // "DONE" for pickup, "PICKUP" for queue
+              : 'CANCELLED';
+
+          console.log(status);
 
           // SweetAlert confirmation dialog
           Swal.fire({
               title: isDone ? 'Mark as Done?' : 'Cancel Order?',
               text: isDone
-              ? `Are you sure you want to mark Order #${orderNum} to be for pickup?`
-              : `Are you sure you want to cancel Order #${orderNum}?`,
+                  ? `Are you sure you want to mark Order #${orderNum} as ${status}?`
+                  : `Are you sure you want to cancel Order #${orderNum}?`,
               icon: isDone ? 'success' : 'warning',
               showCancelButton: true,
               confirmButtonColor: isDone ? '#28a745' : '#d33',
@@ -364,7 +438,7 @@ if ($page == "orderQueue_History.php") {
                       type: 'POST',
                       data: {
                           orderNum: orderNum,
-                          status: 'PICKUP',
+                          status: status,
                       },
                       success: function (response) {
                           response = JSON.parse(response); // Parse the JSON response
@@ -378,8 +452,12 @@ if ($page == "orderQueue_History.php") {
                                   showConfirmButton: false,
                               });
 
-                              // Optionally, remove the row or update the status in the table
-                              refreshTable();
+                              // Refresh the appropriate table
+                              if (currentTab === 'pickup') {
+                                  refreshTable('PICKUP', 'pickup');
+                              } else {
+                                  refreshTable('IN PROCESS', 'queue');
+                              }
                           } else {
                               Swal.fire({
                                   title: 'Error!',
@@ -396,9 +474,6 @@ if ($page == "orderQueue_History.php") {
                           });
                       },
                   });
-              }else {
-                  // User clicked "No" or closed the modal
-                
               }
           });
       });
