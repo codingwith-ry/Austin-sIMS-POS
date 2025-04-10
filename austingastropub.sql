@@ -681,10 +681,80 @@ INSERT INTO `tbl_variations` (`variationID`, `variationName`, `variationPrice`, 
 
 
 
-
-
 --Inventory Management Tables--
 
 
+
+CREATE TABLE `tbl_inventory_changes` (
+	`Change_ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Record_ID` INT(11) NOT NULL,
+	`Change_Quantity` INT(11) NOT NULL,
+	`Change_Type` ENUM('decrease','increase') NOT NULL COLLATE 'utf8mb4_general_ci',
+	`Change_Date` TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+	PRIMARY KEY (`Change_ID`) USING BTREE,
+	INDEX `Record_ID` (`Record_ID`) USING BTREE,
+	CONSTRAINT `tbl_inventory_changes_ibfk_1` FOREIGN KEY (`Record_ID`) REFERENCES `tbl_record` (`Record_ID`) ON UPDATE RESTRICT ON DELETE RESTRICT
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=9
+;
+
+
+CREATE TABLE `tbl_item` (
+	`Item_ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Item_Name` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`Item_Image` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`Item_Category` INT(11) NOT NULL,
+	`Unit_ID` INT(11) NULL DEFAULT NULL,
+	PRIMARY KEY (`Item_ID`) USING BTREE,
+	INDEX `FK__tbl_itemcategories` (`Item_Category`) USING BTREE,
+	INDEX `FK_tbl_item_tbl_unitofmeasurments` (`Unit_ID`) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=8
+;
+
+
+CREATE TABLE `tbl_itemcategories` (
+	`Category_ID` INT(11) NOT NULL,
+	`Category_Name` VARCHAR(150) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	`Category_Icon` VARCHAR(150) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	PRIMARY KEY (`Category_ID`) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+
+CREATE TABLE `tbl_record` (
+	`Record_ID` INT(11) NOT NULL,
+	`Item_ID` INT(11) NULL DEFAULT NULL,
+	`Record_ItemVolume` INT(11) NULL DEFAULT NULL,
+	`Record_ItemQuantity` INT(11) NULL DEFAULT NULL,
+	`Record_ItemPrice` INT(11) NULL DEFAULT NULL,
+	`Record_ItemExpirationDate` DATE NULL DEFAULT NULL,
+	`Record_ItemPurchaseDate` DATE NULL DEFAULT NULL,
+	`Record_ItemSupplier` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	`Record_EmployeeAssigned` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	PRIMARY KEY (`Record_ID`) USING BTREE,
+	INDEX `FK__tbl_item` (`Item_ID`) USING BTREE,
+	INDEX `FK__employees` (`Record_EmployeeAssigned`) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+
+CREATE TABLE `tbl_unitofmeasurments` (
+	`Unit_ID` INT(11) NOT NULL,
+	`Unit_Name` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`Unit_Acronym` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	PRIMARY KEY (`Unit_ID`) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
 
 
