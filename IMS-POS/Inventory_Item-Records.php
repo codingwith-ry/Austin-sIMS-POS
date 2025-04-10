@@ -8,29 +8,43 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'inventory staff 
 include("../Login/database.php");
 include("IMS_process.php");
 
-$groupedItemsQuery = $conn->prepare("
+$fetchItemDataQuery = "
     SELECT 
+        i.Item_ID,
         i.Item_Name, 
-        SUM(r.Record_ItemQuantity) AS Total_Quantity, 
-        r.Record_ItemVolume, 
-        COALESCE(u.Unit_Acronym, '') AS Unit_Acronym
-    FROM tbl_record r
-    JOIN tbl_item i ON r.Item_ID = i.Item_ID
-    LEFT JOIN tbl_unitofmeasurments u ON i.Unit_ID = u.Unit_ID
-    GROUP BY i.Item_Name, r.Record_ItemVolume
+        i.Item_Image, 
+        i.Item_Category, 
+        ic_cat.Category_Name, 
+        um.Unit_Acronym, 
+        r.Record_ItemQuantity, 
+        r.Record_ItemVolume,
+        IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change,  -- Sum of all changes for the item
+        IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease  -- Sum only decreases
+    FROM tbl_item i
+    JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
+    JOIN tbl_record r ON i.Item_ID = r.Item_ID
+    LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
+    LEFT JOIN tbl_inventory_changes ic ON r.Record_ID = ic.Record_ID
+    GROUP BY i.Item_ID, r.Record_ItemVolume
     ORDER BY i.Item_Name ASC
-");
-$groupedItemsQuery->execute();
-$groupedItems = $groupedItemsQuery->fetchAll(PDO::FETCH_ASSOC);
+";
 
-// Separate items into "Out of Stock" and "Low Stock"
+$itemData = $pdo->query($fetchItemDataQuery)->fetchAll(PDO::FETCH_ASSOC);
+
 $outOfStockItems = [];
 $lowStockItems = [];
 
-foreach ($groupedItems as $item) {
-    if ($item['Total_Quantity'] == 0) {
+foreach ($itemData as $item) {
+    // Calculate the current quantity by subtracting Total_Decrease from Record_ItemQuantity
+    $currentStock = $item['Record_ItemQuantity'] - $item['Total_Decrease'];
+
+    // Add Total_Quantity to the item for easy access
+    $item['Total_Quantity'] = $currentStock;
+
+    // Classify the items based on the stock
+    if ($currentStock <= 0) {
         $outOfStockItems[] = $item;
-    } elseif ($item['Total_Quantity'] > 0 && $item['Total_Quantity'] < 4) {
+    } elseif ($currentStock > 0 && $currentStock < 4) {
         $lowStockItems[] = $item;
     }
 }
@@ -50,51 +64,51 @@ foreach ($groupedItems as $item) {
 <body>
     <?php include 'verticalNav.php' ?>
     <main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
-    <?php if (!empty($outOfStockItems) || !empty($lowStockItems)): ?>
-    <div class="modal fade" id="lowStockModal" tabindex="-1" aria-labelledby="lowStockModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: rgb(50, 50, 50); color: white;">
-                    <h5 class="modal-title" id="lowStockModalLabel">Stock Alerts</h5>
-                </div>
-                <div class="modal-body">
-                    <?php if (!empty($outOfStockItems)): ?>
-                        <h5 class="text-danger">Out of Stock</h5>
-                        <ul class="list-group mb-3">
-                            <?php foreach ($outOfStockItems as $item): ?>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong>
-                                    <span>
-                                        <?php echo htmlspecialchars($item['Total_Quantity']); ?> pcs 
-                                        (<?php echo htmlspecialchars($item['Record_ItemVolume']) . ' ' . htmlspecialchars($item['Unit_Acronym']); ?>)
-                                    </span>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php endif; ?>
+        <?php if (!empty($outOfStockItems) || !empty($lowStockItems)): ?>
+            <div class="modal fade" id="lowStockModal" tabindex="-1" aria-labelledby="lowStockModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: rgb(50, 50, 50); color: white;">
+                            <h5 class="modal-title" id="lowStockModalLabel">Stock Alerts</h5>
+                        </div>
+                        <div class="modal-body">
+                            <?php if (!empty($outOfStockItems)): ?>
+                                <h5 class="text-danger">Out of Stock</h5>
+                                <ul class="list-group mb-3">
+                                    <?php foreach ($outOfStockItems as $item): ?>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong>
+                                            <span>
+                                                <?php echo htmlspecialchars($item['Total_Quantity']); ?> pcs
+                                                (<?php echo htmlspecialchars($item['Record_ItemVolume']) . ' ' . htmlspecialchars($item['Unit_Acronym']); ?>)
+                                            </span>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
 
-                    <?php if (!empty($lowStockItems)): ?>
-                        <h5 class="text-warning">Low Stock</h5>
-                        <ul class="list-group">
-                            <?php foreach ($lowStockItems as $item): ?>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong>
-                                    <span>
-                                        <?php echo htmlspecialchars($item['Total_Quantity']); ?> pcs 
-                                        (<?php echo htmlspecialchars($item['Record_ItemVolume']) . ' ' . htmlspecialchars($item['Unit_Acronym']); ?>)
-                                    </span>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php endif; ?>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn" style="background-color: rgb(50, 50, 50); color: white;" data-bs-dismiss="modal">Close</button>
+                            <?php if (!empty($lowStockItems)): ?>
+                                <h5 class="text-warning">Low Stock</h5>
+                                <ul class="list-group">
+                                    <?php foreach ($lowStockItems as $item): ?>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong>
+                                            <span>
+                                                <?php echo htmlspecialchars($item['Total_Quantity']); ?> pcs
+                                                (<?php echo htmlspecialchars($item['Record_ItemVolume']) . ' ' . htmlspecialchars($item['Unit_Acronym']); ?>)
+                                            </span>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" style="background-color: rgb(50, 50, 50); color: white;" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-<?php endif; ?>
+        <?php endif; ?>
         <div class="title">
             <div class="row">
                 <div>
@@ -285,6 +299,9 @@ foreach ($groupedItems as $item) {
                                                 // Sum the quantities
                                                 $groupedItems[$itemKey]['Record_ItemQuantity'] += $row['Record_ItemQuantity'];
                                             }
+
+                                            // Adjust quantity based on the total decrease
+                                            $groupedItems[$itemKey]['Record_ItemQuantity'] -= $row['Total_Decrease'];
                                         }
 
                                         // Loop through and display each item
@@ -567,7 +584,7 @@ foreach ($groupedItems as $item) {
     </script>
     <script>
         // Automatically show the modal if there are low-stock or out-of-stock items
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             <?php if (!empty($outOfStockItems) || !empty($lowStockItems)): ?>
                 var lowStockModal = new bootstrap.Modal(document.getElementById('lowStockModal'));
                 lowStockModal.show();

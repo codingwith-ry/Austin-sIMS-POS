@@ -2,7 +2,7 @@
 <?php
 
 try {
-    $pdo = new PDO($attrs, $db_user, $db_pass,$opts);
+    $pdo = new PDO($attrs, $db_user, $db_pass, $opts);
     //echo 'database connected';    
 } catch (Exception $e) {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
@@ -19,11 +19,11 @@ $items = $pdo->query($fetchItemQuery)->fetchAll(PDO::FETCH_ASSOC);
 /* Fetching Unit of Measurement from the database */
 
 $fetchUnitQuery = "SELECT * FROM tbl_unitofmeasurments";
-$unitOfMeasurementList = $pdo -> query($fetchUnitQuery) -> fetchAll(PDO::FETCH_ASSOC);
+$unitOfMeasurementList = $pdo->query($fetchUnitQuery)->fetchAll(PDO::FETCH_ASSOC);
 
 /* Fetching Employee List from the database */
 $fetchEmployeeQuery = "SELECT * FROM employees";
-$employee = $pdo -> query($fetchEmployeeQuery) -> fetchAll(PDO::FETCH_ASSOC);
+$employee = $pdo->query($fetchEmployeeQuery)->fetchAll(PDO::FETCH_ASSOC);
 
 if (isset($_POST['add_record'])) {
     $itemName = filter_input(INPUT_POST, 'item_Name', FILTER_SANITIZE_STRING);
@@ -121,12 +121,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $fetchInventoryQuery = "
     SELECT r.Record_ID, r.Record_ItemPurchaseDate, r.Record_EmployeeAssigned, r.Record_ItemVolume,
-           i.Item_Name, i.Item_Image, ic.Category_Name, u.Unit_Name, 
+           i.Item_Name, i.Item_Image, ic_cat.Category_Name, u.Unit_Name, 
            r.Record_ItemQuantity, r.Record_ItemExpirationDate, r.Record_ItemPrice,
            e.Employee_Name
     FROM tbl_record r
     JOIN tbl_item i ON r.Item_ID = i.Item_ID
-    LEFT JOIN tbl_itemcategories ic ON i.Item_Category = ic.Category_ID
+    LEFT JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
     LEFT JOIN tbl_unitofmeasurments u ON i.Unit_ID = u.Unit_ID
     LEFT JOIN employees e ON r.Record_EmployeeAssigned = e.Employee_ID
     ORDER BY r.Record_ItemPurchaseDate DESC
@@ -134,24 +134,28 @@ $fetchInventoryQuery = "
 
 $inventoryRecords = $pdo->query($fetchInventoryQuery)->fetchAll(PDO::FETCH_ASSOC);
 
+
 $fetchItemDataQuery = "
     SELECT 
         i.Item_ID,
         i.Item_Name, 
         i.Item_Image, 
         i.Item_Category, 
-        ic.Category_Name, 
+        ic_cat.Category_Name, 
         um.Unit_Acronym, 
         r.Record_ItemQuantity, 
-        r.Record_ItemVolume
+        r.Record_ItemVolume,
+        IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change, -- Sum of all changes for the item
+        IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease -- Sum only decreases
     FROM tbl_item i
-    JOIN tbl_itemcategories ic ON i.Item_Category = ic.Category_ID
+    JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
     JOIN tbl_record r ON i.Item_ID = r.Item_ID
     LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
+    LEFT JOIN tbl_inventory_changes ic ON r.Record_ID = ic.Record_ID
+    GROUP BY i.Item_ID, r.Record_ItemVolume
 ";
 
-$itemData = $pdo -> query($fetchItemDataQuery) -> fetchAll(PDO::FETCH_ASSOC);
-
+$itemData = $pdo->query($fetchItemDataQuery)->fetchAll(PDO::FETCH_ASSOC);
 
 
 if (isset($_GET['item_id'])) {

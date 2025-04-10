@@ -13,11 +13,11 @@ if (isset($_POST['confirm_decrease'])) {
     $record = $stmt->fetch();
 
     if ($record && $record['Record_ItemQuantity'] >= $amountToDecrease) {
-        // Use the Record_ID of the specific record to decrease the quantity
-        $update = $conn->prepare("UPDATE tbl_record SET Record_ItemQuantity = Record_ItemQuantity - :amount WHERE Record_ID = :record_id");
-        $update->execute([
-            ':amount' => $amountToDecrease,
-            ':record_id' => $record['Record_ID']
+        // Log the decrease in the tbl_inventory_changes table
+        $insert = $conn->prepare("INSERT INTO tbl_inventory_changes (Record_ID, Change_Quantity, Change_Type) VALUES (:record_id, :change_quantity, 'decrease')");
+        $insert->execute([
+            ':record_id' => $record['Record_ID'],
+            ':change_quantity' => $amountToDecrease
         ]);
 
         header("Location: Inventory_Item-Records.php");

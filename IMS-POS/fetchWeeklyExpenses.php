@@ -2,11 +2,16 @@
 include '../Login/database.php';
 
 try {
-    // Get the start and end dates for the current week
-    $startOfWeek = date('Y-m-d', strtotime('sunday last week'));
-    $endOfWeek = date('Y-m-d', strtotime('saturday this week'));
+    // Get the start date from the request (default to today's date if not provided)
+    $startDate = isset($_GET['startDate']) ? $_GET['startDate'] : date('Y-m-d');
 
-    // Query to fetch and group data by day of the week
+    // Parse the start date to get the start of the week (Sunday) and the end of the week (Saturday)
+    $startDateObj = new DateTime($startDate);
+    $startDateObj->setISODate($startDateObj->format('Y'), $startDateObj->format('W'));
+    $startOfWeek = $startDateObj->format('Y-m-d');
+    $endOfWeek = (clone $startDateObj)->modify('+6 days')->format('Y-m-d');
+
+    // Query to fetch and group data by day of the week (from Sunday to Saturday)
     $query = "
         SELECT 
             DATE(Record_ItemPurchaseDate) AS purchase_date,
@@ -29,4 +34,3 @@ try {
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
-?>

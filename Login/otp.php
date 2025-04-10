@@ -18,7 +18,7 @@
   </div>
   <div class="card text-bg-light mb-6" style="width: 25rem; padding:30px">
     <h5 class="text-center mb-4" style="color: #6a4413;">Enter OTP</h5>
-    <p class="text-center">We sent a code to <strong><?php echo htmlspecialchars($_GET["email"]); ?></strong></p></br>
+    <p class="text-center">We sent a code to <strong><?php echo htmlspecialchars($_GET["email"] ?? 'your email'); ?></strong></p>
     <form id="otpForm">
       <div class="d-flex justify-content-between mb-4">
         <input type="text" name="otp[]" class="form-control otp-input" maxlength="1" />
