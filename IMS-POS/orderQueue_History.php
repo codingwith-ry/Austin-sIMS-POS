@@ -102,9 +102,7 @@ if ($page == "orderQueue_History.php") {
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th>Queue</th>
                   <th>Order Number</th>
-                  <th>Sales Order Number</th>
                   <th>Product Quantity</th>
                   <th>Time</th>
                   <th>Order Status</th>
@@ -199,6 +197,7 @@ if ($page == "orderQueue_History.php") {
   <!-- Custom JS -->
   <script>
     $(document).ready(function() {
+
       function refreshTable(orderStatus, tableId) {
         $.ajax({
             url: 'scripts/fetchOrders.php',
@@ -213,6 +212,7 @@ if ($page == "orderQueue_History.php") {
                 tableBody.empty();
 
                 // Create an array of promises for nested AJAX calls
+                
                 const promises = data.map(order => {
                     return new Promise((resolve, reject) => {
                         // Fetch order items for each order
@@ -226,9 +226,22 @@ if ($page == "orderQueue_History.php") {
                             success: function (orderItems) {
                                 let row = `
                                     <tr class="order-row" data-toggle="collapse" data-target="#orderDetails${order.orderID}" aria-expanded="false" aria-controls="orderDetails${order.orderID}">
-                                        <td>${order.orderID}</td>
+                                `;
+                                if(tableId === 'pickup') {
+                                } else {
+                                    row += `<td>${order.queueNumber}</td>`;
+                                }
+                                row += `
+                                        
                                         <td>${order.orderNumber}</td>
-                                        <td>${order.salesOrderNumber}</td>
+                                `;
+
+                                if(tableId === 'pickup') {
+                                } else {
+                                    row += `<td>${order.salesOrderNumber}</td>`;
+                                }
+
+                                row += `
                                         <td>${order.productQuantity}</td>
                                         <td>${order.orderTime}</td>
                                         <td>${order.orderStatus}</td>
@@ -254,6 +267,7 @@ if ($page == "orderQueue_History.php") {
                                                         </thead>
                                                         <tbody>
                                 `;
+
 
                                 let counter = 0;
                                 orderItems.forEach(item => {
@@ -453,11 +467,8 @@ if ($page == "orderQueue_History.php") {
                               });
 
                               // Refresh the appropriate table
-                              if (currentTab === 'pickup') {
-                                  refreshTable('PICKUP', 'pickup');
-                              } else {
-                                  refreshTable('IN PROCESS', 'queue');
-                              }
+                              refreshTable('PICKUP', 'pickup');
+                              refreshTable('IN PROCESS', 'queue');
                           } else {
                               Swal.fire({
                                   title: 'Error!',

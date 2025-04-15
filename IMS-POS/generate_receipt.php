@@ -5,6 +5,10 @@ use Dompdf\Dompdf;
 // Get the order data from POST
 $orderData = json_decode(file_get_contents('php://input'), true);
 
+if (isset($orderData['orderItems']) && is_string($orderData['orderItems'])) {
+    $orderData['orderItems'] = json_decode($orderData['orderItems'], true);
+}
+
 // Generate the HTML for the receipt
 $html = generateReceiptHTML($orderData);
 $html = str_replace('₱', '&#8369;', $html); 
@@ -154,4 +158,6 @@ function generateReceiptHTML($order) {
     </body>
     </html>';
 }
+
+error_log(print_r($orderData, true));
 ?>

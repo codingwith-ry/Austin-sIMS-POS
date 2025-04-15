@@ -25,8 +25,11 @@ $orders = $conn->query("
 ");
 
 $data = [];
+$queueNum = 1;
 while ($order = $orders->fetch(PDO::FETCH_ASSOC)) {
+    $order['queueNumber'] = $queueNum;
     $data[] = $order;
+    $queueNum++;
 }
 
 echo json_encode($data);
