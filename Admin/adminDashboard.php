@@ -202,84 +202,10 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'administrator') 
                             </div>
                         </div>
 
-                        <ul class="list-group list-group-item-flush">
-                            <li class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-pizza-slice" style="font-size: 30px;"></i>
-                                    <div class="ms-2 me-auto">
-                                        <div><span class="badge text-bg-primary rounded-pill">Food</span></div>
-                                        <span style="font-size: 20px; font-weight:bold">Four Cheese Pizza</span>
-                                    </div>
-                                </div>
-                                <span style="font-size: 30px; font-weight:bold">524</span>
-                            </li>
-                            <hr />
-                            <li class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-whiskey-glass" style="font-size: 30px;"></i>
-                                    <div class="ms-2 me-auto">
-                                        <div><span class="badge text-bg-warning rounded-pill">Drink</span></div>
-                                        <span style="font-size: 20px; font-weight:bold">Iced Biscoff Latte</span>
-                                    </div>
-                                </div>
-                                <span style="font-size: 30px; font-weight:bold">720</span>
-                            </li>
-                            <hr />
-                            <li class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-bread-slice" style="font-size: 30px;"></i>
-                                    <div class="ms-2 me-auto">
-                                        <div><span class="badge text-bg-primary rounded-pill">Food</span></div>
-                                        <span style="font-size: 20px; font-weight:bold">Cheese Bread</span>
-                                    </div>
-                                </div>
-                                <span style="font-size: 30px; font-weight:bold">120</span>
-                            </li>
-                            <hr />
-                            <li class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-whiskey-glass" style="font-size: 30px;"></i>
-                                    <div class="ms-2 me-auto">
-                                        <div><span class="badge text-bg-warning rounded-pill">Drink</span></div>
-                                        <span style="font-size: 20px; font-weight:bold">Matcha Latte</span>
-                                    </div>
-                                </div>
-                                <span style="font-size: 30px; font-weight:bold">720</span>
-                            </li>
-                            <hr />
-                            <li class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-ice-cream" style="font-size: 30px;"></i>
-                                    <div class="ms-2 me-auto">
-                                        <div><span class="badge text-bg-primary rounded-pill">Food</span></div>
-                                        <span style="font-size: 20px; font-weight:bold">Chocolate Ice Cream</span>
-                                    </div>
-                                </div>
-                                <span style="font-size: 30px; font-weight:bold">100</span>
-                            </li>
-                            <hr />
-                            <li class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-whiskey-glass" style="font-size: 30px;"></i>
-                                    <div class="ms-2 me-auto">
-                                        <div><span class="badge text-bg-warning rounded-pill">Drink</span></div>
-                                        <span style="font-size: 20px; font-weight:bold">Iced Biscoff Latte</span>
-                                    </div>
-                                </div>
-                                <span style="font-size: 30px; font-weight:bold">720</span>
-                            </li>
-                            <hr />
-                            <li class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="fa-solid fa-whiskey-glass" style="font-size: 30px;"></i>
-                                    <div class="ms-2 me-auto">
-                                        <div><span class="badge text-bg-warning rounded-pill">Drink</span></div>
-                                        <span style="font-size: 20px; font-weight:bold">Iced Biscoff Latte</span>
-                                    </div>
-                                </div>
-                                <span style="font-size: 30px; font-weight:bold">720</span>
-                            </li>
+                        <ul id="topSellingList" class="list-group list-group-item-flush">
+                            <!-- List items will be inserted here -->
                         </ul>
+
                     </div>
                 </div>
             </div>

@@ -160,77 +160,101 @@ fetch("scripts/adminSalesChartData.php", {
   .catch((error) => console.error("Error:", error));
 
 /****************Top Orders Chart Initialization****************/
-
 const topOrdersGraph = document.getElementById("totalOrderChart");
 
+let totalSalesAmount = 0; // Declare a variable to store totalSales for the plugin
+
+// Fetch the category data from the backend
+fetch("scripts/adminTotalOrders.php")
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.success) {
+      const categoryData = data.categoryData;
+      totalSalesAmount = data.totalSales; // Save totalSales globally
+
+      const orderData = {
+        labels: ["Food", "Drinks", "Others"],
+        datasets: [
+          {
+            data: [categoryData.Food, categoryData.Drinks, categoryData.Others],
+            backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+            hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+          },
+        ],
+      };
+
+      // Create the chart with fetched data
+      new Chart(topOrdersGraph, {
+        type: "doughnut",
+        data: orderData,
+        plugins: [topOrderLabel],
+        options: {
+          plugins: {
+            legend: {
+              display: true,
+              position: "bottom",
+            },
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
+    } else {
+      console.error("Failed to fetch data:", data.message);
+    }
+  })
+  .catch((error) => {
+    console.error("Error fetching data:", error);
+  });
+
+// Plugin to draw total sales in the middle of the doughnut
 const topOrderLabel = {
   id: "topOrderLabel",
-  beforeDatasetsDraw: function (chart, args, options) {
-    const { ctx, data } = chart;
+  beforeDatasetsDraw(chart, args, options) {
+    const { ctx } = chart;
     ctx.save();
-    const xCoor = chart.getDatasetMeta(0).data[0].x;
-    const yCoor = chart.getDatasetMeta(0).data[0].y;
+    const meta = chart.getDatasetMeta(0);
+
+    if (meta.data.length === 0) return;
+
+    const xCoor = meta.data[0].x;
+    const yCoor = meta.data[0].y;
+
+    const formattedTotalSales = totalSalesAmount.toLocaleString("en-PH", {
+      style: "currency",
+      currency: "PHP",
+    });
+
     ctx.font = "bold 20px sans-serif";
     ctx.fillStyle = "black";
     ctx.textAlign = "center";
-    ctx.fillText("₱ 10,000", xCoor, yCoor);
+    ctx.fillText(formattedTotalSales, xCoor, yCoor);
   },
 };
-const orderData = {
-  data: {
-    labels: ["Food", "Drinks", "Others"],
-    datasets: [
-      {
-        data: [300, 50, 100],
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-        hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-      },
-    ],
-    hoverOffset: 4,
-  },
-};
-
-new Chart(topOrdersGraph, {
-  type: "doughnut",
-  data: orderData.data,
-  plugins: [topOrderLabel],
-  options: {
-    plugins: {
-      legend: {
-        display: true,
-        position: "bottom",
-      },
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-  },
-});
 
 /****************Stastics Bar Chart Initialization****************/
 const statisticsGraph = document.getElementById("statisticsBarChart");
 
 const statisticsData = {
-  data: {
-    labels: [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ],
-    datasets: [
-      {
-        label: "Orders",
-        data: [1000, 2000, 3000, 4000, 6000, 7500, 3500],
-        backgroundColor: "rgb(255, 99, 132)",
-        borderRadius: 10,
-        borderSkipped: false,
-        barThickness: 40,
-      },
-    ],
-  },
+  labels: [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ],
+  datasets: [
+    {
+      label: "Orders",
+      data: [], // will be filled from backend
+      backgroundColor: "rgb(255, 99, 132)",
+      borderRadius: 10,
+      borderSkipped: false,
+      barThickness: 40,
+    },
+  ],
 };
 
 const chartOptions = {
@@ -242,10 +266,8 @@ const chartOptions = {
     },
     y: {
       beginAtZero: true,
-      min: 0,
-      max: 9000,
       ticks: {
-        stepSize: 1000,
+        stepSize: 100,
       },
       grid: {
         display: false,
@@ -256,8 +278,69 @@ const chartOptions = {
   maintainAspectRatio: false,
 };
 
-new Chart(statisticsGraph, {
+// Initialize chart with empty data
+const statisticsChart = new Chart(statisticsGraph, {
   type: "bar",
-  data: statisticsData.data,
+  data: {
+    labels: statisticsData.labels,
+    datasets: statisticsData.datasets,
+  },
   options: chartOptions,
+});
+
+// Fetch actual data from PHP backend
+fetch("scripts/adminOrders.php", {
+  method: "POST",
+})
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.success) {
+      statisticsChart.data.datasets[0].data = data.ordersPerDay;
+      statisticsChart.update();
+    } else {
+      console.error("Failed to fetch data:", data.message);
+    }
+  })
+  .catch((error) => {
+    console.error("Fetch error:", error);
+  });
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("scripts/adminTopSelling.php") // Update to actual PHP path
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        const list = document.getElementById("topSellingList");
+        list.innerHTML = "";
+
+        data.products.forEach((product) => {
+          const badgeClass =
+            product.categoryID == 1 ? "text-bg-primary" : "text-bg-warning";
+
+          const listItem = `
+                          <li class="d-flex justify-content-between align-items-center">
+                              <div class="d-flex align-items-center gap-2">
+                                  <!-- Display Category Icon as text -->
+                                  <span class="${product.categoryIcon}"></span>
+                                  <div class="ms-2 me-auto">
+                                      <div>
+                                          <!-- Display Category Name as badge -->
+                                          <span class="badge ${badgeClass} rounded-pill">
+                                              ${product.categoryName}
+                                          </span>
+                                      </div>
+                                      <span style="font-size: 20px; font-weight:bold">${product.productName}</span>
+                                  </div>
+                              </div>
+                              <span style="font-size: 30px; font-weight:bold">${product.totalOrders}</span>
+                          </li>
+                          <hr />
+                      `;
+          list.innerHTML += listItem;
+        });
+      } else {
+        console.error("Failed to load products:", data.message);
+      }
+    })
+    .catch((err) => console.error("Fetch error:", err));
 });
