@@ -46,8 +46,9 @@ try {
         $productQuantity = $item['productQuantity'];
         $productTotal = $item['productTotal'];
 
-        $stmt = $conn->prepare("INSERT INTO tbl_orderitems (orderNumber, productID, variationID, productQuantity, productTotal) VALUES (:orderNumber, :productID, :productVariation, :productQuantity, :productTotal)");
+        $stmt = $conn->prepare("INSERT INTO tbl_orderitems (orderNumber, salesOrderNumber, productID, variationID, productQuantity, productTotal) VALUES (:orderNumber, :salesOrderNumber, :productID, :productVariation, :productQuantity, :productTotal)");
         $stmt->bindParam(':orderNumber', $lastOrderID, PDO::PARAM_INT);
+        $stmt->bindParam(':salesOrderNumber', $salesOrderNumber, PDO::PARAM_INT);
         $stmt->bindParam(':productID', $productID, PDO::PARAM_INT);
         $stmt->bindParam(':productVariation', $productVariation, PDO::PARAM_INT);
         $stmt->bindParam(':productQuantity', $productQuantity, PDO::PARAM_INT);

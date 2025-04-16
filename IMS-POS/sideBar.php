@@ -22,13 +22,24 @@ if (isset($_GET['orderID'])) {
         tbl_menu.productName,
         tbl_orderitems.productQuantity,
         tbl_menu.productPrice,
-        tbl_orderitems.productTotal
+        tbl_orderitems.productTotal,
+         (
+            SELECT GROUP_CONCAT(
+                CONCAT(
+                    '{\"addonName\":\"', a.addonName, '\",',
+                    '\"addonPrice\":', a.addonPrice, '}'
+                )
+            )
+            FROM tbl_orderaddons oa
+            LEFT JOIN tbl_addons a ON oa.addonID = a.addonID
+            WHERE oa.orderItemID = tbl_orderitems.orderItemID
+        ) AS productAddons
         FROM tbl_orderitems
         LEFT JOIN tbl_variations ON tbl_orderitems.variationID = tbl_variations.variationID
         LEFT JOIN tbl_menu ON tbl_orderitems.productID = tbl_menu.productID
         LEFT JOIN tbl_menuClass ON tbl_menu.menuID = tbl_menuClass.menuID
         LEFT JOIN tbl_categories ON tbl_menu.categoryID = tbl_categories.categoryID
-        HAVING tbl_orderitems.orderNumber = '{$orderDetail['orderNumber']}';
+        WHERE tbl_orderitems.orderNumber = '{$orderDetail['orderNumber']}' AND tbl_orderitems.salesOrderNumber = {$orderDetail['salesOrderNumber']};
     ");
 
     $stmt->execute();
@@ -141,6 +152,17 @@ if (isset($_GET['orderID'])) {
             let amountPaid = event.target.getAttribute('data-amount-paid');
             let additionalNotes = event.target.getAttribute('data-additional-notes');
             let paymentMethod = event.target.getAttribute('data-payment-method');
+
+            orderItems = JSON.parse(orderItems);
+
+            // Decode the productAddons for each item
+            orderItems.forEach(item => {
+                if (item.productAddons) {
+                    item.productAddons = JSON.parse(`[${item.productAddons}]`);
+                } else {
+                    item.productAddons = [];
+                }
+            });
 
             const orderObj = {
                 orderNumber: orderNumber,
