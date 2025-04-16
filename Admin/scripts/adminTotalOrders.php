@@ -9,7 +9,7 @@ try {
             SUM(oi.productTotal) AS totalSales
         FROM tbl_orderitems oi
         JOIN tbl_menu m ON m.productID = oi.productID
-        JOIN tbl_orders o ON o.orderID = oi.orderID
+        JOIN tbl_orders o ON o.orderNumber = oi.orderNumber
         JOIN tbl_categories c ON c.categoryID = m.categoryID
         WHERE o.orderStatus = 'DONE'
         GROUP BY c.categoryName
@@ -33,7 +33,21 @@ try {
 
         if (in_array($categoryName, ['Beef', 'Chicken', 'Pork', 'Seafoods', 'Rice and Noodles', 'Vegetables', 'Dessert'])) {
             $categoryData['Food'] += $totalOrders;
-        } elseif (in_array($categoryName, ['Hot', 'Iced', 'Tea and Refresher', 'Slushies', 'Signature Drinks', 'Non-Coffee', 'Iced Blended Coffee', 'Signature Cocktails', 'Classic Cocktails', 'Shooters', 'Beers', 'Premium Bottles', 'Drinks'])) {
+        } elseif (in_array($categoryName, [
+            'Hot',
+            'Iced',
+            'Tea and Refresher',
+            'Slushies',
+            'Signature Drinks',
+            'Non-Coffee',
+            'Iced Blended Coffee',
+            'Signature Cocktails',
+            'Classic Cocktails',
+            'Shooters',
+            'Beers',
+            'Premium Bottles',
+            'Drinks'
+        ])) {
             $categoryData['Drinks'] += $totalOrders;
         } else {
             $categoryData['Others'] += $totalOrders;

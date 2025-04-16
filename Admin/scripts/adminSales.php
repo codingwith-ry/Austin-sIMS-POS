@@ -3,26 +3,25 @@ include '../../Login/database.php'; // make sure this path is correct for your s
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     try {
-        // Get current week's Monday
+        // Get current week's Monday and Sunday
         $monday = date('Y-m-d', strtotime('monday this week'));
         $sunday = date('Y-m-d', strtotime($monday . ' +6 days'));
 
         $stmt = $conn->prepare("
-    SELECT 
-        DAYNAME(o.orderDate) AS day,
-        SUM(oi.productQuantity) AS total_sales,
-        SUM(oi.productTotal) AS total_revenue
-    FROM tbl_orders o
-    JOIN tbl_orderitems oi ON o.orderID = oi.orderID
-    WHERE o.orderDate BETWEEN :monday_start AND :monday_end
-      AND o.orderStatus = 'DONE'
-    GROUP BY DAYOFWEEK(o.orderDate)
-    ORDER BY FIELD(DAYNAME(o.orderDate), 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
-");
+            SELECT 
+                DAYNAME(o.orderDate) AS day,
+                SUM(oi.productQuantity) AS total_sales,
+                SUM(oi.productTotal) AS total_revenue
+            FROM tbl_orders o
+            JOIN tbl_orderitems oi ON o.orderNumber = oi.orderNumber
+            WHERE o.orderDate BETWEEN :monday_start AND :monday_end
+              AND o.orderStatus = 'DONE'
+            GROUP BY DAYOFWEEK(o.orderDate)
+            ORDER BY FIELD(DAYNAME(o.orderDate), 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
+        ");
 
         $stmt->bindParam(':monday_start', $monday);
         $stmt->bindParam(':monday_end', $sunday);
-
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
