@@ -2,35 +2,51 @@
 include '../Login/database.php';
 
 try {
-    // Get the start date from the request (default to today's date if not provided)
     $startDate = isset($_GET['startDate']) ? $_GET['startDate'] : date('Y-m-d');
 
-    // Parse the start date to get the first and last day of the month
-    $startDateObj = new DateTime($startDate);
-    $firstDayOfMonth = $startDateObj->modify('first day of this month')->format('Y-m-d');
-    $lastDayOfMonth = $startDateObj->modify('last day of this month')->format('Y-m-d');
+    $year = (new DateTime($startDate))->format('Y');
+    $firstDayOfYear = "$year-01-01";
+    $lastDayOfYear = "$year-12-31";
 
-    // Query to fetch and group data by month
+    // ✅ Use only Record_ItemPrice in the SUM
     $query = "
         SELECT 
             MONTH(Record_ItemPurchaseDate) AS month,
             SUM(Record_ItemPrice) AS total_expenses
         FROM tbl_record
-        WHERE Record_ItemPurchaseDate BETWEEN :startDate AND :endDate
+        WHERE 
+            Record_ItemPurchaseDate BETWEEN :startDate AND :endDate
+            AND Record_ItemPrice IS NOT NULL
+            AND Record_ItemPrice >= 0
         GROUP BY month
         ORDER BY month
     ";
 
     $stmt = $conn->prepare($query);
-    $stmt->bindParam(':startDate', $firstDayOfMonth);
-    $stmt->bindParam(':endDate', $lastDayOfMonth);
-    $stmt->execute();
+    $stmt->execute([
+        ':startDate' => $firstDayOfYear,
+        ':endDate' => $lastDayOfYear
+    ]);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Fetch the results
-    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $months = [];
+    $expenses = array_fill(0, 12, 0);
 
-    // Return the data as JSON
-    echo json_encode(['success' => true, 'data' => $data]);
+    for ($i = 1; $i <= 12; $i++) {
+        $months[] = DateTime::createFromFormat('!m', $i)->format('F');
+    }
+
+    foreach ($results as $row) {
+        $monthIndex = (int)$row['month'] - 1;
+        $expenses[$monthIndex] = round((float)$row['total_expenses'], 2);
+    }
+
+    echo json_encode([
+        'success' => true,
+        'labels' => $months,
+        'expenses' => $expenses,
+        'totalExpenses' => array_sum($expenses)
+    ]);
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
