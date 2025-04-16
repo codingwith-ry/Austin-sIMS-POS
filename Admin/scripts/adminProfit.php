@@ -5,7 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     try {
         // Set the current date for the monthly calculations
         $startDate = date('Y-m-01'); // First day of the current month
-        $endDate = date('Y-m-t'); // Last day of the current month
+        $endDate = date('Y-m-t');    // Last day of the current month
 
         // Sales (Income) from tbl_orderitems
         $stmt = $conn->prepare("
@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 MONTH(o.orderDate) AS month,
                 SUM(oi.productTotal) AS income
             FROM tbl_orders o
-            JOIN tbl_orderitems oi ON o.orderID = oi.orderID
+            JOIN tbl_orderitems oi ON o.orderNumber = oi.orderNumber
             WHERE o.orderDate BETWEEN :startDate AND :endDate
             AND o.orderStatus = 'DONE'
             GROUP BY MONTH(o.orderDate)
