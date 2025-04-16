@@ -120,6 +120,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">Sales Analytics</h5>
+                        <h5 id="totalValues"></h5>
                         <div class="chart-container">
                             <canvas id="salesChart"></canvas>
                         </div>

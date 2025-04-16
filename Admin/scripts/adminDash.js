@@ -1,123 +1,83 @@
 /****************Number Of Employees Chart Initialization****************/
-const employeeGraph = document.getElementById("employeeChart");
 
-const employeeData = {
-  labals: ["Total Employees", "Available Employees"],
-  datasets: [
-    {
-      data: [60, 100],
-      backgroundColor: ["#686D76"],
-    },
-  ],
-};
+document.addEventListener("DOMContentLoaded", function () {
+  fetch("scripts/adminEmployee.php", {
+    method: "POST",
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        const {
+          totalEmployees,
+          regularEmployees,
+          posEmployees,
+          imsEmployees,
+          adminEmployees,
+        } = data;
 
-new Chart(employeeGraph, {
-  type: "doughnut",
-  data: employeeData,
-  options: {
-    layout: {
-      padding: 40,
-    },
-    plugins: {
-      legend: {
-        display: false,
+        // Update DOM counts
+        document.getElementById("regularEmployeesCount").innerText =
+          regularEmployees;
+        document.getElementById("posEmployeesCount").innerText = posEmployees;
+        document.getElementById("imsEmployeesCount").innerText = imsEmployees;
+        document.getElementById("adminEmployeesCount").innerText =
+          adminEmployees;
+
+        // Create Charts
+        createChart(
+          "Regular_Chart",
+          regularEmployees,
+          totalEmployees,
+          "#17a2b8"
+        );
+        createChart(
+          "No_POS_Employees_Chart",
+          posEmployees,
+          totalEmployees,
+          "#28a745"
+        );
+        createChart(
+          "No_IMS_Employees_Chart",
+          imsEmployees,
+          totalEmployees,
+          "#ffc107"
+        );
+        createChart("Admin_Chart", adminEmployees, totalEmployees, "#dc3545");
+      } else {
+        console.error("Failed to load employee data:", data.message);
+      }
+    })
+    .catch((err) => {
+      console.error("Error fetching employee data:", err);
+    });
+
+  function createChart(canvasId, roleCount, totalCount, roleColor) {
+    const ctx = document.getElementById(canvasId).getContext("2d");
+    new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: ["Role Count", "Total Count"],
+        datasets: [
+          {
+            data: [roleCount, totalCount],
+            backgroundColor: [roleColor, "#d6d6d6"],
+          },
+        ],
       },
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-  },
-});
-
-/****************Number Of POS Employees Chart Initialization****************/
-
-const posEmployeesGraph = document.getElementById("No_POS_Employees_Chart");
-
-const posEmployeeData = {
-  labels: ["Total Employees", "POS Employees"],
-  datasets: [
-    {
-      data: [20, 100],
-      backgroundColor: ["#686D76"],
-    },
-  ],
-};
-
-new Chart(posEmployeesGraph, {
-  type: "doughnut",
-  data: posEmployeeData,
-  options: {
-    layout: {
-      padding: 40,
-    },
-    plugins: {
-      legend: {
-        display: false,
+      options: {
+        responsive: false,
+        cutout: "70%",
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => `${context.label}: ${context.parsed}`,
+            },
+          },
+        },
       },
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-  },
-});
-
-/****************Number Of IMS Employees Chart Initialization****************/
-
-const imsEmployeeGraph = document.getElementById("No_IMS_Employees_Chart");
-
-const imsEmployeeData = {
-  labals: ["Total Employees", "IMS Employees"],
-  datasets: [
-    {
-      data: [50, 100],
-      backgroundColor: ["#686D76"],
-    },
-  ],
-};
-
-new Chart(imsEmployeeGraph, {
-  type: "doughnut",
-  data: imsEmployeeData,
-  options: {
-    layout: {
-      padding: 40,
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-  },
-});
-
-/****************Number Of Administrator Chart Initialization****************/
-
-const adminGraph = document.getElementById("Admin_Chart");
-const adminData = {
-  labels: ["Total Employees", "Admin"],
-  datasets: [
-    {
-      data: [2, 100],
-      backgroundColor: ["#686D76"],
-    },
-  ],
-};
-
-new Chart(adminGraph, {
-  type: "doughnut",
-  data: adminData,
-  options: {
-    layout: {
-      padding: 40,
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-  },
+    });
+  }
 });
 
 /****************Sales Data Chart Initialization****************/
