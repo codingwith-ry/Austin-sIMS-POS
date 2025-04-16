@@ -1,4 +1,40 @@
 <?php
+
+$menuActive = "";
+$queueActive = "";
+$stockActive = "";
+$inventoryActive = "";
+
+if($active == "menu"){
+    $menuActive = "active";
+    $queueActive = "";
+    $stockActive = "";
+    $inventoryActive = "";
+}
+else if($active == "orderQueue_History"){
+    $queueActive = "active";
+    $menuActive = "";
+    $stockActive = "";
+    $inventoryActive = "";
+}
+else if($active == "stockPage"){
+    $stockActive = "active";
+    $menuActive = "";
+    $queueActive = "";
+    $inventoryActive = "";
+}
+else if($active == "Inventory_Item-Records"){
+    $inventoryActive = "active";
+    $menuActive = "";
+    $stockActive = "";
+    $queueActive = "";
+}
+else{
+    $menuActive = "";
+    $queueActive = "";
+    $stockActive = "";
+    $inventoryActive = "";
+}
     echo'
 <div class="offcanvas offcanvas-start show" id="nav" tabindex="1" data-bs-scroll="true" data-bs-backdrop="false">
         <div class="p-3">
@@ -15,19 +51,19 @@
         </div>
         <div class="offcanvas-body p-0">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item border-0 py-3 d-flex align-items-center">
+                <li class="list-group-item '.$menuActive.' border-0 py-3 d-flex align-items-center">
                     <i class="fi fi-tr-utensils" style="font-size: large;"></i>
                     <a href="menu.php" class="ms-2 text-decoration-none text-dark w-100">Menu</a>
                 </li>
-                <li class="list-group-item border-0 py-3 d-flex align-items-center">
+                <li class="list-group-item '.$queueActive.' border-0 py-3 d-flex align-items-center">
                     <i class="bi bi-journal-text"></i>
                     <a href="orderQueue_History.php" class="ms-2 text-decoration-none text-dark w-100">Orders</a>
                 </li>
-                <li class="list-group-item border-0 py-3 d-flex align-items-center">
+                <li class="list-group-item '.$stockActive.' border-0 py-3 d-flex align-items-center">
                     <i class="bi bi-box"></i>
                     <a href="stockPage.php" class="ms-2 text-decoration-none text-dark w-100">Stocks</a>
                 </li>
-                <li class="list-group-item border-0 py-3 d-flex align-items-center">
+                <li class="list-group-item '.$inventoryActive.' border-0 py-3 d-flex align-items-center">
                     <i class="bi bi-clipboard"></i>
                     <a href="Inventory_Item-Records.php" class="ms-2 text-decoration-none text-dark w-100">Inventory</a>
                 </li>

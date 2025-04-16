@@ -3,6 +3,7 @@
     session_start();
     $employeeID = $_SESSION['employeeID'];
     
+$active = "menu";
 ?>
 <!DOCTYPE html>
 <html lang="en">
