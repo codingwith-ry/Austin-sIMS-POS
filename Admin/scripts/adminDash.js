@@ -81,59 +81,83 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /****************Sales Data Chart Initialization****************/
-const saleGraph = document.getElementById("salesDataChart");
+// Send a POST request to fetch the weekly sales data
+fetch("scripts/adminSalesChartData.php", {
+  method: "POST",
+})
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.success) {
+      const labels = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ];
+      const sales = data.sales; // Array of total sales for each day
 
-const salesData = {
-  labels: [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ],
-  datasets: [
-    {
-      data: [12, 19, 3, 5, 2, 3, 10],
-      fill: false,
-      borderColor: "rgb(75, 192, 192)",
-      tension: 0.1,
-    },
-  ],
-};
+      // Create the chart data (no revenue data)
+      const chartData = {
+        labels: labels,
+        datasets: [
+          {
+            label: "Daily Sales",
+            data: sales,
+            fill: false,
+            borderColor: "rgb(75, 192, 192)",
+            tension: 0.1,
+          },
+        ],
+      };
 
-new Chart(saleGraph, {
-  type: "line",
-  data: salesData,
-  options: {
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          drawOnChartArea: false,
-          drawBorder: false,
+      // Chart.js configuration
+      const config = {
+        type: "line",
+        data: chartData,
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: "Sales for the Week",
+            },
+            legend: {
+              position: "top",
+            },
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: "Days of the Week",
+              },
+            },
+            y: {
+              title: {
+                display: true,
+                text: "Quantity Sold",
+              },
+              ticks: {
+                callback: function (value) {
+                  return value.toLocaleString(); // Format sales number
+                },
+              },
+            },
+          },
         },
-      },
-      y: {
-        display: false,
-        grid: {
-          drawOnChartArea: false,
-          drawBorder: false,
-        },
-        ticks: {
-          display: false,
-        },
-      },
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-  },
-});
+      };
+
+      // Initialize and render the chart
+      const ctx = document.getElementById("salesDataChart").getContext("2d");
+      new Chart(ctx, config);
+    } else {
+      console.error("Error fetching data:", data.message);
+    }
+  })
+  .catch((error) => console.error("Error:", error));
 
 /****************Top Orders Chart Initialization****************/
 
