@@ -20,6 +20,41 @@ document.querySelectorAll('.dineStatus').forEach(radio => {
 });
 
 
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.querySelector('.form-control[placeholder="Search product here"]');
+    const tabsContainer = document.getElementById('pills-tabContent');
+
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value.toLowerCase().trim();
+
+        // Get the currently active menu tab
+        const activeMenuTab = tabsContainer.querySelector('.tab-pane.active');
+
+        if (!activeMenuTab) return;
+
+        // Get the currently active category tab within the active menu
+        const activeCategoryTab = activeMenuTab.querySelector('.tab-pane.active');
+
+        console.log(activeMenuTab);
+        console.log(activeCategoryTab);
+        
+        const searchContainer = activeCategoryTab;
+
+        // Get all product cards in the active menu or category
+        const productCards = searchContainer.querySelectorAll('.card-parent');
+
+        productCards.forEach(card => {
+            const productName = card.querySelector('#productName').textContent.toLowerCase();
+
+            // Show or hide the card based on the search query
+            if (productName.includes(query)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
 
 
 document.addEventListener('click', function (event) {

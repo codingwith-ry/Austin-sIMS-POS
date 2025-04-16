@@ -55,7 +55,6 @@ $employeeID = $_SESSION['employeeID'];
 
                 <div class="card" id="orderTotal1 flex-shrink-0">
                     <div class="card-body">
-
                         <div class="row">
                             <div class="col">
                                 <span style="font-weight: bold; font-size: 16px;">Total Amount</span>
@@ -208,7 +207,7 @@ $employeeID = $_SESSION['employeeID'];
                         }
                         while($product = $products->fetch()){
                             echo'
-                                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                                <div class="card-parent col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
                                     <div class="card flex-shrink-0" id="productCard" style="width: 100%; padding: 15px;">
                                         <img src="resources/nachos.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
                                         <div class="card-body" id="productBody">
