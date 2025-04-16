@@ -4,7 +4,7 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'inventory staff 
     header("Location: /Austin-sIMS-POS/Login/index.php");
     exit();
 }
-
+$active = "Inventory_Item-Records";
 include("../Login/database.php");
 include("IMS_process.php");
 

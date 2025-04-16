@@ -7,6 +7,8 @@ $page = basename($_SERVER['PHP_SELF']);
 if ($page == "orderQueue_History.php") {
     echo '<link rel="stylesheet" href="styles/orderQH.css">';
 }
+
+$active = "orderQueue_History";
 ?>
 <!DOCTYPE html>
 <html lang="en">

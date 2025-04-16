@@ -2,6 +2,7 @@
 include '../Login/database.php';
 include 'IMS_process.php';
 
+$active = "stockPage";
 
 
 // Query to count distinct items based on Item_ID and Record_ItemVolume

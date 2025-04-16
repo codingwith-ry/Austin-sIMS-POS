@@ -6,7 +6,7 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'pos staff manage
 }
 $employeeID = $_SESSION['employeeID'];
 
-
+$active = "menu";
 ?>
 
 <!DOCTYPE html>
