@@ -9,7 +9,7 @@ include("../Login/database.php");
 include("IMS_process.php");
 
 $fetchItemDataQuery = "
-    SELECT 
+     SELECT 
         i.Item_ID,
         i.Item_Name, 
         i.Item_Image, 
@@ -18,14 +18,15 @@ $fetchItemDataQuery = "
         um.Unit_Acronym, 
         r.Record_ItemQuantity, 
         r.Record_ItemVolume,
-        IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change,  -- Sum of all changes for the item
-        IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease  -- Sum only decreases
+        r.Record_ItemExpirationDate,  -- Correct column name here
+        IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change,
+        IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease
     FROM tbl_item i
     JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
     JOIN tbl_record r ON i.Item_ID = r.Item_ID
     LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
     LEFT JOIN tbl_inventory_changes ic ON r.Record_ID = ic.Record_ID
-    GROUP BY i.Item_ID, r.Record_ItemVolume
+    GROUP BY i.Item_ID, r.Record_ItemVolume, r.Record_ItemExpirationDate
     ORDER BY i.Item_Name ASC
 ";
 
@@ -33,21 +34,22 @@ $itemData = $pdo->query($fetchItemDataQuery)->fetchAll(PDO::FETCH_ASSOC);
 
 $outOfStockItems = [];
 $lowStockItems = [];
+$expiredItems = [];
 
 foreach ($itemData as $item) {
-    // Calculate the current quantity by subtracting Total_Decrease from Record_ItemQuantity
     $currentStock = $item['Record_ItemQuantity'] - $item['Total_Decrease'];
-
-    // Add Total_Quantity to the item for easy access
     $item['Total_Quantity'] = $currentStock;
 
-    // Classify the items based on the stock
-    if ($currentStock <= 0) {
+    // Check if the item is expired
+    if (!empty($item['Record_ItemExpirationDate']) && strtotime($item['Record_ItemExpirationDate']) < time()) {
+        $expiredItems[] = $item;
+    } elseif ($currentStock <= 0) {
         $outOfStockItems[] = $item;
     } elseif ($currentStock > 0 && $currentStock < 4) {
         $lowStockItems[] = $item;
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -64,7 +66,7 @@ foreach ($itemData as $item) {
 <body>
     <?php include 'verticalNav.php' ?>
     <main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
-        <?php if (!empty($outOfStockItems) || !empty($lowStockItems)): ?>
+        <?php if (!empty($outOfStockItems) || !empty($lowStockItems) || !empty($expiredItems)): ?>
             <div class="modal fade" id="lowStockModal" tabindex="-1" aria-labelledby="lowStockModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -72,6 +74,20 @@ foreach ($itemData as $item) {
                             <h5 class="modal-title" id="lowStockModalLabel">Stock Alerts</h5>
                         </div>
                         <div class="modal-body">
+                            <?php if (!empty($expiredItems)): ?>
+                                <h5 class="text-danger">Expired Items</h5>
+                                <ul class="list-group mb-3">
+                                    <?php foreach ($expiredItems as $item): ?>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong>
+                                            <span class="text-danger">
+                                                Expired on <?php echo date('F d, Y', strtotime($item['Record_ItemExpirationDate'])); ?>
+                                            </span>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+
                             <?php if (!empty($outOfStockItems)): ?>
                                 <h5 class="text-danger">Out of Stock</h5>
                                 <ul class="list-group mb-3">
@@ -109,6 +125,7 @@ foreach ($itemData as $item) {
                 </div>
             </div>
         <?php endif; ?>
+
         <div class="title">
             <div class="row">
                 <div>
@@ -299,7 +316,7 @@ foreach ($itemData as $item) {
                                 <div class="products-wrapper">
                                     <div class="row" id="product-list">
                                         <strong style="font-size: 25px">Inventory Items</strong>
-                                        <!-- Loop through each item to display in the desired format -->
+
                                         <?php
                                         $groupedItems = [];
 
@@ -327,19 +344,46 @@ foreach ($itemData as $item) {
                                             $uniqueKey = $itemID . '_' . $volume;
                                             $modalID = "decreaseModal_" . $uniqueKey;
 
-                                            $cardBorderClass = ($itemQty == 0) ? 'border border-danger' : (($itemQty <= 3) ? 'border border-warning' : '');
-                                            $tooltipAttr = ($itemQty <= 3) ? 'data-bs-toggle="tooltip" data-bs-title="Quantity of this item is low"' : '';
-                                            $imageStyle = ($itemQty == 0) ? 'filter: grayscale(100%) brightness(60%);' : 'object-fit: contain;';
-                                            $outOfStockOverlay = ($itemQty == 0) ? '
-                                                <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
-                                                    Out of Stock
-                                                </div>' : '';
+                                            // Check for expired items
+                                            $currentDate = date('Y-m-d');
+                                            $expirationDate = $row['Record_ItemExpirationDate'];
+                                            $isExpired = ($expirationDate && $expirationDate <= $currentDate);
+
+                                            // Define border class and image style based on stock and expiration
+                                            $cardBorderClass = '';
+                                            $imageStyle = 'object-fit: contain;';
+                                            $outOfStockOverlay = '';
+                                            $expiredOverlay = '';
+                                            $tooltipAttr = '';
+
+                                            if ($itemQty == 0) {
+                                                $cardBorderClass = 'border border-danger'; // Out of stock
+                                                $imageStyle = 'filter: grayscale(100%) brightness(60%);';
+                                                $outOfStockOverlay = '
+                                                    <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
+                                                        Out of Stock
+                                                    </div>';
+                                            } elseif ($itemQty <= 3) {
+                                                $cardBorderClass = 'border border-warning'; // Low stock
+                                                $tooltipAttr = 'data-bs-toggle="tooltip" data-bs-title="Quantity of this item is low"';
+                                            }
+
+                                            // Add expired overlay and border color if expired
+                                            if ($isExpired) {
+                                                $cardBorderClass = 'border border-secondary'; // Expired items with a light gray border
+                                                $expiredOverlay = '
+                                                <div class="position-absolute top-50 start-50 translate-middle bg-secondary text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
+                                                    Expired
+                                                </div>';
+                                                $imageStyle = 'filter: grayscale(100%) brightness(50%);'; // Apply gray filter for expired items
+                                            }
 
                                             echo '
                                                 <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0 product-item" data-category="' . htmlspecialchars($row['Item_Category']) . '">
                                                     <div class="card flex-shrink-0 ' . $cardBorderClass . '" style="height: 430px; padding: 15px; position: relative;" ' . $tooltipAttr . '>
                                                         <a href="IMS_DisplayItemsTable.php?item_id=' . $itemID . '" class="text-decoration-none text-dark" style="display: block; position: relative;">
                                                             ' . $outOfStockOverlay . '
+                                                            ' . $expiredOverlay . '
                                                             <img src="' . htmlspecialchars($row['Item_Image']) . '" class="card-img-top rounded mb-2" alt="' . $itemName . '" style="height: 150px; width: 100%; ' . $imageStyle . '">
                                                         </a>
                                                         <div class="card-body d-flex flex-column justify-content-between" style="height: calc(100% - 150px);">
@@ -389,18 +433,19 @@ foreach ($itemData as $item) {
 
                                             // Slider JS
                                             echo '
-                                                <script>
-                                                function updatePreview_' . $uniqueKey . '() {
-                                                    const slider = document.getElementById("slider_' . $uniqueKey . '");
-                                                    const preview = document.getElementById("decreasePreview_' . $uniqueKey . '");
-                                                    const afterQty = document.getElementById("afterQty_' . $uniqueKey . '");
-                                                    const decreaseVal = parseInt(slider.value);
-                                                    preview.textContent = decreaseVal;
-                                                    afterQty.textContent = ' . $itemQty . ' - decreaseVal;
-                                                }
-                                                </script>';
+                                            <script>
+                                            function updatePreview_' . $uniqueKey . '() {
+                                                const slider = document.getElementById("slider_' . $uniqueKey . '");
+                                                const preview = document.getElementById("decreasePreview_' . $uniqueKey . '");
+                                                const afterQty = document.getElementById("afterQty_' . $uniqueKey . '");
+                                                const decreaseVal = parseInt(slider.value);
+                                                preview.textContent = decreaseVal;
+                                                afterQty.textContent = ' . $itemQty . ' - decreaseVal;
+                                            }
+                                            </script>';
                                         }
                                         ?>
+
 
                                     </div>
                                 </div>

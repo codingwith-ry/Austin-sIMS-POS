@@ -137,22 +137,23 @@ $inventoryRecords = $pdo->query($fetchInventoryQuery)->fetchAll(PDO::FETCH_ASSOC
 
 $fetchItemDataQuery = "
     SELECT 
-        i.Item_ID,
-        i.Item_Name, 
-        i.Item_Image, 
-        i.Item_Category, 
-        ic_cat.Category_Name, 
-        um.Unit_Acronym, 
-        r.Record_ItemQuantity, 
-        r.Record_ItemVolume,
-        IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change, -- Sum of all changes for the item
-        IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease -- Sum only decreases
-    FROM tbl_item i
-    JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
-    JOIN tbl_record r ON i.Item_ID = r.Item_ID
-    LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
-    LEFT JOIN tbl_inventory_changes ic ON r.Record_ID = ic.Record_ID
-    GROUP BY i.Item_ID, r.Record_ItemVolume
+    i.Item_ID,
+    i.Item_Name, 
+    i.Item_Image, 
+    i.Item_Category, 
+    ic_cat.Category_Name, 
+    um.Unit_Acronym, 
+    r.Record_ItemQuantity, 
+    r.Record_ItemVolume,
+    r.Record_ItemExpirationDate,  -- Add this line to fetch the expiration date
+    IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change, 
+    IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease 
+FROM tbl_item i
+JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
+JOIN tbl_record r ON i.Item_ID = r.Item_ID
+LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
+LEFT JOIN tbl_inventory_changes ic ON r.Record_ID = ic.Record_ID
+GROUP BY i.Item_ID, r.Record_ItemVolume, ic_cat.Category_Name, um.Unit_Acronym, i.Item_Name, i.Item_Image, r.Record_ItemExpirationDate
 ";
 
 $itemData = $pdo->query($fetchItemDataQuery)->fetchAll(PDO::FETCH_ASSOC);
