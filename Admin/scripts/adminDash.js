@@ -321,7 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
                           <li class="d-flex justify-content-between align-items-center">
                               <div class="d-flex align-items-center gap-2">
                                   <!-- Display Category Icon as text -->
-                                  <span class="${product.categoryIcon}"></span>
+                                  <span class="${product.categoryIcon}" style="font-size: 30px"></span>
                                   <div class="ms-2 me-auto">
                                       <div>
                                           <!-- Display Category Name as badge -->

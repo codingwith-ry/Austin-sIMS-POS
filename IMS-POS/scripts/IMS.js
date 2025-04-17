@@ -1,4 +1,112 @@
 /***************************INITIALIZATION OF ITEM RECORDS TABLE********************************/
+function printTableWithChildren() {
+  // Expand all child rows
+  itemRecords.rows().every(function () {
+    if (!this.child.isShown()) {
+      this.child(format(this.data().items)).show();
+    }
+  });
+
+  // Open new window for printing
+  const printWindow = window.open("", "", "height=600,width=800");
+
+  let htmlContent = `
+    <html>
+      <head>
+        <title>Print Inventory</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <style>
+          body {
+            font-family: 'Arial', sans-serif;
+            margin: 30px;
+            color: #333;
+          }
+          h3 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+          }
+          .table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+          }
+          .table th, .table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+          }
+          .table th {
+            background-color: #007bff;
+            color: white;
+          }
+          .table tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+          }
+          .table tbody tr:hover {
+            background-color: #f1f1f1;
+          }
+          /* Custom styles for child rows to display horizontally */
+          .child-row {
+            display: flex;
+            justify-content: space-between; /* Align items horizontally */
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+          }
+          .child-row .col {
+            flex: 1;
+            min-width: 180px; /* Adjust this value based on your desired width for each column */
+          }
+          .child-row img {
+            width: 60px;
+            height: auto;
+            margin-right: 10px;
+          }
+          .child-row div {
+            font-size: 14px;
+            padding: 5px;
+          }
+          .child-row .category,
+          .child-row .quantity,
+          .child-row .expiration,
+          .child-row .price {
+            text-align: center;
+          }
+          .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+          }
+        </style>
+      </head>
+      <body>
+        <h3>Inventory Records</h3>
+        <div>
+          <!-- Only include the table content, no other settings -->
+          ${document.querySelector("#itemRecords_wrapper .table").outerHTML}
+        </div>
+        <div class="footer">
+          <p>Printed on ${new Date().toLocaleString()}</p>
+        </div>
+      </body>
+    </html>
+  `;
+
+  // Write the content to the print window and trigger the print process
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
+
+  printWindow.focus();
+  printWindow.print();
+  printWindow.close();
+}
+
+// Trigger this function from a custom button
+document
+  .getElementById("customPrintBtn")
+  .addEventListener("click", printTableWithChildren);
+
 function format(groupItems) {
   let content = "";
   groupItems.forEach((d) => {
@@ -95,27 +203,6 @@ let itemRecords = new DataTable("#itemRecords", {
     dom: '<"top"f>rt<"bottom"lp><"clear">',
     topStart: {
       buttons: [
-        {
-          extend: "collection",
-          text: "Export",
-          buttons: [
-            {
-              extend: "pdfHtml5",
-              text: '<div><span><i class="bi bi-file-earmark-pdf-fill" style="color: red; font-size: 20px; margin-right: 5%;"></i>Export PDF</span></div>',
-              titleAttr: "PDF",
-            },
-            {
-              extend: "excelHtml5",
-              text: '<div><span><i class="bi bi-file-earmark-excel-fill" style="color: green; font-size: 20px; margin-right: 5%;"></i>Export Excel</span></div>',
-              titleAttr: "Excel",
-            },
-            {
-              extend: "print",
-              text: '<div><span><i class="bi bi-printer-fill" style="font-size: 20px; margin-right: 5%;"></i>Print Document</span></div>',
-              titleAttr: "Print",
-            },
-          ],
-        },
         {
           text: "Add Record",
           action: function (e, dt, node, config) {

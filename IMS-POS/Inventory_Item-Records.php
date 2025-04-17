@@ -133,10 +133,22 @@ foreach ($itemData as $item) {
                 <div class="tab-pane fade show active" id="Records-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                     <div class="card">
                         <div class="card-body">
-                            <table id="itemRecords" class="display nowrap">
+                            <!-- Print Button - placed above the table for better visibility -->
+                            <div class="button-container">
+                                <!-- Print Document Button -->
+                                <button id="customPrintBtn" class="btn btn-primary">
+                                    <i class="bi bi-printer-fill me-2"></i> Print Document
+                                </button>
+
+
+                            </div>
+
+                            <!-- Table -->
+                            <table id="itemRecords" class="display nowrap table table-striped table-bordered">
                                 <thead>
                                     <tr>
                                         <th>
+                                            <!-- Select-All Checkbox -->
                                             <div class="form-check">
                                                 <input class="form-check-input" id="select-all" type="checkbox">
                                             </div>
@@ -151,11 +163,13 @@ foreach ($itemData as $item) {
                                     <!----Test niyo kung gagana yung pag export pati print ng data lagay kayo mga data !------>
                                 </tbody>
                             </table>
+
                             <script>
                                 window.inventoryData = <?php echo json_encode($inventoryRecords); ?>;
                             </script>
                         </div>
                     </div>
+
                 </div>
                 <div class="tab-pane fade" id="Items-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                     <strong style="font-size: 25px">Categories</strong>
