@@ -58,6 +58,7 @@ if (isset($_GET['orderID'])) {
         <p>Time: <?php echo $orderDetail['orderTime']?></p>
         <p>Order Type: <?php echo $orderDetail['orderClass']?></p>
         <p>Payment Type: <?php echo $orderDetail['paymentMode']?></p>
+        <p>Notes: <?php echo $orderDetail['additionalNotes']?></p>
     </div>
     
     <div class="text-white mb-4">
@@ -119,7 +120,6 @@ if (isset($_GET['orderID'])) {
         <p class="h4 font-weight-bold">
             <?php echo $orderDetail ? '₱' . number_format($orderDetail['totalAmount'], 2) : 'N/A'; ?>
         </p>
-        <p>Notes: <?php echo $orderDetail['additionalNotes']?></p>
     </div>
     <button id="printHistoryInvoice" class="btn btn-primary fw-bold w-100 py-2 rounded-lg" 
         data-order-number="<?php echo htmlspecialchars($orderDetail['orderNumber']); ?>"

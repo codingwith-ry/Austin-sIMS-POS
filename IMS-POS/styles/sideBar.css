@@ -3,33 +3,44 @@
     position: fixed;
     top: 0;
     right: 0;
-    width: 300px;
+    width: 360px;
     height: 100%;
     background-color: #ffffff;
-    z-index: 1050; 
-    overflow-y: auto; 
-    padding: 20px;
+    border-left: 1px solid #ddd;
+    z-index: 1050;
+    overflow-y: auto;
+    padding: 32px;
+    box-sizing: border-box;
 }
 
+/* Text & Color Utilities */
 .text-white {
-    color: #000000 !important; 
+    color: #000000 !important;
 }
 
 .bg-dark-gray {
-    background-color: #ffffff; 
+    background-color: #f0f4f8;
 }
 
 .bg-light-gray {
-    background-color: #f5f5f5; 
+    background-color: #f9fbfc;
 }
 
+.bg-medium-gray {
+    background-color: #1E3A8A; /* Deep blue */
+    color: #ffffff;
+}
+
+/* Placeholder Bar Styling */
 .placeholder-bar {
     height: 20px;
-    border-radius: 5px;
+    background-color: #dbeafe; /* Light blue-gray */
+    margin-bottom: 16px;
 }
 
+/* Width Utilities */
 .w-25 {
-    width: 25%; 
+    width: 25%;
 }
 
 .w-33 {
@@ -37,22 +48,93 @@
 }
 
 .w-50 {
-    width: 50%; 
+    width: 50%;
 }
 
+/* Icon Styling */
 .fa-solid, .fas {
     padding-right: 10px !important;
+    vertical-align: middle;
 }
 
+/* Buttons */
 button.bg-medium-gray {
-    background-color: #7E7E7E; 
+    background-color: #1E3A8A;
     border: none;
     cursor: pointer;
     text-align: center;
-    font-weight: bold;
-    border-radius: 10px;
+    font-weight: 600;
+    padding: 12px 20px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s ease;
+    display: inline-block;
+    margin-top: 12px;
 }
 
 button.bg-medium-gray:hover {
-    background-color: #555; 
+    background-color: #1D4ED8; /* Brighter blue */
+}
+
+/* Order Item Styling */
+.order-item {
+    background-color: #f0f4ff;
+    border: 1px solid #c7d2fe;
+    padding: 20px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.order-item:not(:last-child) {
+    border-bottom: 2px solid #cbd5e1;
+}
+
+/* Header Inside Sidebar */
+.sidebar-header {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 28px;
+    color: #1E3A8A;
+    border-bottom: 2px solid #60A5FA;
+    padding-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Labels and Values */
+.order-label {
+    font-weight: 600;
+    color: #1E293B;
+    font-size: 0.95rem;
+    display: inline-block;
+    width: 45%;
+}
+
+.order-value {
+    font-weight: 500;
+    color: #334155;
+    font-size: 0.95rem;
+    text-align: right;
+    display: inline-block;
+    width: 50%;
+}
+
+/* Divider */
+.sidebar-divider {
+    height: 1px;
+    background-color: #d1d5db;
+    margin: 24px 0;
+}
+
+/* Section Title */
+.section-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1E3A8A;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #93C5FD;
+    padding-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
