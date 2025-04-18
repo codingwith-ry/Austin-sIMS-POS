@@ -735,7 +735,7 @@ INSERT INTO `tbl_variations` (`variationID`, `variationName`, `variationPrice`, 
 
 
 
---Inventory Management Tables--
+-- Inventory Management Tables--
 
 
 

@@ -249,7 +249,7 @@ $active = "orderQueue_History";
                                         <td>${order.orderStatus}</td>
                                         <td class="p-3">
                                             ${orderStatus === 'IN PROCESS' || orderStatus === 'PICKUP' ? `
-                                                <button class="btn btn-success"><i class="fas fa-check"></i> Done</button>
+                                                <button class="btn btn-success" data-sales-ordernum=${order.salesOrderNumber}><i class="fas fa-check"></i> Done</button>
                                                 <button class="btn btn-danger"><i class="fas fa-times"></i> Cancel</button>
                                             ` : ''}
                                         </td>
@@ -424,9 +424,11 @@ $active = "orderQueue_History";
       $(document).on('click', '.btn-success, .btn-danger', function () {
           event.stopPropagation();
 
+          
           const isDone = $(this).hasClass('btn-success'); // Check if the button is "Done"
           const orderRow = $(this).closest('tr'); // Get the row of the clicked button
-          const orderNum = orderRow.find('td:eq(1)').text(); // Get the Order ID from the first column
+          const orderNum = orderRow.find('td:eq(0)').text(); // Get the Order ID from the first column
+          const salesOrderNum = $(this).data('sales-ordernum'); // Get the Sales Order Number from the button data attribute 
           const currentTab = $('#orderTabs .nav-link.active').attr('id').replace('-tab', ''); // Get the current tab (queue or pickup)
           
           const status = isDone
@@ -453,7 +455,7 @@ $active = "orderQueue_History";
                       url: 'scripts/updateOrder.php', // PHP script to handle the update
                       type: 'POST',
                       data: {
-                          orderNum: orderNum,
+                          salesOrderNum: salesOrderNum,
                           status: status,
                       },
                       success: function (response) {

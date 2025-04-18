@@ -2,13 +2,13 @@
 require_once('../../Login/database.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $orderNumber = $_POST['orderNum'];
+    $salesOrderNumber = $_POST['salesOrderNum'];
     $status = $_POST['status'];
 
     try {
-        $stmt = $conn->prepare("UPDATE tbl_orders SET orderStatus = :status WHERE orderNumber = :orderNumber");
+        $stmt = $conn->prepare("UPDATE tbl_orders SET orderStatus = :status WHERE salesOrderNumber = :salesOrderNumber");
         $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':orderNumber', $orderNumber);
+        $stmt->bindParam(':salesOrderNumber', $salesOrderNumber);
 
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Order status updated successfully.']);
