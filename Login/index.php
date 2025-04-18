@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 include("database.php");
 
@@ -24,10 +24,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 if ($role === 'administrator') {
                     header("Location: /Austin-sIMS-POS/Admin/adminDashboard.php");
-                } else if ($role === 'pos staff management'){
+                } else if ($role === 'pos staff management') {
                     header("Location: /Austin-sIMS-POS/IMS-POS/Menu.php");
-                } else if ($role === 'inventory staff management'){
-                    header("Location: /Austin-sIMS-POS/IMS-POS/Inventory_Item-Records.php");
+                } else if ($role === 'inventory staff management') {
+                    header("Location: /Austin-sIMS-POS/IMS-POS/stockPage.php");
                 } else {
                     echo "Invalid email or password";
                 }
@@ -45,6 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -56,6 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
     <title>Login Page</title>
 </head>
+
 <body class="d-flex justify-content-center align-items-center vh-100" style="font-family: 'Rubik', sans-serif; background-color: #cdc7b0;">
     <center>
         <div>
@@ -66,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <!-- Login Header -->
                     <h3 class="text-center mb-3" style="color: #6a4413;">Login</h3>
                     <p class="text-center mb-4">Please enter your email and password.</p>
-                    
+
                     <!-- Login Form -->
                     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                         <!-- Email input -->
@@ -92,4 +94,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </center>
 </body>
+
 </html>

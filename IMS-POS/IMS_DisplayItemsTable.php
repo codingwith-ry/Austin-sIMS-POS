@@ -1,4 +1,12 @@
 <?php
+
+session_start();
+if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'inventory staff management') {
+    header("Location: /Austin-sIMS-POS/Login/index.php");
+    exit();
+}
+$active = "Inventory_Item-Records";
+
 include("../Login/database.php");
 include("IMS_process.php");
 ?>
@@ -20,9 +28,10 @@ include("IMS_process.php");
         <h3>Item Records</h3>
 
         <?php if (!empty($records)) : ?>
-            <table class="table table-bordered table-striped">
+            <table id="recordTable" class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
+                        <th></th> <!-- For expand button -->
                         <th>Item Name</th>
                         <th>Quantity</th>
                         <th>Purchase Date</th>
@@ -32,7 +41,9 @@ include("IMS_process.php");
                 </thead>
                 <tbody>
                     <?php foreach ($records as $row): ?>
-                        <tr>
+                        <tr data-record-id="<?= $row['Record_ID'] ?>"
+                            data-expiration="<?= htmlspecialchars($row['Record_ItemExpirationDate']) ?>">
+                            <td class="details-control"></td>
                             <td><?= htmlspecialchars($row['Item_Name']) ?></td>
                             <td><?= htmlspecialchars($row['Record_ItemQuantity']) ?> pcs</td>
                             <td><?= htmlspecialchars($row['Record_ItemPurchaseDate']) ?></td>
@@ -40,7 +51,6 @@ include("IMS_process.php");
                             <td>
                                 <a href="#" class="btn btn-warning btn-sm edit-btn" data-record-id="<?= $row['Record_ID'] ?>">Edit</a>
                                 <a href="#" class="btn btn-danger btn-sm delete-btn" data-record-id="<?= $row['Record_ID'] ?>">Delete</a>
-                                <!-- <a href="IMS_DeleteRecord.php?record_id=<?= $row['Record_ID'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?')">Delete</a> -->
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -49,6 +59,7 @@ include("IMS_process.php");
         <?php else : ?>
             <div class="alert alert-info">No records found for this item.</div>
         <?php endif; ?>
+
     </main>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -210,6 +221,7 @@ include("IMS_process.php");
         </div>
     </div>
 
+    <?php include "footer.php" ?>
 </body>
 
 </html>

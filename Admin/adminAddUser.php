@@ -13,9 +13,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($firstName) || empty($email) || empty($password) || empty($confirmPassword) || empty($role)) {
         echo "<script>alert('Please fill in all required fields.');</script>";
-    } else if ($password !== $confirmPassword){
+    } else if ($password !== $confirmPassword) {
         echo "<script>alert('Passwords do not match.');</script>";
-    }  else {
+    } else {
         try {
             // Check if the user already exists
             $checkStmt = $conn->prepare("SELECT COUNT(*) FROM employees WHERE Employee_Email = :email");
@@ -55,14 +55,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New User</title>
     <?php include 'adminCDN.php'; ?>
     <link rel="stylesheet" href="styles/adminAddUser.css">
-    <link rel="stylesheet" href="styles/adminNav.css">  
+    <link rel="stylesheet" href="styles/adminNav.css">
 </head>
+
 <body>
     <?php include 'adminNavBar.php'; ?>
     <div id="adminContent">
@@ -171,6 +173,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </span>
                             <select name="role" class="form-select" id="role">
                                 <option value="" selected disabled>Select Role</option>
+                                <option value="Employee">Employee</option>
                                 <option value="POS Staff Management">POS Staff Management</option>
                                 <option value="Inventory Staff Management">Inventory Staff Management</option>
                                 <option value="Administrator">Administrator</option>
@@ -189,7 +192,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script>
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#password');
-        togglePassword.addEventListener('click', function (e) {
+        togglePassword.addEventListener('click', function(e) {
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
             this.classList.toggle('fa-eye-slash');
@@ -197,11 +200,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         const toggleRePassword = document.querySelector('#toggleRePassword');
         const rePassword = document.querySelector('#rePassword');
-        toggleRePassword.addEventListener('click', function (e) {
+        toggleRePassword.addEventListener('click', function(e) {
             const type = rePassword.getAttribute('type') === 'password' ? 'text' : 'password';
             rePassword.setAttribute('type', type);
             this.classList.toggle('fa-eye-slash');
         });
     </script>
 </body>
+
 </html>

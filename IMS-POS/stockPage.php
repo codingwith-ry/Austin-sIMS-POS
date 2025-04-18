@@ -1,8 +1,14 @@
 <?php
-include '../Login/database.php';
-include 'IMS_process.php';
+session_start();
+if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'inventory staff management') {
+    header("Location: /Austin-sIMS-POS/Login/index.php");
+    exit();
+}
 
 $active = "stockPage";
+
+include '../Login/database.php';
+include 'IMS_process.php';
 
 
 // Query to count distinct items based on Item_ID and Record_ItemVolume
