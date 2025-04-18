@@ -315,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         data.products.forEach((product) => {
           const badgeClass =
-            product.categoryID == 1 ? "text-bg-primary" : "text-bg-warning";
+            product.menuID == 3 ? "text-bg-warning" : "text-bg-primary";
 
           const listItem = `
                           <li class="d-flex justify-content-between align-items-center">
