@@ -11,13 +11,27 @@
     overflow-y: auto;
     padding: 32px;
     box-sizing: border-box;
+    transition: width 0.3s ease;
 }
 
 /* Text & Color Utilities */
 .text-white {
-    color: #000000 !important;
+    color: #000000 !important; /* Renamed to text-black for clarity */
 }
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .right-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-left: none;
+        border-top: 1px solid #ddd;
+        padding: 16px;
+    }
+}
+
+/* Background colors */
 .bg-dark-gray {
     background-color: #f0f4f8;
 }
@@ -71,10 +85,13 @@ button.bg-medium-gray {
     transition: background-color 0.2s ease;
     display: inline-block;
     margin-top: 12px;
+    border-radius: 8px;
 }
 
-button.bg-medium-gray:hover {
+button.bg-medium-gray:hover,
+button.bg-medium-gray:focus {
     background-color: #1D4ED8; /* Brighter blue */
+    outline: none;
 }
 
 /* Order Item Styling */
@@ -84,10 +101,18 @@ button.bg-medium-gray:hover {
     padding: 20px;
     margin-bottom: 24px;
     line-height: 1.6;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
 }
 
 .order-item:not(:last-child) {
     border-bottom: 2px solid #cbd5e1;
+}
+
+.order-item:hover,
+.order-item:focus {
+    background-color: #e0e7ff;
+    outline: none;
 }
 
 /* Header Inside Sidebar */

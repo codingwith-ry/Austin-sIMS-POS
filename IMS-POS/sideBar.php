@@ -46,40 +46,49 @@ if (isset($_GET['orderID'])) {
     $orderItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
-<div class="right-sidebar bg-dark-gray p-4 rounded-lg" style="border: 1px solid #000;">
-    <div class="text-white mb-4">
-        <p>Order No.:</p>
-        <p class="h4 font-weight-bold">
-            <?php echo $orderDetail ? htmlspecialchars($orderDetail['orderNumber']) : 'N/A'; ?>
-        </p>
-        
-        <p>Customer Name: <?php echo $orderDetail['customerName']?></p>
-        <p>Date: <?php echo $orderDetail['orderDate']?></p>
-        <p>Time: <?php echo $orderDetail['orderTime']?></p>
-        <p>Order Type: <?php echo $orderDetail['orderClass']?></p>
-        <p>Payment Type: <?php echo $orderDetail['paymentMode']?></p>
-        <p>Notes: <?php echo $orderDetail['additionalNotes']?></p>
-    </div>
-    
-    <div class="text-white mb-4">
-        <p class="h5 font-weight-bold">Order Items:</p>
+<div class="right-sidebar bg-dark-gray p-4 rounded-lg" style="border: 1px solid #000;" role="complementary" aria-label="Order Details Sidebar">
+    <section class="order-summary text-black mb-4" aria-labelledby="order-summary-header">
+        <h2 id="order-summary-header" class="sidebar-header">Order Summary</h2>
+        <dl>
+            <dt class="order-label">Order No.:</dt>
+            <dd class="order-value"><?php echo $orderDetail ? htmlspecialchars($orderDetail['orderNumber']) : 'N/A'; ?></dd>
+
+            <dt class="order-label">Customer Name:</dt>
+            <dd class="order-value"><?php echo htmlspecialchars($orderDetail['customerName']); ?></dd>
+
+            <dt class="order-label">Date:</dt>
+            <dd class="order-value"><?php echo htmlspecialchars($orderDetail['orderDate']); ?></dd>
+
+            <dt class="order-label">Time:</dt>
+            <dd class="order-value"><?php echo htmlspecialchars($orderDetail['orderTime']); ?></dd>
+
+            <dt class="order-label">Order Type:</dt>
+            <dd class="order-value"><?php echo htmlspecialchars($orderDetail['orderClass']); ?></dd>
+
+            <dt class="order-label">Payment Type:</dt>
+            <dd class="order-value"><?php echo htmlspecialchars($orderDetail['paymentMode']); ?></dd>
+
+            <dt class="order-label">Notes:</dt>
+            <dd class="order-value"><?php echo htmlspecialchars($orderDetail['additionalNotes']); ?></dd>
+        </dl>
+    </section>
+
+    <section class="order-items text-black mb-4" aria-labelledby="order-items-header">
+        <h3 id="order-items-header" class="section-title">Order Items</h3>
         <ul class="list-unstyled">
             <?php if (!empty($orderItems)): ?>
                 <?php foreach ($orderItems as $item): ?>
-                    <li class="mb-2  border p-2 rounded-lg bg-light-gray">
-                        <p class='fw-bold'><?php echo htmlspecialchars($item['menuName'] . ' - ' . $item['productCategory']); ?></p>
+                    <li class="mb-2 border p-2 rounded-lg bg-light-gray order-item" tabindex="0" aria-label="<?php echo htmlspecialchars($item['menuName'] . ' ' . $item['productCategory'] . ', quantity ' . $item['productQuantity']); ?>">
+                        <p class="fw-bold"><?php echo htmlspecialchars($item['menuName'] . ' - ' . $item['productCategory']); ?></p>
                         <div class="d-flex justify-content-between">
                             <span>
                                 <?php echo htmlspecialchars($item['productQuantity'] . ' x ' . $item['productName']); ?>
-                                
                                 <?php echo $item['productVariationName'] ? '(' . htmlspecialchars($item['productVariationName']) . ')' : ''; ?>
                             </span>
                             <span>₱<?php echo number_format($item['productPrice'], 2); ?></span>
                         </div>
-                        <!-- Add-ons placeholder -->
                         <ul class="ml-3">
                             <?php
-                            // Fetch add-ons for the current item
                             $addonStmt = $conn->prepare("
                                 SELECT a.addonName, a.addonPrice 
                                 FROM tbl_orderaddons oa
@@ -102,7 +111,6 @@ if (isset($_GET['orderID'])) {
                                 <li>No Add-Ons</li>
                             <?php endif; ?>
                         </ul>
-
                         <hr />
                         <div class="d-flex justify-content-between fw-bold">
                             <span>Product Total:</span>
@@ -114,14 +122,16 @@ if (isset($_GET['orderID'])) {
                 <li>No items found.</li>
             <?php endif; ?>
         </ul>
-    </div>
-    <div class="text-white mb-4">
-        <p>Total Amount:</p>
+    </section>
+
+    <section class="order-total text-black mb-4" aria-labelledby="order-total-header">
+        <h2 id="order-total-header" class="sidebar-header">Total Amount</h2>
         <p class="h4 font-weight-bold">
             <?php echo $orderDetail ? '₱' . number_format($orderDetail['totalAmount'], 2) : 'N/A'; ?>
         </p>
-    </div>
-    <button id="printHistoryInvoice" class="btn btn-primary fw-bold w-100 py-2 rounded-lg" 
+    </section>
+
+    <button id="printHistoryInvoice" class="btn bg-medium-gray fw-bold w-100 py-2 rounded-lg" 
         data-order-number="<?php echo htmlspecialchars($orderDetail['orderNumber']); ?>"
         data-sales-order-number="<?php echo htmlspecialchars($orderDetail['salesOrderNumber']); ?>"
         data-employee-id="<?php echo htmlspecialchars($orderDetail['employeeID']); ?>"
@@ -134,6 +144,7 @@ if (isset($_GET['orderID'])) {
         data-amount-paid="<?php echo htmlspecialchars($orderDetail['amountPaid']); ?>"
         data-additional-notes="<?php echo htmlspecialchars($orderDetail['additionalNotes']); ?>"
         data-payment-method="<?php echo htmlspecialchars($orderDetail['paymentMode']); ?>"
+        aria-label="Print Invoice"
     >Print Invoice</button>
 </div>
 
