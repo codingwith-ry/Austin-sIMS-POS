@@ -222,6 +222,7 @@ include("IMS_process.php");
     </div>
 
     <?php include "footer.php" ?>
+    <script src="scripts/displayItemData.js"></script>
 </body>
 
 </html>
