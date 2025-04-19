@@ -47,3 +47,144 @@ canvas {
   max-width: 100%;
   max-height: 100%;
 }
+
+/* Make chart containers fluid and responsive */
+.chart-container {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100%;
+  max-height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* Base responsive adjustments for all devices */
+#adminContent {
+  width: 100% !important;
+  left: 0 !important;
+  padding: 15px !important;
+  height: auto !important;
+}
+
+#dataChartsContainer {
+  padding: 15px 0 !important;
+}
+
+/* Adjust chart container heights for different screen sizes */
+#sales-line-container,
+#totalOrdersContainer {
+  height: 400px !important;
+}
+
+/* Additional media queries for smaller devices */
+@media (max-width: 1024px) {
+  #sales-line-container,
+  #totalOrdersContainer {
+    height: 300px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  #sales-line-container,
+  #totalOrdersContainer {
+    height: 250px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #sales-line-container,
+  #totalOrdersContainer {
+    height: 200px !important;
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  #adminContent {
+    width: 100% !important;
+    left: 0 !important;
+    padding: 10px !important;
+    height: auto !important;
+  }
+
+  #topSellingProductsContainer .card-body {
+    height: auto !important;
+  }
+
+  #topSellingProductsContainer {
+    padding: 10px 0 !important;
+  }
+
+  #dataChartsContainer {
+    padding: 10px 0 !important;
+  }
+
+  /* Make cards stack vertically on small screens */
+  .card {
+    width: 100% !important;
+    margin-bottom: 15px;
+  }
+
+  /* Adjust card body padding for smaller screens */
+  .card-body {
+    padding: 15px !important;
+  }
+
+  /* Make Total Orders and Total Products Sold containers full width */
+  #dataChartsContainer.col-3,
+  #dataChartsContainer.col-2 {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 15px;
+  }
+
+  /* Stack Total Products Sold cards vertically */
+  #dataChartsContainer.col-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1366px) {
+  /* iPad Pro portrait and landscape */
+  #adminContent {
+    width: 100% !important;
+    left: 0 !important;
+    padding: 15px !important;
+    height: auto !important;
+  }
+
+  #dataChartsContainer {
+    padding: 15px 0 !important;
+  }
+
+  .chart-container {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  #sales-line-container,
+  #totalOrdersContainer {
+    height: 400px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #adminContent {
+    padding: 5px !important;
+  }
+
+  #topSellingProductsContainer .card-body {
+    height: auto !important;
+  }
+
+  #topSellingProductsContainer {
+    padding: 5px 0 !important;
+  }
+
+  #dataChartsContainer {
+    padding: 5px 0 !important;
+  }
+}
