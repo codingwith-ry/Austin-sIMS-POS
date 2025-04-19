@@ -338,9 +338,9 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <strong>Regular<br />Employees</strong>
                             <h1 class="text-info" id="regularEmployeesCount">0</h1>
                         </div>
-                            <div class="chart-container d-flex justify-content-center">
-                                <canvas id="Regular_Chart"></canvas>
-                            </div>
+                        <div class="chart-container d-flex justify-content-center">
+                            <canvas id="Regular_Chart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -354,9 +354,9 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <strong>POS<br />Employees</strong>
                             <h1 class="text-success" id="posEmployeesCount">0</h1>
                         </div>
-                            <div class="chart-container d-flex justify-content-center">
-                                <canvas id="No_POS_Employees_Chart"></canvas>
-                            </div>
+                        <div class="chart-container d-flex justify-content-center">
+                            <canvas id="No_POS_Employees_Chart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -369,9 +369,9 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <strong>Inventory<br />Employees</strong>
                             <h1 class="text-warning" id="imsEmployeesCount">0</h1>
                         </div>
-                            <div class="chart-container d-flex justify-content-center">
-                                <canvas id="No_IMS_Employees_Chart"></canvas>
-                            </div>
+                        <div class="chart-container d-flex justify-content-center">
+                            <canvas id="No_IMS_Employees_Chart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -384,9 +384,9 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <strong>Administrator</strong>
                             <h1 class="text-danger" id="adminEmployeesCount">0</h1>
                         </div>
-                            <div class="chart-container d-flex justify-content-center">
-                                <canvas id="Admin_Chart"></canvas>
-                            </div>
+                        <div class="chart-container d-flex justify-content-center">
+                            <canvas id="Admin_Chart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -475,7 +475,6 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <!-- Add this div below the chart to display Total Sales -->
                             <div id="totalSalesLabel" class="text-center mt-3"></div>
-
                         </div>
                     </div>
                 </div>
