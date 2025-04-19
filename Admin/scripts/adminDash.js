@@ -161,16 +161,14 @@ fetch("scripts/adminSalesChartData.php", {
 
 /****************Top Orders Chart Initialization****************/
 const topOrdersGraph = document.getElementById("totalOrderChart");
-
 let totalSalesAmount = 0; // Declare a variable to store totalSales for the plugin
 
-// Fetch the category data from the backend
 fetch("scripts/adminTotalOrders.php")
   .then((response) => response.json())
   .then((data) => {
     if (data.success) {
       const categoryData = data.categoryData;
-      totalSalesAmount = data.totalSales; // Save totalSales globally
+      totalSalesAmount = data.totalSales;
 
       const orderData = {
         labels: ["Food", "Drinks", "Others"],
@@ -183,16 +181,47 @@ fetch("scripts/adminTotalOrders.php")
         ],
       };
 
-      // Create the chart with fetched data
+      const formattedTotalSales = totalSalesAmount.toLocaleString("en-PH", {
+        style: "currency",
+        currency: "PHP",
+      });
+
+      // Update the "Total Sales" label outside the chart
+      document.getElementById("totalSalesLabel").innerHTML = `
+        <span style="font-size: 22px; font-weight: bold; color: #333;">
+          Total Sales: ${formattedTotalSales}
+        </span>
+      `;
+
+      // Create the chart
       new Chart(topOrdersGraph, {
         type: "doughnut",
         data: orderData,
-        plugins: [topOrderLabel],
         options: {
           plugins: {
             legend: {
               display: true,
               position: "bottom",
+              labels: {
+                generateLabels: function (chart) {
+                  const data = chart.data;
+                  const dataset = data.datasets[0];
+                  const bgColors = dataset.backgroundColor;
+
+                  let labels = data.labels.map((label, i) => {
+                    return {
+                      text: `${label}: ${dataset.data[i]}`,
+                      fillStyle: bgColors[i],
+                      strokeStyle: bgColors[i],
+                      lineWidth: 1,
+                      hidden: false,
+                      index: i,
+                    };
+                  });
+
+                  return labels;
+                },
+              },
             },
           },
           responsive: true,
@@ -206,31 +235,6 @@ fetch("scripts/adminTotalOrders.php")
   .catch((error) => {
     console.error("Error fetching data:", error);
   });
-
-// Plugin to draw total sales in the middle of the doughnut
-const topOrderLabel = {
-  id: "topOrderLabel",
-  beforeDatasetsDraw(chart, args, options) {
-    const { ctx } = chart;
-    ctx.save();
-    const meta = chart.getDatasetMeta(0);
-
-    if (meta.data.length === 0) return;
-
-    const xCoor = meta.data[0].x;
-    const yCoor = meta.data[0].y;
-
-    const formattedTotalSales = totalSalesAmount.toLocaleString("en-PH", {
-      style: "currency",
-      currency: "PHP",
-    });
-
-    ctx.font = "bold 20px sans-serif";
-    ctx.fillStyle = "black";
-    ctx.textAlign = "center";
-    ctx.fillText(formattedTotalSales, xCoor, yCoor);
-  },
-};
 
 /****************Stastics Bar Chart Initialization****************/
 const statisticsGraph = document.getElementById("statisticsBarChart");

@@ -213,8 +213,11 @@ foreach ($itemData as $item) {
                                     <div class="col">
                                         <div class="input-group flex-nowrap">
                                             <span class="input-group-text" id="addon-wrapping">
-                                                <i class="bi-search"></i></span> <input type="text" class="form-control" placeholder="Search product here" aria-describedby="addon-wrapping">
+                                                <i class="bi-search"></i>
+                                            </span>
+                                            <input type="text" id="searchInput" class="form-control" placeholder="Search by name or category">
                                         </div>
+
                                     </div>
                                     <div class="col-auto" style="display: flex; gap: 10px">
                                         <button class="btn btn-secondary" type="button">
@@ -395,7 +398,10 @@ foreach ($itemData as $item) {
                                             }
 
                                             echo '
-                                                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0 product-item" data-category="' . htmlspecialchars($row['Item_Category']) . '">
+                                                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0 product-item" 
+                                                    data-name="' . htmlspecialchars($row['Item_Name']) . '" 
+                                                    data-category="' . htmlspecialchars($row['Category_Name']) . '" 
+                                                    data-category-id="' . htmlspecialchars($row['Item_Category']) . '">
                                                     <div class="card flex-shrink-0 ' . $cardBorderClass . '" style="height: 430px; padding: 15px; position: relative;" ' . $tooltipAttr . '>
                                                         <a href="IMS_DisplayItemsTable.php?item_id=' . $itemID . '" class="text-decoration-none text-dark" style="display: block; position: relative;">
                                                             ' . $outOfStockOverlay . '

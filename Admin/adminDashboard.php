@@ -455,7 +455,7 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                             </div>
                             <div id="statisticsChartContainer" style="margin-top: 5%;">
-                                <canvas id="statisticsBarChart" width="20px" height="6px"></canvas>
+                                <canvas id="statisticsBarChart" width="20px" height="7px"></canvas>
                             </div>
                         </div>
                     </div>
@@ -473,6 +473,9 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <div id="totalOrdersContainer" class="flex-grow-1 d-flex align-items-center justify-content-center">
                                 <canvas id="totalOrderChart"></canvas>
                             </div>
+                            <!-- Add this div below the chart to display Total Sales -->
+                            <div id="totalSalesLabel" class="text-center mt-3"></div>
+
                         </div>
                     </div>
                 </div>
