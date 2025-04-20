@@ -1,11 +1,12 @@
 <?php
 require_once('../../Login/database.php');
-$orderNumber = isset($_GET['orderNumber']) ? $_GET['orderNumber'] : '';
+$salesOrderNumber = isset($_GET['salesOrderNumber']) ? $_GET['salesOrderNumber'] : '';
 
 $orders = $conn->query("
     SELECT
     tbl_orderitems.orderItemID,
     tbl_orderitems.orderNumber,
+    tbl_orderitems.salesOrderNumber,
     tbl_menuclass.menuName,
     tbl_categories.categoryName,
     tbl_variations.variationName,
@@ -16,7 +17,7 @@ $orders = $conn->query("
     LEFT JOIN tbl_menu ON tbl_orderitems.productID = tbl_menu.productID
     LEFT JOIN tbl_menuClass ON tbl_menu.menuID = tbl_menuClass.menuID
     LEFT JOIN tbl_categories ON tbl_menu.categoryID = tbl_categories.categoryID
-    HAVING tbl_orderitems.orderNumber = '{$orderNumber}';
+    HAVING tbl_orderitems.salesOrderNumber = '{$salesOrderNumber}';
 ");
 
 $data = [];

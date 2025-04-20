@@ -223,7 +223,7 @@ $active = "orderQueue_History";
                             type: 'GET',
                             dataType: 'json',
                             data: {
-                                orderNumber: order.orderNumber,
+                                salesOrderNumber: order.salesOrderNumber,
                             },
                             success: function (orderItems) {
                                 let row = `
