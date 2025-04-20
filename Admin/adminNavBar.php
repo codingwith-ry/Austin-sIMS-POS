@@ -10,36 +10,34 @@
 
 <!-- Sidebar -->
 <div class="offcanvas offcanvas-start d-md-block" id="nav" tabindex="-1" data-bs-scroll="true" data-bs-backdrop="true">
-<div class="p-3 border-bottom">
-    <div class="d-flex flex-column flex-md-row align-items-center text-center text-md-start">
-        <img src="resources/logo.png" alt="Logo" class="rounded-circle img-fluid mb-2 mb-md-0" style="width: 50px; height: 50px; object-fit: cover;">
-        <span class="ms-md-2 d-none d-md-block" style="font-size: 14px;"><b>Austin's Cafe & Gastro Pub IMS-POS</b></span>
+    <div class="p-3 border-bottom d-flex align-items-center">
+        <img src="resources/logo.png" alt="Logo" style="width: 50px; height: 50px; object-fit: cover;" class="rounded-circle">
+        <span class="ms-2 sidebar-label" style="font-size: 14px;"><b>Austin's Cafe & Gastro Pub IMS-POS</b></span>
     </div>
-</div>
     <div class="offcanvas-body p-0">
         <ul class="list-group">
             <li class="list-group-item border-0 py-3 d-flex align-items-center" data-link="adminDashboard.php">
                 <span class="material-symbols-outlined">dashboard</span>
-                <span class="ms-2">Dashboard</span>
+                <span class="ms-2 sidebar-label">Dashboard</span>
             </li>
             <li class="list-group-item border-0 py-3 d-flex align-items-center" data-link="/Austin-sIMS-POS/Admin/adminEmployees.php">
                 <span class="material-symbols-outlined">groups</span>
-                <span class="ms-2">Employees</span>
+                <span class="ms-2 sidebar-label">Employees</span>
             </li>
             <li class="list-group-item border-0 py-3 d-flex align-items-center text-muted" data-link="/Austin-sIMS-POS/Admin/adminSales.php">
                 <span class="material-symbols-outlined">analytics</span>
-                <span class="ms-2">Sales</span>
+                <span class="ms-2 sidebar-label">Sales</span>
             </li>
             <li class="list-group-item border-0 py-3 d-flex align-items-center text-muted" data-link="/Austin-sIMS-POS/Admin/adminProducts.php">
                 <i class="fi fi-rr-utensils" style="font-size: large;"></i>
-                <span class="ms-2">Products</span>
+                <span class="ms-2 sidebar-label">Products</span>
             </li>
         </ul>
     </div>
     <div class="offcanvas-footer border-top p-3 mt-auto">
         <a href="#" class="d-flex align-items-center text-danger text-decoration-none" data-bs-toggle="modal" data-bs-target="#logoutModal">
             <i class="bi bi-box-arrow-left"></i>
-            <span class="ms-2">Logout</span>
+            <span class="ms-2 sidebar-label">Logout</span>
         </a>
     </div>
 </div>
@@ -84,39 +82,55 @@
     });
 </script>
 
-<!-- Sidebar Always Visible on Desktop -->
+<!-- Sidebar Styles & Transitions -->
 <style>
-    @media (min-width: 768px) {
+    .offcanvas-start {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .list-group-item {
+        transition: all 0.3s ease-in-out;
+    }
+
+    @media (min-width: 992px) {
         .offcanvas-start {
-            position: fixed;
-            transform: none !important;
-            visibility: visible !important;
-            border-right: 1px solid #dee2e6;
             width: 260px;
-            top: 56px; /* height of navbar */
+            top: 56px;
             height: calc(100vh - 56px);
             z-index: 1020;
+            border-right: 1px solid #dee2e6;
+            position: fixed;
+            visibility: visible !important;
+            transform: none !important;
             display: flex;
             flex-direction: column;
         }
 
-        body {
-            padding-left: 0;
-        }
-
         .main-content {
             margin-left: 260px;
-            padding-top: 70px; /* for navbar */
-        }
-    }
-
-    @media (max-width: 767.98px) {
-        .main-content {
             padding-top: 70px;
         }
     }
 
-    /* Optional: Improve tooltip appearance */
+    @media (max-width: 991.98px) {
+        .sidebar-label {
+            display: none !important;
+        }
+
+        .offcanvas-start {
+            width: 80px;
+        }
+
+        .main-content {
+            margin-left: 80px;
+            padding-top: 70px;
+        }
+
+        .offcanvas-footer span {
+            display: none;
+        }
+    }
+
     .list-group-item[title] {
         position: relative;
     }
