@@ -109,7 +109,7 @@
                                     $isTabActive = "";
                                 }
                                 echo '<li class="nav-item" role="presentation">
-                                        <button class="nav-link '.$isTabActive.' me-2" id="'.$arrTabs[$index].'Tab" data-bs-toggle="pill" data-bs-target="#'.$arrTabs[$index].'" type="button" role="tab" aria-controls="pills-home" aria-selected="true">'.$row['menuName'].'</button>
+                                        <button class="nav-link '.$isTabActive.' me-2" id="'.$arrTabs[$index].'Tab" data-bs-toggle="pill" data-bs-target="#'.$arrTabs[$index].'2" type="button" role="tab" aria-controls="pills-home" aria-selected="true">'.$row['menuName'].'</button>
                                     </li>';
                                     $index++;
                             }
@@ -145,7 +145,7 @@
                                 $isActive = "";
                             }
                             echo'
-                            <div class="tab-pane fade show '.$isActive.'" id="'.$arrTabs[$index].'" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+                            <div class="tab-pane fade show '.$isActive.'" id="'.$arrTabs[$index].'2" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
                             ';
                             echo'
                                 <div class="">
@@ -233,7 +233,7 @@
                                                             <button type="button" id="addtoOrderModal" class="btn btn-primary" data-product-id="'.$product['productID'].'" data-menu-id="'.$product['menuID'].'" data-menu-name="'.$row['menuName'].'" data-product-name="'.$product['productName'].'" 
                                                                 data-product-price="'.$product['productPrice'].'"  data-product-image="resources/nachos.jpg"  data-product-category="'.$product['categoryName'].'" 
                                                                 data-product-icon="'.$product['categoryIcon'].'" data-bs-toggle="modal" data-bs-target="#addItemModal" style="width: 100%; margin-top: 10px;">
-                                                                editProductModal
+                                                                Edit Item
                                                             </button>
                                                         </div>
                                                     </div>
@@ -289,7 +289,7 @@
                                                                 <span id="foodPrice">₱'.$product['productPrice'].'</span>
                                                                 <button id="addtoOrderModal" type="button" data-product-id="'.$product['productID'].'" data-menu-id="'.$product['menuID'].'" data-menu-name="'.$row['menuName'].'" data-product-name="'.$product['productName'].'" 
                                                                 data-product-price="'.$product['productPrice'].'"  data-product-icon="'.$product['categoryIcon'].'" data-product-image="resources/nachos.jpg"  data-product-category="'.$product['categoryName'].'"
-                                                                class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal" style="width: 100%; margin-top: 10px;">Add to Order</button>
+                                                                class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal" style="width: 100%; margin-top: 10px;">Edit Item</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -440,6 +440,34 @@
                                 </div>
                                 <hr />
                                 <div class="row">
+                                    <div class="col-12">
+                                        <div class="">
+                                            <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Menu Class</label>
+                                            <select class="form-select" aria-label="Default select example">
+                                                <option selected>Choose a menu class</option>
+                                                <option value="1">One</option>
+                                                <option value="2">Two</option>
+                                                <option value="3">Three</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="">
+                                            <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Category</label>
+                                            <select class="form-select" aria-label="Default select example">
+                                                <option selected>Choose a menu class</option>
+                                                <option value="1">One</option>
+                                                <option value="2">Two</option>
+                                                <option value="3">Three</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
                                     <div class="col-6">
                                         <span style="font-weight: bold; font-size: 18px;">Product Image</span>
                                         <img src="resources/nachos.jpg" class="card-img-top img-fluid rounded-start rounded-end mt-2 mb-2" id="productImage" alt="...">
@@ -450,13 +478,17 @@
                                 </div>
                                 <hr />
                                 <span style="font-weight: bold; font-size: 18px;">Addons</span>
+                                <div class="addonSelectContainer">
+                                    
+                                </div>
                                 <div class="row">
-                                    <div class="col-12">
-                                        <div class="mb-3">
-                                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="ex. Cheese">
-                                        </div>
-                                        <button type="button" class="btn btn-primary">Add Another Addon</button>
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-primary addonSelectAdd">Add Another Add-on</button>
                                     </div>
+                                    <div class="col-6 ms-auto" style="text-align: right;">
+                                       <button id="newAddonButton" class="btn btn-primary pt-3 pb-0" data-bs-toggle="modal" data-bs-target="#addAddonModal" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; font-size: 12px;">Create a new add-on?</button>
+                                    </div>
+                                    
                                 </div>
                                 <hr>
                                 <div class="row">
@@ -549,9 +581,55 @@
                     </div>
                 </div>
         </div>
+
+        <div class="modal fade" id="addAddonModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">Add a new Add-on</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form>
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="">
+                                                                    <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Add-on Name</label>
+                                                                    <input type="text" class="form-control" id="editProductName" placeholder="ex. Sauce">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="">
+                                                                    <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Menu Class</label>
+                                                                    <input type="text" class="form-control" id="menuClassName" placeholder="" value="Coffee Menu" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <div class="">
+                                                                    <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Add-on Price</label>
+                                                                    <input type="text" class="form-control" id="addonPriceValue" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <br />
+                                                        <div class="modal-footer pe-0 pb-0">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="button" class="btn btn-primary">Add Add-on</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
     </div>
 </body>
-<script src="adminProducts.js"></script>
+<script src="scripts/adminProducts.js"></script>
 </html>
 
 
