@@ -2,7 +2,7 @@
   position: relative;
   height: 100vh;
   width: calc(100% - 15%);
-  left: 15%;
+  margin-left: 15%;
   padding: 20px;
   overflow-x: hidden;
 }
@@ -58,25 +58,14 @@ canvas {
   box-sizing: border-box;
 }
 
-/* Base responsive adjustments for all devices */
-#adminContent {
+#Admin_Chart {
   width: 100% !important;
-  left: 0 !important;
-  padding: 15px !important;
-  height: auto !important;
+  height: 150px !important;
+  max-width: 100%;
+  max-height: 150px;
 }
 
-#dataChartsContainer {
-  padding: 15px 0 !important;
-}
-
-/* Adjust chart container heights for different screen sizes */
-#sales-line-container,
-#totalOrdersContainer {
-  height: 400px !important;
-}
-
-/* Additional media queries for smaller devices */
+/* Base responsive adjustments for all devices */
 @media (max-width: 1024px) {
   #sales-line-container,
   #totalOrdersContainer {
@@ -102,7 +91,7 @@ canvas {
 @media (max-width: 768px) {
   #adminContent {
     width: 100% !important;
-    left: 0 !important;
+    margin-left: 0 !important;
     padding: 10px !important;
     height: auto !important;
   }
@@ -150,24 +139,24 @@ canvas {
 @media (min-width: 768px) and (max-width: 1366px) {
   /* iPad Pro portrait and landscape */
   #adminContent {
-    width: 100% !important;
-    left: 0 !important;
-    padding: 15px !important;
-    height: auto !important;
+    width: calc(100% - 15%);
+    margin-left: 15%;
+    padding: 15px;
+    height: auto;
   }
 
   #dataChartsContainer {
-    padding: 15px 0 !important;
+    padding: 15px 0;
   }
 
   .chart-container {
-    width: 100% !important;
-    height: auto !important;
+    width: 100%;
+    height: auto;
   }
 
   #sales-line-container,
   #totalOrdersContainer {
-    height: 400px !important;
+    height: 400px;
   }
 }
 
