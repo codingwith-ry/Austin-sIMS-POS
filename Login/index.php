@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['employeeID'] = $user['Employee_ID'];
 
                 try {
-                    $logStmt = $conn->prepare("INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) VALUES (:logName, :logRole, :logContent, :logDate)");
+                    $logStmt = $conn->prepare("INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) VALUES (:logEmail, :logRole, :logContent, :logDate)");
                     $logStmt->bindParam(':logEmail', $email); // Use the email as the logName
                     $logStmt->bindParam(':logRole', $role); // Use the role as the logRole
                     $logStmt->bindParam(':logContent', $logContent); // Log content message

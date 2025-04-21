@@ -627,6 +627,7 @@ foreach ($itemData as $item) {
                 type: "POST",
                 data: formData,
                 success: function(response) {
+                    console.log("Raw Response:", response)
                     const res = JSON.parse(response);
                     if (res.success) {
                         Swal.fire({

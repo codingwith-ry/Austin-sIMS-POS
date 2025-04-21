@@ -1,6 +1,11 @@
 <?php
 include '../../Login/database.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $recordId = $_POST['recordId'];
     $itemName = $_POST['itemName'];
@@ -26,6 +31,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':itemExpirationDate', $itemExpirationDate);
         $stmt->execute();
 
+        // Insert a log entry into tbl_userlogs
+        if (isset($_SESSION['email']) && isset($_SESSION['userRole'])) {
+            $logEmail = $_SESSION['email'];
+            $logRole = $_SESSION['userRole'];
+            $logContent = "Edited record with Record ID: $recordId. Updated fields: Volume - $itemVolume, Quantity - $itemQuantity, Price - $itemPrice, Expiration Date - $itemExpirationDate.";
+            $logDate = date('Y-m-d');
+
+            $logStmt = $conn->prepare("
+                INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
+                VALUES (:logEmail, :logRole, :logContent, :logDate)
+            ");
+            $logStmt->bindParam(':logEmail', $logEmail);
+            $logStmt->bindParam(':logRole', $logRole);
+            $logStmt->bindParam(':logContent', $logContent);
+            $logStmt->bindParam(':logDate', $logDate);
+            $logStmt->execute();
+        } else {
+            error_log("Session variables 'email' or 'userRole' are not set.");
+        }
+
+
         // Fetch the updated record
         $fetchStmt = $conn->prepare("
             SELECT 
@@ -46,8 +72,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $updatedRecord = $fetchStmt->fetch(PDO::FETCH_ASSOC);
 
         echo json_encode(['success' => true, 'updatedData' => [$updatedRecord]]);
+        
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
+
+
 }
 ?>
