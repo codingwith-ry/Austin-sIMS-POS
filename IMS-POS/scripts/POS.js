@@ -232,6 +232,7 @@ document.addEventListener('click', function (event) {
                 productVariationName: selectedVariation? selectedVariation.getAttribute("data-varname") : null,
                 productImage: productImage,
                 productCategory: productCategory,
+                categoryIcon: categoryIcon,
                 productAddons: addons,
                 productQuantity: quantity,
                 productTotal: total
@@ -586,7 +587,7 @@ function updateTotal() {
     orderItem.productTotal = total;
 }*/
 
-
+/*
 document.querySelectorAll('.editItemButton').forEach(button => {
     button.addEventListener('click', function () {
         console.log("Edit button clicked");
@@ -613,255 +614,259 @@ document.querySelectorAll('.editItemButton').forEach(button => {
             jQuery('#editItemModal').
             remove();
         }
-        
-        function initializeEditModal(orderItemEdit, index) {
-            // Create a working copy of the item to edit
-            let currentItem = JSON.parse(JSON.stringify(orderItemEdit));
-            let basePrice = parseFloat(currentItem.productPrice);
-            let addons = [...currentItem.productAddons];
-        
-            // Update modal content
-            document.getElementById('prodNameEdit').innerText = currentItem.productName;
-            document.getElementById('prodPriceEdit').innerText = "₱" + basePrice.toFixed(2);
-            document.getElementById('prodCategoryEdit').innerText = currentItem.productCategory;
-            document.getElementById('catIconEdit').className = currentItem.categoryIcon;
-            document.getElementById('prodQuantityEdit').innerText = currentItem.productQuantity;
-            document.getElementById('totalAmountEdit').textContent = "₱" + currentItem.productTotal.toFixed(2);
-        
-            // Clear addons and variations sections
-            let addonContainer = document.getElementById("addonSectionEdit");
-            addonContainer.innerHTML = "";
-        
-            let variationContainer = document.getElementById("variationSectionEdit");
-            variationContainer.innerHTML = "";
-        
-            // Fetch addons and populate the addon section
-            fetch("scripts/get_addons.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ productID: currentItem.productID })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.length > 0) {
-                    data.forEach(addon => {
-                        const isChecked = currentItem.productAddons.some(a => a.addonID == addon.addonID);
-                        addonContainer.innerHTML += `
-                            <div class="col-xl-4 col-lg-4 col-md-4">
-                                <input class="form-check-input addon-checkbox2" type="checkbox" 
-                                       value="${addon.addonID}" 
-                                       data-price="${addon.addonPrice}" 
-                                       ${isChecked ? 'checked' : ''}>
-                                <label class="form-check-label mt-1">
-                                    ${addon.addonName} <br />
-                                    <span class="addon-price">+ ₱${(addon.addonPrice * currentItem.productQuantity).toFixed(2)}</span>
-                                </label>
-                            </div>
-                        `;
-                    });
-        
-                    // Properly bind event listeners to checkboxes
-                    document.querySelectorAll(".addon-checkbox2").forEach(checkbox => {
-                        checkbox.addEventListener("change", function() {
-                            const addonID = this.value;
-                            const addonPrice = parseFloat(this.getAttribute("data-price"));
-                            const addonName = this.nextElementSibling.textContent.trim().split('\n')[0];
-                            
-                            if (this.checked) {
-                                // Add addon if not already present
-                                if (!addons.some(a => a.addonID === addonID)) {
-                                    addons.push({
-                                        addonID: addonID,
-                                        addonName: addonName,
-                                        addonPrice: (addonPrice * currentItem.productQuantity).toFixed(2)
-                                    });
-                                }
-                            } else {
-                                // Remove addon
-                                addons = addons.filter(a => a.addonID !== addonID);
-                            }
-                            
-                            // Update price display
-                            const priceElement = this.parentElement.querySelector(".addon-price");
-                            priceElement.textContent = `+ ₱${(addonPrice * currentItem.productQuantity).toFixed(2)}`;
-                            
-                            updateTotalEdit();
-                        });
-                    });
-                } else {
-                    addonContainer.innerHTML = "<p class='text-muted'>No addons available.</p>";
-                }
-            })
-            .catch(error => console.error("Error fetching addons:", error));
-        
-            // Fetch variations and populate the variation section
-            fetch("scripts/get_variations.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ productID: currentItem.productID })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.length > 0) {
-                    data.forEach(variation => {
-                        variationContainer.innerHTML += `
-                            <div class="col-xl-4 col-lg-4 col-md-4">
-                                <input class="form-check-input variation-radio2" type="radio" 
-                                       name="variation" 
-                                       value="${variation.variationName}" 
-                                       data-price="${variation.variationPrice}" 
-                                       ${currentItem.productVariation === variation.variationName ? 'checked' : ''}>
-                                <label class="form-check-label mt-1">
-                                    ${variation.variationName} <br />
-                                    <span class="variation-price">₱${variation.variationPrice}</span>
-                                </label>
-                            </div>
-                        `;
-                    });
-                    
-                    document.querySelectorAll(".variation-radio2").forEach(radio => {
-                        radio.addEventListener("change", function() {
-                            if (this.checked) {
-                                basePrice = parseFloat(this.getAttribute("data-price"));
-                                currentItem.productPrice = basePrice;
-                                currentItem.productVariation = this.value;
-                                updateTotalEdit();
-                            }
-                        });
-                    });
-                } else {
-                    variationContainer.innerHTML = "<p class='text-muted'>No variations available.</p>";
-                }
-            })
-            .catch(error => console.error("Error fetching variations:", error));
-        
-            // Quantity buttons
-            let btnAddEdit = document.getElementById('addButtonEdit');
-            let btnSubtractEdit = document.getElementById('subtractButtonEdit');
-        
-            btnAddEdit.addEventListener('click', function() {
-                currentItem.productQuantity++;
-                document.getElementById('prodQuantityEdit').innerText = currentItem.productQuantity;
-                
-                // Update addon prices based on new quantity
-                document.querySelectorAll(".addon-checkbox2").forEach(checkbox => {
-                    if (checkbox.checked) {
-                        const addonPrice = parseFloat(checkbox.getAttribute("data-price"));
-                        const priceElement = checkbox.parentElement.querySelector(".addon-price");
-                        priceElement.textContent = `+ ₱${(addonPrice * currentItem.productQuantity).toFixed(2)}`;
-                        
-                        // Update addon in array
-                        const addonID = checkbox.value;
-                        const addonIndex = addons.findIndex(a => a.addonID === addonID);
-                        if (addonIndex !== -1) {
-                            addons[addonIndex].addonPrice = (addonPrice * currentItem.productQuantity).toFixed(2);
-                        }
-                    }
-                });
-                
-                updateTotalEdit();
+    });
+});
+*/
+
+function initializeEditModal(orderItemEdit, index) {
+    // Create a working copy of the item to edit
+    let currentItem = JSON.parse(JSON.stringify(orderItemEdit));
+    let basePrice = parseFloat(currentItem.productPrice);
+    let addons = [...currentItem.productAddons];
+
+    // Update modal content
+    document.getElementById('prodNameEdit').innerText = currentItem.productName;
+    document.getElementById('prodPriceEdit').innerText = "₱" + basePrice.toFixed(2);
+    document.getElementById('prodCategoryEdit').innerText = currentItem.productCategory;
+    document.getElementById('catIconEdit').className = currentItem.categoryIcon;
+    document.getElementById('prodQuantityEdit').innerText = currentItem.productQuantity;
+    document.getElementById('totalAmountEdit').textContent = "₱" + currentItem.productTotal.toFixed(2);
+
+    // Clear addons and variations sections
+    let addonContainer2 = document.getElementById("addonSectionEdit");
+    addonContainer2.innerHTML = "";
+
+    let variationContainer2 = document.getElementById("variationSectionEdit");
+    variationContainer2.innerHTML = "";
+
+    // Fetch addons and populate the addon section
+    fetch("scripts/get_addons.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productID: currentItem.productID })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.length > 0) {
+            data.forEach(addon => {
+                const isChecked = currentItem.productAddons.some(a => a.addonID == addon.addonID);
+                addonContainer2.innerHTML += `
+                    <div class="col-xl-4 col-lg-4 col-md-4">
+                        <input class="form-check-input addon-checkbox2" type="checkbox" 
+                               value="${addon.addonID}" 
+                               data-price="${addon.addonPrice}" 
+                               ${isChecked ? 'checked' : ''}>
+                        <label class="form-check-label mt-1">
+                            ${addon.addonName} <br />
+                            <span id="addonPrice" class="addon-price">+ ₱${(addon.addonPrice * currentItem.productQuantity).toFixed(2)}</span>
+                        </label>
+                    </div>
+                `;
             });
-        
-            btnSubtractEdit.addEventListener('click', function() {
-                if (currentItem.productQuantity > 1) {
-                    currentItem.productQuantity--;
-                    document.getElementById('prodQuantityEdit').innerText = currentItem.productQuantity;
+
+            document.querySelectorAll(".addon-checkbox2").forEach(checkbox => {
+                checkbox.addEventListener("change", function() {
+                    const addonID = this.value;
+                    const addonPrice = parseFloat(this.getAttribute("data-price"));
+                    const addonName = this.nextElementSibling.textContent.trim().split('\n')[0];
                     
-                    // Update addon prices based on new quantity
-                    document.querySelectorAll(".addon-checkbox2").forEach(checkbox => {
-                        if (checkbox.checked) {
-                            const addonPrice = parseFloat(checkbox.getAttribute("data-price"));
-                            const priceElement = checkbox.parentElement.querySelector(".addon-price");
-                            priceElement.textContent = `+ ₱${(addonPrice * currentItem.productQuantity).toFixed(2)}`;
-                            
-                            // Update addon in array
-                            const addonID = checkbox.value;
-                            const addonIndex = addons.findIndex(a => a.addonID === addonID);
-                            if (addonIndex !== -1) {
-                                addons[addonIndex].addonPrice = (addonPrice * currentItem.productQuantity).toFixed(2);
-                            }
+                    if (this.checked) {
+                        // Add addon if not already present
+                        if (!addons.some(a => a.addonID === addonID)) {
+                            addons.push({
+                                addonID: addonID,
+                                addonName: addonName,
+                                addonPrice: (addonPrice * currentItem.productQuantity).toFixed(2)
+                            });
                         }
-                    });
+                    } else {
+                        // Remove addon
+                        addons = addons.filter(a => a.addonID !== addonID);
+                    }
+                    
+                    // Update price display
+                    const priceElement = this.parentElement.querySelector(".addon-price");
+                    priceElement.textContent = `+ ₱${(addonPrice * currentItem.productQuantity).toFixed(2)}`;
                     
                     updateTotalEdit();
+                });
+            });
+        } else {
+            addonContainer2.innerHTML = "<p class='text-muted'>No addons available.</p>";
+        }
+    })
+    .catch(error => console.error("Error fetching addons:", error));
+
+    // Fetch variations and populate the variation section
+    fetch("scripts/get_variations.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productID: currentItem.productID })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.length > 0) {
+            let count = 1;
+            data.forEach(variation => {
+                variationContainer2.innerHTML += `
+                    <div class="col-xl-4 col-lg-4 col-md-4">
+                        <input class="form-check-input variation-radio2" type="radio" 
+                               name="variation" 
+                               value="${variation.variationName}" 
+                               data-price="${variation.variationPrice}" 
+                               ${currentItem.productVariationName === variation.variationName ? 'checked' : ''}>
+                        <label class="form-check-label mt-1">
+                            ${variation.variationName} <br />
+                            <span class="variation-price">₱${variation.variationPrice}</span>
+                        </label>
+                    </div>
+                `;
+                console.log(variation.variationName);
+            });
+            
+            
+
+            document.querySelectorAll(".variation-radio2").forEach(radio => {
+                radio.addEventListener("change", function() {
+                    if (this.checked) {
+                        basePrice = parseFloat(this.getAttribute("data-price"));
+                        currentItem.productPrice = basePrice;
+                        currentItem.productVariation = this.value;
+                        currentItem.productVariationName = this.value;
+                        updateTotalEdit();
+                    }
+                });
+            });
+        } else {
+            variationContainer2.innerHTML = "<p class='text-muted'>No variations available.</p>";
+        }
+    })
+    .catch(error => console.error("Error fetching variations:", error));
+
+    // Quantity buttons
+    let btnAddEdit = document.getElementById('addButtonEdit');
+    let btnSubtractEdit = document.getElementById('subtractButtonEdit');
+
+    btnAddEdit.addEventListener('click', function() {
+        currentItem.productQuantity++;
+        document.getElementById('prodQuantityEdit').innerText = currentItem.productQuantity;
+        
+        // Update addon prices based on new quantity
+        document.querySelectorAll(".addon-checkbox2").forEach(checkbox => {
+            if (checkbox.checked) {
+                const addonPrice = parseFloat(checkbox.getAttribute("data-price"));
+                const priceElement = checkbox.parentElement.querySelector(".addon-price");
+                priceElement.textContent = `+ ₱${(addonPrice * currentItem.productQuantity).toFixed(2)}`;
+                
+                // Update addon in array
+                const addonID = checkbox.value;
+                const addonIndex = addons.findIndex(a => a.addonID === addonID);
+                if (addonIndex !== -1) {
+                    addons[addonIndex].addonPrice = (addonPrice * currentItem.productQuantity).toFixed(2);
+                }
+            }
+        });
+        
+        updateTotalEdit();
+    });
+
+    btnSubtractEdit.addEventListener('click', function() {
+        if (currentItem.productQuantity > 1) {
+            currentItem.productQuantity--;
+            document.getElementById('prodQuantityEdit').innerText = currentItem.productQuantity;
+            
+            // Update addon prices based on new quantity
+            document.querySelectorAll(".addon-checkbox2").forEach(checkbox => {
+                if (checkbox.checked) {
+                    const addonPrice = parseFloat(checkbox.getAttribute("data-price"));
+                    const priceElement = checkbox.parentElement.querySelector(".addon-price");
+                    priceElement.textContent = `+ ₱${(addonPrice * currentItem.productQuantity).toFixed(2)}`;
+                    
+                    // Update addon in array
+                    const addonID = checkbox.value;
+                    const addonIndex = addons.findIndex(a => a.addonID === addonID);
+                    if (addonIndex !== -1) {
+                        addons[addonIndex].addonPrice = (addonPrice * currentItem.productQuantity).toFixed(2);
+                    }
                 }
             });
-        
-            // Update total function for edit modal
-            function updateTotalEdit() {
-                let total = basePrice * currentItem.productQuantity;
-                
-                // Add addon prices
-                addons.forEach(addon => {
-                    total += parseFloat(addon.addonPrice);
-                });
-                
-                currentItem.productTotal = total;
-                currentItem.productAddons = addons;
-                
-                document.getElementById('totalAmountEdit').textContent = "₱" + total.toFixed(2);
-            }
-        
-            // Save button
-            document.getElementById('saveItemOrder').addEventListener('click', function() {
-                Swal.fire({
-                    title: 'Update Order?',
-                    text: "Item will be updated in your order list.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        let orderItems = JSON.parse(localStorage.getItem('orderItems')) || [];
-                        
-                        // Update all properties
-                        orderItems[index] = {
-                            ...orderItems[index],
-                            productQuantity: currentItem.productQuantity,
-                            productPrice: basePrice,
-                            productVariation: currentItem.productVariation,
-                            productAddons: addons,
-                            productTotal: currentItem.productTotal
-                        };
-                        
-                        localStorage.setItem('orderItems', JSON.stringify(orderItems));
-                        
-                        Swal.fire(
-                            'Success!',
-                            'Item successfully updated.',
-                            'success'
-                        );
-                        updateOrderBar();
-                        document.getElementById('closeEditModal').click();
-                    }
-                });
-            });
-        
-            // Close button
-            document.getElementById('closeEditButton').addEventListener('click', function() {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "Item will not be updated in your order list.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('closeEditModal').click();
-                    }
-                });
-            });
-        
-            // Initialize the total
+            
             updateTotalEdit();
         }
     });
-});
 
+    // Update total function for edit modal
+    function updateTotalEdit() {
+        let total = basePrice * currentItem.productQuantity;
+        
+        // Add addon prices
+        addons.forEach(addon => {
+            total += parseFloat(addon.addonPrice);
+        });
+        
+        currentItem.productTotal = total;
+        currentItem.productAddons = addons;
+        
+        document.getElementById('totalAmountEdit').textContent = "₱" + total.toFixed(2);
+    }
+
+    // Save button
+    document.getElementById('saveItemOrder').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Update Order?',
+            text: "Item will be updated in your order list.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let orderItems = JSON.parse(localStorage.getItem('orderItems')) || [];
+                
+                // Update all properties
+                orderItems[index] = {
+                    ...orderItems[index],
+                    productQuantity: currentItem.productQuantity,
+                    productPrice: basePrice,
+                    productVariation: currentItem.productVariation,
+                    productVariationName: currentItem.productVariationName,
+                    productAddons: addons,
+                    productTotal: currentItem.productTotal
+                };
+                
+                localStorage.setItem('orderItems', JSON.stringify(orderItems));
+                
+                Swal.fire(
+                    'Success!',
+                    'Item successfully updated.',
+                    'success'
+                );
+                updateOrderBar();
+                document.getElementById('closeEditModal').click();
+            }
+        });
+    });
+
+    // Close button
+    document.getElementById('closeEditButton').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Item will not be updated in your order list.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('closeEditModal').click();
+            }
+        });
+    });
+
+    updateTotalEdit();
+}
 
 function updateOrderBar(){
     let totalAmountElement = document.getElementById('totalAmountElem');
@@ -930,6 +935,18 @@ function updateOrderBar(){
         // Append the generated HTML to the container
         orderItemsContainer.innerHTML += itemHTML;
     });
+
+    document.querySelectorAll('.editItemButton').forEach(button => {
+        button.addEventListener('click', function () {
+            let index = this.getAttribute('data-item-index');
+            let orderItemsEdit = JSON.parse(localStorage.getItem('orderItems')) || [];
+            let orderItemEdit = orderItemsEdit[index];
+
+            // Initialize the edit modal with the selected item
+            initializeEditModal(orderItemEdit, index);
+        });
+    });
+
 
     resetButton = document.getElementById("resetOrdersButton");
     resetButton.addEventListener('click', () => {
