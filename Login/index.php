@@ -2,12 +2,14 @@
 session_start();
 include("database.php");
 
+$errorMessage = ""; // Initialize error message
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_SPECIAL_CHARS);
 
     if (empty($email) || empty($password)) {
-        echo "Please fill in all fields";
+        $errorMessage = "Please fill in all fields.";
     } else {
         try {
             $stmt = $conn->prepare("SELECT Employee_PassKey, Employee_Role, Employee_ID FROM employees WHERE Employee_Email = :email");
@@ -29,15 +31,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } else if ($role === 'inventory staff management') {
                     header("Location: /Austin-sIMS-POS/IMS-POS/stockPage.php");
                 } else {
-                    echo "Invalid email or password";
+                    $errorMessage = "Invalid email or password.";
                 }
                 exit();
             } else {
                 // Invalid password
-                echo "Invalid email or password";
+                $errorMessage = "Invalid email or password.";
             }
         } catch (PDOException $e) {
-            echo "Please enter a valid email and password";
+            $errorMessage = "An error occurred. Please try again.";
         }
     }
 }
@@ -69,20 +71,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <h3 class="text-center mb-3" style="color: #6a4413;">Login</h3>
                     <p class="text-center mb-4">Please enter your email and password.</p>
 
+                    <!-- Display error message -->
+                    <?php if (!empty($errorMessage)): ?>
+                        <div class="alert alert-danger text-center" role="alert">
+                            <?php echo $errorMessage; ?>
+                        </div>
+                    <?php endif; ?>
+
                     <!-- Login Form -->
                     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
                         <!-- Email input -->
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">@</span>
-                            <input type="text" name="email" class="form-control" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1" required>
+                            <input type="text" name="email" class="form-control <?php echo !empty($errorMessage) ? 'is-invalid' : ''; ?>" placeholder="Email address" aria-label="Email address" aria-describedby="basic-addon1" required>
                         </div>
 
-                        <!-- Password input -->
+                        <!-- Password input with toggle -->
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">
                                 <i class="bi bi-lock"></i>
                             </span>
-                            <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="password" required>
+                            <input type="password" name="password" class="form-control <?php echo !empty($errorMessage) ? 'is-invalid' : ''; ?>" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="password" required>
+                            <button type="button" class="btn btn-outline-secondary" id="togglePassword" style="color: #6a4413; border-color: #6a4413;">
+                                <i class="bi bi-eye"></i>
+                            </button>
                         </div>
                         <a href="/Austin-sIMS-POS/Login/forgotpass.php" class="d-block text-end mb-3" style="color: #6a4413;">Forgot password?</a>
 
@@ -93,6 +105,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </center>
+
+    <script src="/Austin-sIMS-POS/Login/scripts/index.js"></script>
 </body>
 
 </html>

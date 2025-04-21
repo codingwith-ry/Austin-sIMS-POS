@@ -331,15 +331,15 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <div class="row" style="padding-left: 10px; padding-right: 10px;">
             <!-- Regular Employees Card -->
-            <div class="col-12 col-md-3 d-flex align-items-stretch mb-4">
+            <div class="col-3 d-flex align-items-stretch mb-4">
                 <div class="card h-100 shadow-sm bg-light" style="border-left: 5px solid #17a2b8;">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <strong>Regular<br />Employees</strong>
                             <h1 class="text-info" id="regularEmployeesCount">0</h1>
                         </div>
-                        <div class="chart-container d-flex justify-content-center">
-                            <canvas id="Regular_Chart"></canvas>
+                        <div class="chart-container d-flex justify-content-center" style="width: 200px; height: 200px;">
+                            <canvas id="Regular_Chart" width="200" height="200"></canvas>
                         </div>
                     </div>
                 </div>
@@ -347,45 +347,45 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
             <!-- POS Employees Card -->
-            <div class="col-12 col-md-3 d-flex align-items-stretch mb-4">
+            <div class="col-3 d-flex align-items-stretch mb-4">
                 <div class="card h-100 shadow-sm bg-light" style="border-left: 5px solid #28a745;">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <strong>POS<br />Employees</strong>
                             <h1 class="text-success" id="posEmployeesCount">0</h1>
                         </div>
-                        <div class="chart-container d-flex justify-content-center">
-                            <canvas id="No_POS_Employees_Chart"></canvas>
+                        <div class="chart-container d-flex justify-content-center" style="width: 200px; height: 200px;">
+                            <canvas id="No_POS_Employees_Chart" width="200" height="200"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Inventory Employees Card -->
-            <div class="col-12 col-md-3 d-flex align-items-stretch mb-4">
+            <div class="col-3 d-flex align-items-stretch mb-4">
                 <div class="card h-100 shadow-sm bg-light" style="border-left: 5px solid #ffc107;">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <strong>Inventory<br />Employees</strong>
                             <h1 class="text-warning" id="imsEmployeesCount">0</h1>
                         </div>
-                        <div class="chart-container d-flex justify-content-center">
-                            <canvas id="No_IMS_Employees_Chart"></canvas>
+                        <div class="chart-container d-flex justify-content-center" style="width: 200px; height: 200px;">
+                            <canvas id="No_IMS_Employees_Chart" width="200" height="200"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Administrator Card -->
-            <div class="col-12 col-md-3 d-flex align-items-stretch mb-4">
+            <div class="col-3 d-flex align-items-stretch mb-4">
                 <div class="card h-100 shadow-sm bg-light" style="border-left: 5px solid #dc3545;">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
                             <strong>Administrator</strong>
                             <h1 class="text-danger" id="adminEmployeesCount">0</h1>
                         </div>
-                        <div class="chart-container d-flex justify-content-center">
-                            <canvas id="Admin_Chart"></canvas>
+                        <div class="chart-container d-flex justify-content-center" style="width: 200px; height: 200px;">
+                            <canvas id="Admin_Chart" width="200" height="200"></canvas>
                         </div>
                     </div>
                 </div>
@@ -475,6 +475,7 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             <!-- Add this div below the chart to display Total Sales -->
                             <div id="totalSalesLabel" class="text-center mt-3"></div>
+
                         </div>
                     </div>
                 </div>
