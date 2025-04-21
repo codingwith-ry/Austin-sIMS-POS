@@ -177,7 +177,6 @@ include("../Login/database.php");
                         // Dropdown for Position
                         $(this).html(`
                     <select class="form-control" name="${field}">
-                        <option value="Employee" ${value === 'Employee' ? 'selected' : ''}>Employee</option>
                         <option value="Inventory Staff Management" ${value === 'Inventory Staff Management' ? 'selected' : ''}>Inventory Staff Management</option>
                         <option value="Administrator" ${value === 'Administrator' ? 'selected' : ''}>Administrator</option>
                         <option value="POS Staff Management" ${value === 'POS Staff Management' ? 'selected' : ''}>POS Staff Management</option>
