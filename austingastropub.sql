@@ -868,6 +868,29 @@ INSERT INTO `tbl_unitofmeasurments` (`Unit_ID`, `Unit_Name`, `Unit_Acronym`) VAL
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_userlogs`
+--
+
+CREATE TABLE `tbl_userlogs` (
+  `logID` int(11) NOT NULL,
+  `logEmail` varchar(50) NOT NULL,
+  `logRole` varchar(50) NOT NULL,
+  `logContent` varchar(255) NOT NULL,
+  `logDate` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_userlogs`
+--
+
+INSERT INTO `tbl_userlogs` (`logID`, `logEmail`, `logRole`, `logContent`, `logDate`) VALUES
+(1, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'User logged in successfully.', '2025-04-21'),
+(2, 'admin@gmail.com', 'administrator', 'User logged in successfully.', '2025-04-21');
+
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_variations`
 --
 
