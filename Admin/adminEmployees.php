@@ -123,6 +123,40 @@ include("../Login/database.php");
                 </tbody>
             </table>
         </div>
+        <hr>
+        <div class="table-responsive mt-4">
+            <h3>User Logs</h3>
+            <table id="userLogsTable" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Log ID</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Content</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                    try {
+                        $stmt = $conn->prepare("SELECT logDate, logEmail, logRole, logContent FROM tbl_userlogs");
+                        $stmt->execute();
+                        $userlogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        foreach ($userlogs as $userlog) {
+                            echo "<tr data-id='" . htmlspecialchars($userlog['logDate']) . "'>";
+                            echo "<td>" . htmlspecialchars($userlog['logDate']) . "</td>";
+                            echo "<td>" . htmlspecialchars($userlog['logEmail']) . "</td>";
+                            echo "<td>" . htmlspecialchars($userlog['logRole']) . "</td>";
+                            echo "<td>" . htmlspecialchars($userlog['logContent']) . "</td>";
+                            echo "</tr>";
+                        }
+                    } catch (PDOException $e) {
+                        echo "Error: " . $e->getMessage();
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
     </main>
     <?php include 'cdnScripts.php'; ?>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
