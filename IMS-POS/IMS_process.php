@@ -1,6 +1,10 @@
 <?php include '../Login/database.php' ?>
 <?php
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 try {
     $pdo = new PDO($attrs, $db_user, $db_pass, $opts);
     //echo 'database connected';    
@@ -71,8 +75,25 @@ if (isset($_POST['add_record'])) {
         $stmt->bindParam(':itemSupplier', $itemSupplier);
         $stmt->bindParam(':employeeAssigned', $employeeAssigned);
 
+        
+
         if ($stmt->execute()) {
             echo "<script>alert('Record added successfully!');</script>";
+            // Insert a log entry into tbl_userlogs
+                $logEmail = $_SESSION['email']; // Use the session variable for the email
+                $logRole = $_SESSION['userRole']; // Use the session variable for the user's role
+                $logContent = "Added a new record to inventory: Item Name - $itemName, Quantity - $itemQuantity.";
+                $logDate = date('Y-m-d'); // Current date
+
+                $logStmt = $conn->prepare("
+                    INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
+                    VALUES (:logEmail, :logRole, :logContent, :logDate)
+                ");
+                $logStmt->bindParam(':logEmail', $logEmail);
+                $logStmt->bindParam(':logRole', $logRole);
+                $logStmt->bindParam(':logContent', $logContent);
+                $logStmt->bindParam(':logDate', $logDate);
+                $logStmt->execute();
             header("Location: Inventory_Item-Records.php");
             exit();
         } else {
