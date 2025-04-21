@@ -3,6 +3,10 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include '../../Login/database.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $recordIds = $_POST['recordIds'];
 
@@ -14,6 +18,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $placeholders = implode(',', array_fill(0, count($recordIds), '?'));
             $stmt = $conn->prepare("DELETE FROM tbl_record WHERE Record_ID IN ($placeholders)");
             $stmt->execute($recordIds);
+
+            if (isset($_SESSION['email']) && isset($_SESSION['userRole'])) {
+                $logEmail = $_SESSION['email'];
+                $logRole = $_SESSION['userRole'];
+                $logContent = "Deleted record(s) with Record ID(s): " . implode(', ', $recordIds);
+                $logDate = date('Y-m-d');
+    
+                $logStmt = $conn->prepare("
+                    INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
+                    VALUES (:logEmail, :logRole, :logContent, :logDate)
+                ");
+                $logStmt->bindParam(':logEmail', $logEmail);
+                $logStmt->bindParam(':logRole', $logRole);
+                $logStmt->bindParam(':logContent', $logContent);
+                $logStmt->bindParam(':logDate', $logDate);
+                $logStmt->execute();
+            } else {
+                error_log("Session variables 'email' or 'userRole' are not set.");
+            }
 
             // Fetch updated data
             $fetchStmt = $conn->query("
