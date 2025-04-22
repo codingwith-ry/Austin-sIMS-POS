@@ -117,7 +117,7 @@ $active = "menu";
         </ul>
 
         <br />
-        <div class="tab-content" id="pills-tabContent">
+        <div class="tab-content menuPanels" id="pills-tabContent">
             <?php
             $index = 0;
             $getMenu = "SELECT * from tbl_menuclass;";
@@ -138,7 +138,7 @@ $active = "menu";
                         $isActive = "";
                     }
                     echo'
-                    <div class="tab-pane fade show '.$isActive.'" id="'.$arrTabs[$index].'" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+                    <div class="tab-pane fade show '.$isActive.' menuPanel" id="'.$arrTabs[$index].'" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
                     ';
                     echo'
                         <div class="">
@@ -264,16 +264,16 @@ $active = "menu";
                         else{
                             while($product = $products->fetch()){
                                 echo'
-                                    <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                                    <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0 productCardClass">
                                         <div class="card flex-shrink-0 overflow-y-auto" id="productCard" style="width: 100%; padding: 15px;">
                                             <img src="resources/nachos.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
                                             <div class="card-body" id="productBody">
                                                 <div class="row">
                                                     <div class="col-xl-8 col-lg-6 flex-shrink-0">
-                                                        <span id="productName">'.$product['productName'].'</span>
+                                                        <span id="productName" class="productName">'.$product['productName'].'</span>
                                                     </div>
                                                     <div class="col-xl-4 col-lg-6 col-md-6 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
-                                                        <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="'.$product['categoryIcon'].'" style="margin-top: 1px; padding-right: 3px;"></i>'.$product['categoryName'].'</span>
+                                                        <span id="" class="text-success displayCategory" style="font-size: 12px; display: flex; justify-content: center; "><i class="'.$product['categoryIcon'].'" style="margin-top: 1px; padding-right: 3px;"></i>'.$product['categoryName'].'</span>
                                                     </div>
                                                 </div>
                                                                                                     

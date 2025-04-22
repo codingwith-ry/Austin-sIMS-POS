@@ -10,17 +10,20 @@ $orderClass = $orderData['orderType'];
 $salesOrderNumber = $orderData['salesOrder'];
 $employeeID = $orderData['employeeID'];
 $customerName = $orderData['customerName'];
+$subTotal = $orderData['subTotal'];
 $totalAmount = $orderData['totalAmount'];
 $amountPaid = $orderData['amountPaid'];
 $paymentMode = $orderData['paymentMode'];
 $orderStatus = "IN PROCESS";
 $additionalNotes = $orderData['additionalNotes'];
 $orderItems = $orderData['orderItems'];
+$discountCardID = $orderData['discountCardID'] ?? null;
+$payReferenceNumber = $orderData['payReferenceNumber'] ?? null;
 
 
 try {
     // Insert the main order into tbl_orders
-    $stmt = $conn->prepare("INSERT INTO tbl_orders (orderNumber, orderDate, orderTime, orderClass, orderStatus, salesOrderNumber, employeeID, customerName, totalAmount, amountPaid, paymentMode, additionalNotes) VALUES (:orderNumber, :orderDate, :orderTime, :orderClass, :orderStatus, :salesOrderNumber, :employeeID, :customerName, :totalAmount, :amountPaid, :paymentMode, :additionalNotes)");
+    $stmt = $conn->prepare("INSERT INTO tbl_orders (orderNumber, orderDate, orderTime, orderClass, orderStatus, salesOrderNumber, employeeID, customerName, subTotal, totalAmount, amountPaid, discountCardID, paymentMode, payReferenceNumber, additionalNotes) VALUES (:orderNumber, :orderDate, :orderTime, :orderClass, :orderStatus, :salesOrderNumber, :employeeID, :customerName, :subTotal, :totalAmount, :amountPaid, :discountCardID, :paymentMode, :payReferenceNumber, :additionalNotes)");
     $stmt->bindParam(':orderNumber', $orderNumber, PDO::PARAM_INT);
     $stmt->bindParam(':orderDate', $orderDate, PDO::PARAM_STR);
     $stmt->bindParam(':orderTime', $orderTime, PDO::PARAM_STR);
@@ -29,9 +32,12 @@ try {
     $stmt->bindParam(':salesOrderNumber', $salesOrderNumber, PDO::PARAM_INT);
     $stmt->bindParam(':employeeID', $employeeID, PDO::PARAM_STR);
     $stmt->bindParam(':customerName', $customerName, PDO::PARAM_STR);
+    $stmt->bindParam(':subTotal', $subTotal, PDO::PARAM_STR);
     $stmt->bindParam(':totalAmount', $totalAmount, PDO::PARAM_STR);
     $stmt->bindParam(':amountPaid', $amountPaid, PDO::PARAM_STR);
     $stmt->bindParam(':paymentMode', $paymentMode, PDO::PARAM_STR);
+    $stmt->bindParam(':discountCardID', $discountCardID, PDO::PARAM_STR);
+    $stmt->bindParam(':payReferenceNumber', $payReferenceNumber, PDO::PARAM_STR);
     $stmt->bindParam(':additionalNotes', $additionalNotes, PDO::PARAM_STR);
 
     $stmt->execute();

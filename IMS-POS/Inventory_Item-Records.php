@@ -9,7 +9,7 @@ include("../Login/database.php");
 include("IMS_process.php");
 
 $fetchItemDataQuery = "
-     SELECT 
+    SELECT 
     i.Item_ID,
     i.Item_Name, 
     i.Item_Image, 
@@ -20,7 +20,8 @@ $fetchItemDataQuery = "
     r.Record_ItemVolume,
     r.Record_ItemExpirationDate,
     IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change,
-    IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease
+    IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease,
+    IFNULL(SUM(CASE WHEN ic.Change_Type = 'increase' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Increase
 FROM tbl_item i
 JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
 JOIN tbl_record r ON i.Item_ID = r.Item_ID
@@ -37,27 +38,36 @@ GROUP BY
     r.Record_ItemVolume,
     r.Record_ItemExpirationDate
 ORDER BY i.Item_Name ASC;
+
 ";
 
 $itemData = $pdo->query($fetchItemDataQuery)->fetchAll(PDO::FETCH_ASSOC);
 
+// Arrays to hold out-of-stock, low stock, and expired items
 $outOfStockItems = [];
 $lowStockItems = [];
 $expiredItems = [];
 
+// Process each item
 foreach ($itemData as $item) {
-    $currentStock = $item['Record_ItemQuantity'] - $item['Total_Decrease'];
+    // Calculate the current stock
+    $currentStock = $item['Record_ItemQuantity'] + $item['Total_Increase'] - $item['Total_Decrease'];
     $item['Total_Quantity'] = $currentStock;
 
     // Check if the item is expired
     if (!empty($item['Record_ItemExpirationDate']) && strtotime($item['Record_ItemExpirationDate']) < time()) {
         $expiredItems[] = $item;
-    } elseif ($currentStock <= 0) {
+    }
+    // Check if the item is out of stock
+    elseif ($currentStock <= 0) {
         $outOfStockItems[] = $item;
-    } elseif ($currentStock > 0 && $currentStock < 4) {
+    }
+    // Check if the item is low in stock (less than 4 items)
+    elseif ($currentStock > 0 && $currentStock < 4) {
         $lowStockItems[] = $item;
     }
 }
+
 
 ?>
 
@@ -85,7 +95,7 @@ foreach ($itemData as $item) {
                         <div class="modal-body">
                             <?php if (!empty($expiredItems)): ?>
                                 <h5 class="text-danger">Expired Items</h5>
-                                <ul class="list-group mb-3">
+                                <ul class="list-group mb-3" id="expiredItemsList">
                                     <?php foreach ($expiredItems as $item): ?>
                                         <li class="list-group-item d-flex align-items-center">
                                             <img src="<?php echo htmlspecialchars($item['Item_Image']); ?>" alt="Item Image" style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
@@ -100,7 +110,7 @@ foreach ($itemData as $item) {
 
                             <?php if (!empty($outOfStockItems)): ?>
                                 <h5 class="text-danger">Out of Stock</h5>
-                                <ul class="list-group mb-3">
+                                <ul class="list-group mb-3" id="outOfStockItemsList">
                                     <?php foreach ($outOfStockItems as $item): ?>
                                         <li class="list-group-item d-flex align-items-center">
                                             <img src="<?php echo htmlspecialchars($item['Item_Image']); ?>" alt="Item Image" style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
@@ -118,7 +128,7 @@ foreach ($itemData as $item) {
 
                             <?php if (!empty($lowStockItems)): ?>
                                 <h5 class="text-warning">Low Stock</h5>
-                                <ul class="list-group">
+                                <ul class="list-group" id="lowStockItemsList">
                                     <?php foreach ($lowStockItems as $item): ?>
                                         <li class="list-group-item d-flex align-items-center">
                                             <img src="<?php echo htmlspecialchars($item['Item_Image']); ?>" alt="Item Image" style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
@@ -141,6 +151,8 @@ foreach ($itemData as $item) {
                 </div>
             </div>
         <?php endif; ?>
+
+
 
         <div class="title">
             <div class="row">
@@ -225,10 +237,18 @@ foreach ($itemData as $item) {
                                         </button>
                                         <ul class="nav nav-pills" id="pills-tab" role="tablist">
                                             <li class="nav-item ms-auto" role="presentation">
-                                                <button class="btn btn-success h-100 pt-2" id="partytrayMenu" data-bs-toggle="modal" data-bs-target="#addItemModal">Add Item
-                                                    <i
-                                                        class="fi fi-rr-add " style="vertical-align: middle; font-size: 18px"></i>
+                                                <!-- Add Item Button -->
+                                                <button class="btn btn-success h-100 pt-2" id="partytrayMenu" data-bs-toggle="modal" data-bs-target="#addItemModal">
+                                                    Add Item
+                                                    <i class="fi fi-rr-add" style="vertical-align: middle; font-size: 18px"></i>
                                                 </button>
+
+                                                <!-- Edit Item Button (Styled to match Add Item) -->
+                                                <button class="btn btn-primary h-100 pt-2" data-bs-toggle="modal" data-bs-target="#editItemModal">
+                                                    Edit Item
+                                                    <i class="fi fi-rr-edit" style="vertical-align: middle; font-size: 18px"></i>
+                                                </button>
+
                                             </li>
                                         </ul>
                                     </div>
@@ -299,6 +319,100 @@ foreach ($itemData as $item) {
                             </div>
 
 
+                            <!-- Edit Item Modal -->
+                            <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Loop through items and display their images with item ID and name -->
+                                            <div class="row">
+                                                <?php foreach ($items as $item): ?>
+                                                    <div class="col-4 text-center mb-3">
+                                                        <img src="<?php echo $item['Item_Image']; ?>" alt="<?php echo $item['Item_Name']; ?>" class="item-image">
+                                                        <p><?php echo $item['Item_Name']; ?></p>
+                                                        <small class="text-muted"><?php echo $item['Category_Name']; ?></small>
+                                                    </div>
+                                                <?php endforeach; ?>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Edit Item Details Modal -->
+                            <div class="modal fade" id="editItemDetailsModal" tabindex="-1" aria-labelledby="editItemDetailsModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editItemDetailsModalLabel">Edit Item Details</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="POST" action="update_item.php" enctype="multipart/form-data">
+                                                <!-- Item Name -->
+                                                <div class="mb-3">
+                                                    <label for="itemName" class="form-label">Item Name</label>
+                                                    <input type="text" class="form-control" id="itemName" name="itemName" required>
+                                                </div>
+
+                                                <!-- Item Category -->
+                                                <div class="mb-3">
+                                                    <label for="itemCategory" class="form-label">Item Category</label>
+                                                    <input type="text" class="form-control" id="itemCategory" name="itemCategory" readonly required>
+                                                </div>
+
+                                                <!-- Unit of Measurement -->
+                                                <div class="mb-3">
+                                                    <label for="unitOfMeasurement" class="form-label">Unit of Measurement</label>
+                                                    <input type="text" class="form-control" id="unitOfMeasurement" name="unitOfMeasurement" readonly required>
+                                                </div>
+
+                                                <!-- Item Image -->
+                                                <div class="mb-3">
+                                                    <label for="itemImage" class="form-label">Item Image</label>
+                                                    <input type="file" class="form-control" id="itemImage" name="itemImage" onchange="previewImage(event)">
+                                                    <img id="imagePreview" src="" alt="Item Image" class="mt-2" width="100">
+                                                </div>
+
+                                                <!-- Submit Button -->
+                                                <button type="submit" class="btn btn-primary">Update Item</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                // Event listener for when an item is clicked in the Edit Item Modal
+                                document.querySelectorAll('.item-link').forEach(item => {
+                                    item.addEventListener('click', function() {
+                                        // Get item details from data attributes
+                                        const itemId = this.getAttribute('data-item-id');
+                                        const itemName = this.getAttribute('data-item-name');
+                                        const itemImage = this.getAttribute('data-item-image');
+                                        const itemCategory = this.getAttribute('data-item-category');
+                                        const unitOfMeasurement = this.getAttribute('data-item-unit');
+                                        const itemImagePreview = this.getAttribute('data-item-image-preview');
+
+                                        // Update the Edit Item Details Modal fields with the item details
+                                        document.getElementById('itemName').value = itemName;
+                                        document.getElementById('itemCategory').value = itemCategory;
+                                        document.getElementById('unitOfMeasurement').value = unitOfMeasurement;
+                                        document.getElementById('imagePreview').src = itemImagePreview;
+                                    });
+                                });
+                            </script>
+
+
+
                             <br />
                             <div class="d-flex flex-row flex-nowrap overflow-x-scroll custom-scrollbar">
                                 <!-- Static 'All' Button -->
@@ -355,6 +469,7 @@ foreach ($itemData as $item) {
                                         }
 
                                         // Loop through and display each item
+                                        // Loop through and display each item
                                         foreach ($groupedItems as $row) {
                                             $itemID = htmlspecialchars($row['Item_ID']);
                                             $itemName = htmlspecialchars($row['Item_Name']);
@@ -369,32 +484,34 @@ foreach ($itemData as $item) {
                                             $isExpired = ($expirationDate && $expirationDate <= $currentDate);
 
                                             // Define border class and image style based on stock and expiration
+                                            // Define styles
                                             $cardBorderClass = '';
                                             $imageStyle = 'object-fit: contain;';
                                             $outOfStockOverlay = '';
                                             $expiredOverlay = '';
                                             $tooltipAttr = '';
 
+                                            // Priority: out-of-stock > expired > low stock
                                             if ($itemQty == 0) {
-                                                $cardBorderClass = 'border border-danger'; // Out of stock
+                                                // Out of stock
+                                                $cardBorderClass = 'border border-danger';
                                                 $imageStyle = 'filter: grayscale(100%) brightness(60%);';
                                                 $outOfStockOverlay = '
-                                                    <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
-                                                        Out of Stock
-                                                    </div>';
-                                            } elseif ($itemQty <= 3) {
-                                                $cardBorderClass = 'border border-warning'; // Low stock
-                                                $tooltipAttr = 'data-bs-toggle="tooltip" data-bs-title="Quantity of this item is low"';
-                                            }
-
-                                            // Add expired overlay and border color if expired
-                                            if ($isExpired) {
-                                                $cardBorderClass = 'border border-secondary'; // Expired items with a light gray border
+                                                        <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
+                                                            Out of Stock
+                                                        </div>';
+                                            } elseif ($isExpired) {
+                                                // Expired
+                                                $cardBorderClass = 'border border-secondary';
                                                 $expiredOverlay = '
-                                                <div class="position-absolute top-50 start-50 translate-middle bg-secondary text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
-                                                    Expired
-                                                </div>';
-                                                $imageStyle = 'filter: grayscale(100%) brightness(50%);'; // Apply gray filter for expired items
+                                                                <div class="position-absolute top-50 start-50 translate-middle bg-secondary text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
+                                                                    Expired
+                                                                </div>';
+                                                $imageStyle = 'filter: grayscale(100%) brightness(50%);';
+                                            } elseif ($itemQty <= 3) {
+                                                // Low stock
+                                                $cardBorderClass = 'border border-warning';
+                                                $tooltipAttr = 'data-bs-toggle="tooltip" data-bs-title="Quantity of this item is low"';
                                             }
 
                                             echo '
@@ -437,7 +554,7 @@ foreach ($itemData as $item) {
                                                                     <p>Available Quantity: <strong>' . $itemQty . ' pcs</strong></p>
                                                                     <div class="mb-3">
                                                                         <label for="slider_' . $itemID . '" class="form-label">Select amount to decrease:</label>
-                                                                        <input type="range" class="form-range" min="1" max="' . $itemQty . '" value="1" id="slider_' . $uniqueKey . '" name="decrease_amount" oninput="updatePreview_' . $uniqueKey . '()">
+                                                                        <input type="range" class="form-range" min="0" max="' . $itemQty . '" value="1" id="slider_' . $uniqueKey . '" name="decrease_amount" oninput="updatePreview_' . $uniqueKey . '()">
                                                                         <div>Decreasing by: <strong id="decreasePreview_' . $uniqueKey . '">1</strong> pcs</div>
                                                                         <div>Quantity after decrease: <strong id="afterQty_' . $uniqueKey . '">' . ($itemQty - 1) . '</strong> pcs</div>
                                                                     </div>
@@ -455,17 +572,18 @@ foreach ($itemData as $item) {
 
                                             // Slider JS
                                             echo '
-                                            <script>
-                                            function updatePreview_' . $uniqueKey . '() {
-                                                const slider = document.getElementById("slider_' . $uniqueKey . '");
-                                                const preview = document.getElementById("decreasePreview_' . $uniqueKey . '");
-                                                const afterQty = document.getElementById("afterQty_' . $uniqueKey . '");
-                                                const decreaseVal = parseInt(slider.value);
-                                                preview.textContent = decreaseVal;
-                                                afterQty.textContent = ' . $itemQty . ' - decreaseVal;
-                                            }
-                                            </script>';
+                                                <script>
+                                                function updatePreview_' . $uniqueKey . '() {
+                                                    const slider = document.getElementById("slider_' . $uniqueKey . '");
+                                                    const preview = document.getElementById("decreasePreview_' . $uniqueKey . '");
+                                                    const afterQty = document.getElementById("afterQty_' . $uniqueKey . '");
+                                                    const decreaseVal = parseInt(slider.value);
+                                                    preview.textContent = decreaseVal;
+                                                    afterQty.textContent = ' . $itemQty . ' - decreaseVal;
+                                                }
+                                                </script>';
                                         }
+
                                         ?>
 
 
