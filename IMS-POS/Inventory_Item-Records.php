@@ -146,7 +146,6 @@ foreach ($itemData as $item) {
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn" style="background-color: rgb(50, 50, 50); color: white;" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-warning" id="clearNotificationBtn">Clear Notifications</button>
                         </div>
                     </div>
                 </div>
@@ -238,10 +237,18 @@ foreach ($itemData as $item) {
                                         </button>
                                         <ul class="nav nav-pills" id="pills-tab" role="tablist">
                                             <li class="nav-item ms-auto" role="presentation">
-                                                <button class="btn btn-success h-100 pt-2" id="partytrayMenu" data-bs-toggle="modal" data-bs-target="#addItemModal">Add Item
-                                                    <i
-                                                        class="fi fi-rr-add " style="vertical-align: middle; font-size: 18px"></i>
+                                                <!-- Add Item Button -->
+                                                <button class="btn btn-success h-100 pt-2" id="partytrayMenu" data-bs-toggle="modal" data-bs-target="#addItemModal">
+                                                    Add Item
+                                                    <i class="fi fi-rr-add" style="vertical-align: middle; font-size: 18px"></i>
                                                 </button>
+
+                                                <!-- Edit Item Button (Styled to match Add Item) -->
+                                                <button class="btn btn-primary h-100 pt-2" data-bs-toggle="modal" data-bs-target="#editItemModal">
+                                                    Edit Item
+                                                    <i class="fi fi-rr-edit" style="vertical-align: middle; font-size: 18px"></i>
+                                                </button>
+
                                             </li>
                                         </ul>
                                     </div>
@@ -310,6 +317,100 @@ foreach ($itemData as $item) {
                                     </div>
                                 </div>
                             </div>
+
+
+                            <!-- Edit Item Modal -->
+                            <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Loop through items and display their images with item ID and name -->
+                                            <div class="row">
+                                                <?php foreach ($items as $item): ?>
+                                                    <div class="col-4 text-center mb-3">
+                                                        <img src="<?php echo $item['Item_Image']; ?>" alt="<?php echo $item['Item_Name']; ?>" class="item-image">
+                                                        <p><?php echo $item['Item_Name']; ?></p>
+                                                        <small class="text-muted"><?php echo $item['Category_Name']; ?></small>
+                                                    </div>
+                                                <?php endforeach; ?>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Edit Item Details Modal -->
+                            <div class="modal fade" id="editItemDetailsModal" tabindex="-1" aria-labelledby="editItemDetailsModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editItemDetailsModalLabel">Edit Item Details</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="POST" action="update_item.php" enctype="multipart/form-data">
+                                                <!-- Item Name -->
+                                                <div class="mb-3">
+                                                    <label for="itemName" class="form-label">Item Name</label>
+                                                    <input type="text" class="form-control" id="itemName" name="itemName" required>
+                                                </div>
+
+                                                <!-- Item Category -->
+                                                <div class="mb-3">
+                                                    <label for="itemCategory" class="form-label">Item Category</label>
+                                                    <input type="text" class="form-control" id="itemCategory" name="itemCategory" readonly required>
+                                                </div>
+
+                                                <!-- Unit of Measurement -->
+                                                <div class="mb-3">
+                                                    <label for="unitOfMeasurement" class="form-label">Unit of Measurement</label>
+                                                    <input type="text" class="form-control" id="unitOfMeasurement" name="unitOfMeasurement" readonly required>
+                                                </div>
+
+                                                <!-- Item Image -->
+                                                <div class="mb-3">
+                                                    <label for="itemImage" class="form-label">Item Image</label>
+                                                    <input type="file" class="form-control" id="itemImage" name="itemImage" onchange="previewImage(event)">
+                                                    <img id="imagePreview" src="" alt="Item Image" class="mt-2" width="100">
+                                                </div>
+
+                                                <!-- Submit Button -->
+                                                <button type="submit" class="btn btn-primary">Update Item</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                // Event listener for when an item is clicked in the Edit Item Modal
+                                document.querySelectorAll('.item-link').forEach(item => {
+                                    item.addEventListener('click', function() {
+                                        // Get item details from data attributes
+                                        const itemId = this.getAttribute('data-item-id');
+                                        const itemName = this.getAttribute('data-item-name');
+                                        const itemImage = this.getAttribute('data-item-image');
+                                        const itemCategory = this.getAttribute('data-item-category');
+                                        const unitOfMeasurement = this.getAttribute('data-item-unit');
+                                        const itemImagePreview = this.getAttribute('data-item-image-preview');
+
+                                        // Update the Edit Item Details Modal fields with the item details
+                                        document.getElementById('itemName').value = itemName;
+                                        document.getElementById('itemCategory').value = itemCategory;
+                                        document.getElementById('unitOfMeasurement').value = unitOfMeasurement;
+                                        document.getElementById('imagePreview').src = itemImagePreview;
+                                    });
+                                });
+                            </script>
+
 
 
                             <br />
