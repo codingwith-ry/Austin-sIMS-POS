@@ -68,6 +68,24 @@ if (isset($_GET['orderID'])) {
             <dt class="order-label">Payment Type:</dt>
             <dd class="order-value"><?php echo htmlspecialchars($orderDetail['paymentMode']); ?></dd>
 
+            <?php
+                if($orderDetail['paymentMode'] == 'GCash' || $orderDetail['paymentMode'] == 'PayMaya'){
+                    echo '<dt class="order-label">Reference Number:</dt>';
+                    echo '<dd class="order-value">' . $orderDetail['payReferenceNumber']. '</dd>';
+                }
+            
+                if($orderDetail['discountCardID'] != null){
+                    echo '<dt class="order-label">Senior Citizen/PWD?:</dt>';
+                    echo '<dd class="order-value fw-bold">Yes</dd>';
+
+                    echo '<dt class="order-label">Discount Card ID:</dt>';
+                    echo '<dd class="order-value fw-bold">' . $orderDetail['discountCardID']. '</dd>';
+                }else{
+                    echo '<dt class="order-label">Senior Citizen/PWD?:</dt>';
+                    echo '<dd class="order-value fw-bold">No</dd>';
+                }
+            ?>
+
             <dt class="order-label">Notes:</dt>
             <dd class="order-value"><?php echo htmlspecialchars($orderDetail['additionalNotes']); ?></dd>
         </dl>
@@ -123,12 +141,18 @@ if (isset($_GET['orderID'])) {
             <?php endif; ?>
         </ul>
     </section>
-
+    <hr />
     <section class="order-total text-black mb-4" aria-labelledby="order-total-header">
-        <h2 id="order-total-header" class="sidebar-header">Total Amount</h2>
-        <p class="h4 font-weight-bold">
-            <?php echo $orderDetail ? '₱' . number_format($orderDetail['totalAmount'], 2) : 'N/A'; ?>
-        </p>
+        <dt class="order-label">Sub Total:</dt>
+        <dd class="order-value">₱<?php echo htmlspecialchars($orderDetail['subTotal']); ?></dd>
+        <?php
+            if($orderDetail['discountCardID'] != null){
+                echo '<dt class="order-label">Discount:</dt>';
+                echo '<dd class="order-value">₱' . number_format(($orderDetail['subTotal'] - $orderDetail['totalAmount']), 2). '</dd>';
+            }
+        ?>
+        <dt class="order-label">Total Amount:</dt>
+        <dd class="order-value">₱<?php echo htmlspecialchars($orderDetail['totalAmount']); ?></dd>
     </section>
 
     <button id="printHistoryInvoice" class="btn bg-medium-gray fw-bold w-100 py-2 rounded-lg" 

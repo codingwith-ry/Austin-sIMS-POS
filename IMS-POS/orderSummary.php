@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     amountPaid: amountPaid,
                                     changeAmount: amountPaid - totalAmount,
                                     additionalNotes: additionalNotes,
-                                    discountCardID: seniorPwdCheckbox.checked ? document.getElementById('scPwdId').value : null,
+                                    discountCardID: seniorPwdCheckbox.checked ? document.getElementById('discountCardID').value : null,
                                     payReferenceNumber: paymentMethodElem.value === 'GCash' || paymentMethodElem.value === 'PayMaya' ? document.getElementById('payReferenceNumber').value : null,
                                     paymentMode: document.getElementById('paymentMethod').value
                                 };
