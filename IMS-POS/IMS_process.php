@@ -128,6 +128,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Execute query
                 $pdo->exec($sql);
 
+                if (isset($_SESSION['email']) && isset($_SESSION['userRole'])) {
+                    $logEmail = $_SESSION['email'];
+                    $logRole = $_SESSION['userRole'];
+                    $logContent = "Added a new item: $itemName (Item Name: $item_Name, Category: $item_Category)";
+                    $logDate = date('Y-m-d');
+        
+                    $logStmt = $conn->prepare("
+                        INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
+                        VALUES (:logEmail, :logRole, :logContent, :logDate)
+                    ");
+                    $logStmt->bindParam(':logEmail', $logEmail);
+                    $logStmt->bindParam(':logRole', $logRole);
+                    $logStmt->bindParam(':logContent', $logContent);
+                    $logStmt->bindParam(':logDate', $logDate);
+                    $logStmt->execute();
+                } else {
+                    error_log("Session variables 'email' or 'userRole' are not set.");
+                }
+
                 // Redirect after successful insert
                 header("Location: Inventory_Item-Records.php");
                 exit();
