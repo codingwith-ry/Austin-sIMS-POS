@@ -75,25 +75,25 @@ if (isset($_POST['add_record'])) {
         $stmt->bindParam(':itemSupplier', $itemSupplier);
         $stmt->bindParam(':employeeAssigned', $employeeAssigned);
 
-        
+
 
         if ($stmt->execute()) {
             echo "<script>alert('Record added successfully!');</script>";
             // Insert a log entry into tbl_userlogs
-                $logEmail = $_SESSION['email']; // Use the session variable for the email
-                $logRole = $_SESSION['userRole']; // Use the session variable for the user's role
-                $logContent = "Added a new record to inventory: Item Name - $itemName, Quantity - $itemQuantity.";
-                $logDate = date('Y-m-d'); // Current date
+            $logEmail = $_SESSION['email']; // Use the session variable for the email
+            $logRole = $_SESSION['userRole']; // Use the session variable for the user's role
+            $logContent = "Added a new record to inventory: Item Name - $itemName, Quantity - $itemQuantity.";
+            $logDate = date('Y-m-d'); // Current date
 
-                $logStmt = $conn->prepare("
+            $logStmt = $conn->prepare("
                     INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
                     VALUES (:logEmail, :logRole, :logContent, :logDate)
                 ");
-                $logStmt->bindParam(':logEmail', $logEmail);
-                $logStmt->bindParam(':logRole', $logRole);
-                $logStmt->bindParam(':logContent', $logContent);
-                $logStmt->bindParam(':logDate', $logDate);
-                $logStmt->execute();
+            $logStmt->bindParam(':logEmail', $logEmail);
+            $logStmt->bindParam(':logRole', $logRole);
+            $logStmt->bindParam(':logContent', $logContent);
+            $logStmt->bindParam(':logDate', $logDate);
+            $logStmt->execute();
             header("Location: Inventory_Item-Records.php");
             exit();
         } else {
@@ -127,6 +127,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Execute query
                 $pdo->exec($sql);
+
+                if (isset($_SESSION['email']) && isset($_SESSION['userRole'])) {
+                    $logEmail = $_SESSION['email'];
+                    $logRole = $_SESSION['userRole'];
+                    $logContent = "Added a new item: $itemName (Item Name: $item_Name, Category: $item_Category)";
+                    $logDate = date('Y-m-d');
+
+                    $logStmt = $conn->prepare("
+                        INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
+                        VALUES (:logEmail, :logRole, :logContent, :logDate)
+                    ");
+                    $logStmt->bindParam(':logEmail', $logEmail);
+                    $logStmt->bindParam(':logRole', $logRole);
+                    $logStmt->bindParam(':logContent', $logContent);
+                    $logStmt->bindParam(':logDate', $logDate);
+                    $logStmt->execute();
+                } else {
+                    error_log("Session variables 'email' or 'userRole' are not set.");
+                }
 
                 // Redirect after successful insert
                 header("Location: Inventory_Item-Records.php");
@@ -175,6 +194,7 @@ JOIN tbl_record r ON i.Item_ID = r.Item_ID
 LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
 LEFT JOIN tbl_inventory_changes ic ON r.Record_ID = ic.Record_ID
 GROUP BY i.Item_ID, r.Record_ItemVolume, ic_cat.Category_Name, um.Unit_Acronym, i.Item_Name, i.Item_Image, r.Record_ItemExpirationDate
+ORDER BY r.Record_ItemExpirationDate DESC
 ";
 
 $itemData = $pdo->query($fetchItemDataQuery)->fetchAll(PDO::FETCH_ASSOC);

@@ -56,3 +56,29 @@
 .expired-glow {
   box-shadow: 0 0 10px 2px rgba(255, 0, 0, 0.6);
 }
+
+/* styles.css */
+
+/* Ensure that images inside the modal are of fixed size */
+.item-image {
+  width: 150px;
+  /* Set a fixed width */
+  height: 150px;
+  /* Set a fixed height */
+  object-fit: cover;
+  /* Make sure the image covers the area without distortion */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Add smooth transition for hover effect */
+  border-radius: 10px;
+  /* Rounded corners for better presentation */
+  cursor: pointer;
+  /* Pointer cursor to indicate clickability */
+}
+
+/* Add hover effect */
+.item-image:hover {
+  transform: scale(1.1);
+  /* Popout effect: image will slightly enlarge */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  /* Add shadow for better popout effect */
+}
