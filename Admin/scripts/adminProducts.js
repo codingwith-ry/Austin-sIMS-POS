@@ -83,4 +83,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
     });
+
+    newAddonButton.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent the page from reloading
+        const addAddonModal = new bootstrap.Modal(document.getElementById('addAddonModal'));
+        addAddonModal.show(); // Show the modal programmatically
+    });
 });
