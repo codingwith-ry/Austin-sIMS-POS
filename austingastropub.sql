@@ -696,68 +696,62 @@ INSERT INTO `tbl_menutoaddons` (`menuAddonID`, `productID`, `addonID`) VALUES
 -- Table structure for table `tbl_orderaddons`
 --
 
-CREATE TABLE `tbl_orderaddons` (
-  `orderAddonID` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `tbl_orderaddons` (
+  `orderAddonID` int(11) NOT NULL AUTO_INCREMENT,
   `addonID` int(11) DEFAULT NULL,
-  `orderItemID` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `orderItemID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`orderAddonID`),
+  KEY `FK_tbl_orderaddons_tbl_addons` (`addonID`),
+  KEY `FK_tbl_orderaddons_tbl_orderitems` (`orderItemID`),
+  CONSTRAINT `FK_tbl_orderaddons_tbl_addons` FOREIGN KEY (`addonID`) REFERENCES `tbl_addons` (`addonID`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_tbl_orderaddons_tbl_orderitems` FOREIGN KEY (`orderItemID`) REFERENCES `tbl_orderitems` (`orderItemID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `tbl_orderaddons`
---
-
+-- Dumping data for table austingastropub.tbl_orderaddons: ~7 rows (approximately)
 INSERT INTO `tbl_orderaddons` (`orderAddonID`, `addonID`, `orderItemID`) VALUES
-(59, 2, 64),
-(60, 5, 64),
-(61, 1, 64),
-(72, 1, 83),
-(73, 3, 83),
-(74, 2, 84),
-(75, 5, 84);
+	(85, 2, 93),
+	(86, 1, 93),
+	(87, 2, 94),
+	(88, 5, 94),
+	(89, 2, 96),
+	(90, 1, 96),
+	(91, 2, 97);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `tbl_orderitems`
---
-
-CREATE TABLE `tbl_orderitems` (
-  `orderItemID` int(11) NOT NULL,
+-- Dumping structure for table austingastropub.tbl_orderitems
+CREATE TABLE IF NOT EXISTS `tbl_orderitems` (
+  `orderItemID` int(11) NOT NULL AUTO_INCREMENT,
   `orderNumber` int(11) DEFAULT NULL,
   `salesOrderNumber` int(11) DEFAULT NULL,
   `productID` int(11) DEFAULT NULL,
   `variationID` int(11) DEFAULT NULL,
   `productQuantity` int(11) DEFAULT NULL,
-  `productTotal` decimal(13,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `productTotal` decimal(13,2) DEFAULT NULL,
+  PRIMARY KEY (`orderItemID`),
+  KEY `FK_tbl_orderitems_tbl_orders` (`orderNumber`),
+  KEY `FK_tbl_orderitems_tbl_menu` (`productID`),
+  KEY `FK_tbl_orderitems_tbl_variations` (`variationID`),
+  KEY `FK_tbl_orderitems_tbl_orders_2` (`salesOrderNumber`),
+  CONSTRAINT `FK_tbl_orderitems_tbl_menu` FOREIGN KEY (`productID`) REFERENCES `tbl_menu` (`productID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_tbl_orderitems_tbl_orders` FOREIGN KEY (`orderNumber`) REFERENCES `tbl_orders` (`orderNumber`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_tbl_orderitems_tbl_orders_2` FOREIGN KEY (`salesOrderNumber`) REFERENCES `tbl_orders` (`salesOrderNumber`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_tbl_orderitems_tbl_variations` FOREIGN KEY (`variationID`) REFERENCES `tbl_variations` (`variationID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `tbl_orderitems`
---
-
+-- Dumping data for table austingastropub.tbl_orderitems: ~9 rows (approximately)
 INSERT INTO `tbl_orderitems` (`orderItemID`, `orderNumber`, `salesOrderNumber`, `productID`, `variationID`, `productQuantity`, `productTotal`) VALUES
-(63, 1002, 10002, 87, NULL, 1, 230.00),
-(64, 1003, 10003, 28, 5, 1, 235.00),
-(65, 1003, 10003, 88, NULL, 1, 230.00),
-(66, 1003, 10003, 10, NULL, 1, 1900.00),
-(67, 1002, 10003, 180, NULL, 1, 380.00),
-(68, 1004, 10004, 49, NULL, 1, 160.00),
-(69, 1004, 10004, 87, NULL, 1, 230.00),
-(70, 1005, 10005, 111, NULL, 1, 100.00),
-(71, 1006, 10006, 5, NULL, 1, 2250.00),
-(72, 1006, 10006, 13, NULL, 1, 1750.00),
-(82, 1002, 10008, 80, NULL, 1, 330.00),
-(83, 1002, 10008, 36, 47, 2, 500.00),
-(84, 1002, 10008, 48, NULL, 2, 410.00);
+	(90, 1003, 10003, 80, NULL, 1, 330.00),
+	(91, 1004, 10004, 112, NULL, 1, 100.00),
+	(92, 1004, 10004, 94, NULL, 1, 260.00),
+	(93, 1005, 10005, 69, NULL, 2, 510.00),
+	(94, 1006, 10006, 34, 12, 2, 330.00),
+	(95, 1007, 10007, 87, NULL, 1, 230.00),
+	(96, 1001, 10008, 34, 43, 2, 420.00),
+	(97, 1002, 10009, 37, 48, 1, 220.00),
+	(98, 1003, 10010, 188, NULL, 1, 440.00);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `tbl_orders`
---
-
-CREATE TABLE `tbl_orders` (
-  `orderID` int(11) NOT NULL,
+-- Dumping structure for table austingastropub.tbl_orders
+CREATE TABLE IF NOT EXISTS `tbl_orders` (
+  `orderID` int(11) NOT NULL AUTO_INCREMENT,
   `orderNumber` int(11) DEFAULT NULL,
   `orderDate` date DEFAULT NULL,
   `orderTime` time DEFAULT NULL,
@@ -766,26 +760,30 @@ CREATE TABLE `tbl_orders` (
   `salesOrderNumber` int(11) DEFAULT NULL,
   `employeeID` varchar(9) DEFAULT NULL,
   `customerName` varchar(20) DEFAULT NULL,
+  `subTotal` decimal(13,2) DEFAULT NULL,
   `totalAmount` decimal(13,2) DEFAULT NULL,
   `amountPaid` decimal(13,2) DEFAULT NULL,
+  `discountCardID` varchar(16) DEFAULT NULL,
   `paymentMode` varchar(10) DEFAULT NULL,
-  `additionalNotes` varchar(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `payReferenceNumber` varchar(13) DEFAULT NULL,
+  `additionalNotes` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`orderID`),
+  KEY `FK_tbl_orders_employees` (`employeeID`),
+  KEY `orderNumber` (`orderNumber`),
+  KEY `salesOrderNumber` (`salesOrderNumber`),
+  CONSTRAINT `FK_tbl_orders_employees` FOREIGN KEY (`employeeID`) REFERENCES `employees` (`Employee_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `tbl_orders`
---
-
-INSERT INTO `tbl_orders` (`orderID`, `orderNumber`, `orderDate`, `orderTime`, `orderClass`, `orderStatus`, `salesOrderNumber`, `employeeID`, `customerName`, `totalAmount`, `amountPaid`, `paymentMode`, `additionalNotes`) VALUES
-(51, 1001, '2025-04-15', '16:24:08', 'Dine In', 'DONE', 10001, '123456789', 'Rai', 330.00, 400.00, 'Cash', 'ertertert'),
-(52, 1002, '2025-04-17', '16:25:51', 'Take Out', 'DONE', 10002, '123456789', 'Rai', 230.00, 300.00, 'Cash', 'dfgdfgdfg'),
-(53, 1003, '2025-04-15', '16:58:25', 'Dine In', 'DONE', 10003, '123456789', 'Jy', 2745.00, 3000.00, 'Cash', 'ertertert'),
-(54, 1004, '2025-04-15', '18:29:06', 'Dine In', 'DONE', 10004, '123456789', 'Rai', 390.00, 400.00, 'Cash', 'fgdfgdfg'),
-(55, 1005, '2025-04-15', '18:48:34', 'Take Out', 'DONE', 10005, '123456789', 'Rai', 100.00, 100.00, 'Cash', ''),
-(56, 1006, '2025-04-15', '19:16:56', 'Dine In', 'DONE', 10006, '123456789', 'rrrrrtery', 4000.00, 4000.00, 'Cash', 'rtertrt'),
-(63, 1004, '2025-04-18', '16:14:41', 'Take Out', 'DONE', 10007, '123456789', 'Ferrari', 1580.00, 2000.00, 'Cash', 'None'),
-(64, 1002, '2025-04-16', '16:18:52', 'Dine In', 'DONE', 10008, '123456789', 'Ryan', 1240.00, 2000.00, 'Cash', 'None'),
-(67, 1002, '2025-04-18', '14:06:29', 'Dine In', 'DONE', 10010, '123456789', 'Dominic Adini', 150.00, 150.00, 'Cash', 'Pogi ako');
+-- Dumping data for table austingastropub.tbl_orders: ~8 rows (approximately)
+INSERT INTO `tbl_orders` (`orderID`, `orderNumber`, `orderDate`, `orderTime`, `orderClass`, `orderStatus`, `salesOrderNumber`, `employeeID`, `customerName`, `subTotal`, `totalAmount`, `amountPaid`, `discountCardID`, `paymentMode`, `payReferenceNumber`, `additionalNotes`) VALUES
+	(70, 1003, '2025-04-21', '17:51:22', 'Take Out', 'DONE', 10003, '123456789', 'Daryl', NULL, 330.00, 400.00, NULL, 'Cash', NULL, ''),
+	(71, 1004, '2025-04-21', '17:55:41', 'Dine In', 'DONE', 10004, '123456789', 'Emma', NULL, 360.00, 400.00, NULL, 'Cash', NULL, ''),
+	(72, 1005, '2025-04-21', '17:56:05', 'Dine In', 'DONE', 10005, '123456789', 'John', NULL, 510.00, 600.00, NULL, 'Cash', NULL, ''),
+	(73, 1006, '2025-04-21', '21:35:52', 'Dine In', 'PICKUP', 10006, '123456789', '', NULL, 264.00, 0.00, NULL, 'Cash', NULL, ''),
+	(74, 1007, '2025-04-21', '23:40:47', 'Dine In', 'PICKUP', 10007, '123456789', 'Ry', 230.00, 230.00, 240.00, NULL, 'Cash', NULL, ''),
+	(75, 1001, '2025-04-22', '10:47:37', 'Take Out', 'IN PROCESS', 10008, '123456789', 'Ry', 420.00, 336.00, 336.00, '20202020', 'Cash', NULL, ''),
+	(76, 1002, '2025-04-22', '10:50:42', 'Dine In', 'IN PROCESS', 10009, '123456789', 'Jy', 220.00, 176.00, 176.00, '12121212', 'PayMaya', '202020202020', ''),
+	(77, 1003, '2025-04-22', '11:13:08', 'Take Out', 'IN PROCESS', 10010, '123456789', 'Owen', 440.00, 440.00, 440.00, NULL, 'PayMaya', '123456789012', '');
 
 -- --------------------------------------------------------
 
