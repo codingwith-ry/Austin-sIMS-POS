@@ -883,7 +883,22 @@ CREATE TABLE `tbl_userlogs` (
 
 INSERT INTO `tbl_userlogs` (`logID`, `logEmail`, `logRole`, `logContent`, `logDate`) VALUES
 (1, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'User logged in successfully.', '2025-04-21'),
-(2, 'admin@gmail.com', 'administrator', 'User logged in successfully.', '2025-04-21');
+(2, 'admin@gmail.com', 'administrator', 'User logged in successfully.', '2025-04-21'),
+(3, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'Added a new record to inventory: Item Name - Stawberry, Quantity - 25.', '2025-04-21'),
+(4, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'Added a new record to inventory: Item Name - Stawberry, Quantity - 15.', '2025-04-21'),
+(5, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'Added a new record to inventory: Item Name - Bounty Chicken Breast Fillet, Quantity - 23.', '2025-04-21'),
+(6, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'Edited record with Record ID: 419225. Updated fields: Quantity - , Purchase Date - , Assigned Employee - .', '2025-04-21'),
+(7, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'Edited record with Record ID: 419225. Updated fields: Quantity - , Purchase Date - , Assigned Employee - .', '2025-04-21'),
+(8, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'Edited record with Record ID: 419225. Updated fields: Volume - 17, Quantity - 13, Price - 35, Expiration Date - 2027-03-31.', '2025-04-21'),
+(9, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'Edited record with Record ID: 419225. Updated fields: Volume - 17, Quantity - 10, Price - 35, Expiration Date - 2027-03-31.', '2025-04-21'),
+(10, 'admin@gmail.com', 'administrator', 'User logged in successfully.', '2025-04-21'),
+(11, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'User logged in successfully.', '2025-04-21'),
+(12, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'Added a new record to inventory: Item Name - Condensada, Quantity - 12.', '2025-04-21'),
+(13, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'Deleted record(s) with Record ID(s): 554575', '2025-04-21'),
+(14, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'User logged in successfully.', '2025-04-22'),
+(16, 'admin@gmail.com', 'administrator', 'User logged in successfully.', '2025-04-22'),
+(17, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'User logged in successfully.', '2025-04-22'),
+(19, 'dominicxandy.adino.cics@ust.edu.ph', 'inventory staff management', 'Added a new item:  (Item Name: Royal, Category: 6)', '2025-04-22');
 
 
 -- --------------------------------------------------------
