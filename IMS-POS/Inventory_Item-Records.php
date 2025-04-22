@@ -379,14 +379,8 @@ foreach ($itemData as $item) {
 
                                             // Check for expired items
                                             $currentDate = date('Y-m-d');
-                                            $latestExpirationDate = $row['Record_ItemExpirationDate'];
-
-                                            // Compare and get the latest expiration date
-                                            if ($row['Record_ItemExpirationDate']) {
-                                                $latestExpirationDate = max($latestExpirationDate, $row['Record_ItemExpirationDate']);
-                                            }
-
-                                            $isExpired = ($latestExpirationDate && $latestExpirationDate <= $currentDate);
+                                            $expirationDate = $row['Record_ItemExpirationDate'];
+                                            $isExpired = ($expirationDate && $expirationDate <= $currentDate);
 
                                             // Define border class and image style based on stock and expiration
                                             // Define styles
@@ -402,23 +396,22 @@ foreach ($itemData as $item) {
                                                 $cardBorderClass = 'border border-danger';
                                                 $imageStyle = 'filter: grayscale(100%) brightness(60%);';
                                                 $outOfStockOverlay = '
-                                                                    <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
-                                                                        Out of Stock
-                                                                    </div>';
+                                                        <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
+                                                            Out of Stock
+                                                        </div>';
                                             } elseif ($isExpired) {
-                                                // Expired (if not out of stock)
+                                                // Expired
                                                 $cardBorderClass = 'border border-secondary';
                                                 $expiredOverlay = '
-                                                                    <div class="position-absolute top-50 start-50 translate-middle bg-secondary text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
-                                                                        Expired
-                                                                    </div>';
+                                                                <div class="position-absolute top-50 start-50 translate-middle bg-secondary text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
+                                                                    Expired
+                                                                </div>';
                                                 $imageStyle = 'filter: grayscale(100%) brightness(50%);';
                                             } elseif ($itemQty <= 3) {
                                                 // Low stock
                                                 $cardBorderClass = 'border border-warning';
                                                 $tooltipAttr = 'data-bs-toggle="tooltip" data-bs-title="Quantity of this item is low"';
                                             }
-
 
                                             echo '
                                                 <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0 product-item" 

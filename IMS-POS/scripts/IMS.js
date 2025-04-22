@@ -484,33 +484,3 @@ document.addEventListener("DOMContentLoaded", function () {
   // Default display of all items on page load
   filterItems("all");
 });
-
-document
-  .getElementById("clearNotificationBtn")
-  .addEventListener("click", function () {
-    // Hide the modal
-    var modal = new bootstrap.Modal(document.getElementById("lowStockModal"));
-    modal.hide();
-
-    // Clear all the alert lists (Out of Stock, Low Stock, Expired)
-    document.getElementById("expiredItemsList").innerHTML = "";
-    document.getElementById("outOfStockItemsList").innerHTML = "";
-    document.getElementById("lowStockItemsList").innerHTML = "";
-
-    // Store in sessionStorage that notifications have been cleared
-    sessionStorage.setItem("notificationsCleared", "true");
-
-    // Optionally, display a message indicating no alerts are present
-    var modalBody = document.querySelector(".modal-body");
-    modalBody.innerHTML = '<p class="text-center">No new alerts.</p>';
-  });
-
-// Check if notifications have been cleared from sessionStorage
-if (sessionStorage.getItem("notificationsCleared") === "true") {
-  // If notifications were cleared, hide the modal and reset the content
-  document.getElementById("expiredItemsList").innerHTML = "";
-  document.getElementById("outOfStockItemsList").innerHTML = "";
-  document.getElementById("lowStockItemsList").innerHTML = "";
-  document.querySelector(".modal-body").innerHTML =
-    '<p class="text-center">No new alerts.</p>';
-}
