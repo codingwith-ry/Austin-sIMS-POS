@@ -126,36 +126,25 @@ include("../Login/database.php");
         <hr>
         <div class="table-responsive mt-4">
             <h3>User Logs</h3>
+            <div class="d-flex align-items-center mb-3">
+    <input type="date" id="logDateInput" class="form-control w-auto me-2">
+    <button id="searchByDateBtn" class="btn btn-primary">Search by Date</button>
+</div>
             <table id="userLogsTable" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Log ID</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Content</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php
-                    try {
-                        $stmt = $conn->prepare("SELECT logDate, logEmail, logRole, logContent FROM tbl_userlogs");
-                        $stmt->execute();
-                        $userlogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                        foreach ($userlogs as $userlog) {
-                            echo "<tr data-id='" . htmlspecialchars($userlog['logDate']) . "'>";
-                            echo "<td>" . htmlspecialchars($userlog['logDate']) . "</td>";
-                            echo "<td>" . htmlspecialchars($userlog['logEmail']) . "</td>";
-                            echo "<td>" . htmlspecialchars($userlog['logRole']) . "</td>";
-                            echo "<td>" . htmlspecialchars($userlog['logContent']) . "</td>";
-                            echo "</tr>";
-                        }
-                    } catch (PDOException $e) {
-                        echo "Error: " . $e->getMessage();
-                    }
-                    ?>
-                </tbody>
-            </table>
+    <thead>
+        <tr>
+            <th>Log ID</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Content</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Logs will be dynamically populated here -->
+    </tbody>
+</table>
+            <div id="paginationControls" class="mt-3 d-flex justify-content-center"></div>
         </div>
     </main>
     <?php include 'cdnScripts.php'; ?>
@@ -259,6 +248,81 @@ include("../Login/database.php");
                 }
             });
         });
+    </script>
+
+    <script>  
+$(document).ready(function () {
+    const logsPerPage = 10;
+
+    // Function to fetch logs
+    function fetchLogs(page = 1, logDate = null) {
+        $.ajax({
+            url: 'fetchUserLogs.php',
+            type: 'POST',
+            data: { page: page, logDate: logDate },
+            success: function (response) {
+                const res = JSON.parse(response);
+                if (res.success) {
+                    const logs = res.logs;
+                    const totalLogs = res.totalLogs;
+
+                    // Populate the logs table
+                    const tbody = $('#userLogsTable tbody');
+                    tbody.empty();
+                    logs.forEach(log => {
+                        tbody.append(`
+                            <tr>
+                                <td>${log.logID}</td>
+                                <td>${log.logEmail}</td>
+                                <td>${log.logRole}</td>
+                                <td>${log.logContent}</td>
+                                <td>${log.logDate}</td>
+                            </tr>
+                        `);
+                    });
+
+                    // Update pagination controls
+                    updatePaginationControls(page, totalLogs, logsPerPage);
+                } else {
+                    alert('Failed to fetch logs: ' + res.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('Error fetching logs: ' + error);
+            }
+        });
+    }
+
+    // Function to update pagination controls
+    function updatePaginationControls(currentPage, totalLogs, logsPerPage) {
+        const totalPages = Math.ceil(totalLogs / logsPerPage);
+        const paginationControls = $('#paginationControls');
+        paginationControls.empty();
+
+        for (let i = 1; i <= totalPages; i++) {
+            const button = $(`<button class="btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1">${i}</button>`);
+            button.on('click', function () {
+                const logDate = $('#logDateInput').val(); // Get the selected date
+                fetchLogs(i, logDate);
+            });
+            paginationControls.append(button);
+        }
+    }
+
+    // Handle search by date
+    $('#searchByDateBtn').on('click', function () {
+        const logDate = $('#logDateInput').val();
+        if (logDate) {
+            fetchLogs(1, logDate); // Fetch logs for the selected date
+        } else {
+            alert('Please select a date to search.');
+        }
+    });
+
+    // Initial fetch
+    fetchLogs();
+});
+
     </script>
 </body>
 
