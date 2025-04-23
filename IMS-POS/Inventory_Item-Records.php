@@ -560,6 +560,7 @@ foreach ($itemData as $item) {
                                                                     </div>
                                                                     <input type="hidden" name="item_id" value="' . $itemID . '">
                                                                     <input type="hidden" name="volume" value="' . $volume . '">
+                                                                    <input type="hidden" name="item_name" value="'.$itemName.'">
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
