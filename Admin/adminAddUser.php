@@ -1,5 +1,7 @@
 <?php
 include '../Login/database.php';
+session_start();
+date_default_timezone_set('Asia/Manila'); 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $firstName = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
@@ -36,6 +38,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->bindParam(':mobileNumber', $mobileNumber);
                 $stmt->bindParam(':role', $role);
                 $stmt->bindParam(':status', $status);
+
+                if (isset($_SESSION['email']) && isset($_SESSION['userRole'])) {
+                    $logEmail = $_SESSION['email'];
+                    $logRole = $_SESSION['userRole'];
+                    $logContent = "Added a new employee: $fullName (Email: $email, Role: $role).";
+                    $logDate = date('Y-m-d H:i:s'); 
+        
+                    $logStmt = $conn->prepare("
+                        INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
+                        VALUES (:logEmail, :logRole, :logContent, :logDate)
+                    ");
+                    $logStmt->bindParam(':logEmail', $logEmail);
+                    $logStmt->bindParam(':logRole', $logRole);
+                    $logStmt->bindParam(':logContent', $logContent);
+                    $logStmt->bindParam(':logDate', $logDate);
+                    $logStmt->execute();
+                } else {
+                    error_log("Session variables 'email' or 'userRole' are not set.");
+                }
+        
 
                 if ($stmt->execute()) {
                     ob_start();
@@ -173,7 +195,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </span>
                             <select name="role" class="form-select" id="role">
                                 <option value="" selected disabled>Select Role</option>
-                                <option value="Employee">Employee</option>
                                 <option value="POS Staff Management">POS Staff Management</option>
                                 <option value="Inventory Staff Management">Inventory Staff Management</option>
                                 <option value="Administrator">Administrator</option>

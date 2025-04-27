@@ -2,6 +2,8 @@
 session_start();
 include("database.php");
 
+date_default_timezone_set('Asia/Manila'); 
+
 $errorMessage = ""; // Initialize error message
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -32,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $logStmt->bindParam(':logDate', $logDate); // Current date
             
                     $logContent = "User logged in successfully.";
-                    $logDate = date('Y-m-d'); // Current date in 'YYYY-MM-DD' format
+                    $logDate = date('Y-m-d H:i:s');
                     $logStmt->execute();
                 } catch (PDOException $e) {
                     // Handle logging error (optional)

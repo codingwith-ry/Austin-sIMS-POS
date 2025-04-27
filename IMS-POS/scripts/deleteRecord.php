@@ -3,6 +3,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include '../../Login/database.php';
 
+date_default_timezone_set('Asia/Manila'); 
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -23,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $logEmail = $_SESSION['email'];
                 $logRole = $_SESSION['userRole'];
                 $logContent = "Deleted record(s) with Record ID(s): " . implode(', ', $recordIds);
-                $logDate = date('Y-m-d');
+                $logDate = date('Y-m-d H:i:s'); 
     
                 $logStmt = $conn->prepare("
                     INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
@@ -32,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $logStmt->bindParam(':logEmail', $logEmail);
                 $logStmt->bindParam(':logRole', $logRole);
                 $logStmt->bindParam(':logContent', $logContent);
-                $logStmt->bindParam(':logDate', $logDate);
+                $logDate = date('Y-m-d H:i:s');
                 $logStmt->execute();
             } else {
                 error_log("Session variables 'email' or 'userRole' are not set.");

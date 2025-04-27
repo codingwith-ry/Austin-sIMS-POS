@@ -130,6 +130,7 @@ include("../Login/database.php");
     <input type="date" id="logDateInput" class="form-control w-auto me-2">
     <button id="searchByDateBtn" class="btn btn-primary">Search by Date</button>
 </div>
+
             <table id="userLogsTable" class="display" style="width:100%">
     <thead>
         <tr>
@@ -214,6 +215,7 @@ include("../Login/database.php");
                         });
 
                         row.find('.save-btn').removeClass('save-btn btn-outline-success').addClass('edit-btn btn-outline-secondary').html('<i class="bi bi-pencil"></i> Edit');
+                        window.location.reload();
                     },
                     error: function(xhr, status, error) {
                         alert('Error updating employee: ' + error);

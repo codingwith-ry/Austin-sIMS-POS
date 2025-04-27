@@ -1,5 +1,7 @@
 <?php
 include("../Login/database.php");
+session_start();
+date_default_timezone_set('Asia/Manila'); 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
@@ -16,6 +18,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bindParam(':role', $role);
             $stmt->bindParam(':status', $status);
             $stmt->bindParam(':id', $id);
+
+            if (isset($_SESSION['email']) && isset($_SESSION['userRole'])) {
+                $logEmail = $_SESSION['email'];
+                $logRole = $_SESSION['userRole'];
+                $logContent = "Edited employee with ID: $id. Updated fields: Name - $name, Email - $email, Role - $role, Status - $status.";
+                $logDate = date('Y-m-d H:i:s'); 
+    
+                $logStmt = $conn->prepare("
+                    INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
+                    VALUES (:logEmail, :logRole, :logContent, :logDate)
+                ");
+                $logStmt->bindParam(':logEmail', $logEmail);
+                $logStmt->bindParam(':logRole', $logRole);
+                $logStmt->bindParam(':logContent', $logContent);
+                $logStmt->bindParam(':logDate', $logDate);
+                $logStmt->execute();
+            } else {
+                error_log("Session variables 'email' or 'userRole' are not set.");
+            }
 
             if ($stmt->execute()) {
                 echo json_encode(['success' => true]);

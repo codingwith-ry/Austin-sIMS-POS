@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Add date filter if logDate is provided
         if ($logDate) {
-            $query .= " WHERE logDate = :logDate";
+            $query .= " WHERE DATE(logDate) = :logDate"; // Use DATE() to filter by date only
         }
 
         // Add ordering and pagination
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Fetch total number of logs for pagination
         $countQuery = "SELECT COUNT(*) AS totalLogs FROM tbl_userlogs";
         if ($logDate) {
-            $countQuery .= " WHERE logDate = :logDate";
+            $countQuery .= " WHERE DATE(logDate) = :logDate"; // Use DATE() to filter by date only
         }
         $countStmt = $conn->prepare($countQuery);
         if ($logDate) {

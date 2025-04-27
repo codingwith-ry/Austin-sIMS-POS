@@ -1,6 +1,8 @@
 <?php
 include '../../Login/database.php';
 
+date_default_timezone_set('Asia/Manila'); 
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -36,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $logEmail = $_SESSION['email'];
             $logRole = $_SESSION['userRole'];
             $logContent = "Edited record with Record ID: $recordId. Updated fields: Volume - $itemVolume, Quantity - $itemQuantity, Price - $itemPrice, Expiration Date - $itemExpirationDate.";
-            $logDate = date('Y-m-d');
+            $logDate = date('Y-m-d H:i:s'); 
 
             $logStmt = $conn->prepare("
                 INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 

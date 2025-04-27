@@ -1,6 +1,8 @@
 <?php include '../Login/database.php' ?>
 <?php
 
+date_default_timezone_set('Asia/Manila'); 
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -83,7 +85,7 @@ if (isset($_POST['add_record'])) {
             $logEmail = $_SESSION['email']; // Use the session variable for the email
             $logRole = $_SESSION['userRole']; // Use the session variable for the user's role
             $logContent = "Added a new record to inventory: Item Name - $itemName, Quantity - $itemQuantity.";
-            $logDate = date('Y-m-d'); // Current date
+            $logDate = date('Y-m-d H:i:s');  // Current date
 
             $logStmt = $conn->prepare("
                     INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
@@ -132,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $logEmail = $_SESSION['email'];
                     $logRole = $_SESSION['userRole'];
                     $logContent = "Added a new item: $itemName (Item Name: $item_Name, Category: $item_Category)";
-                    $logDate = date('Y-m-d');
+                    $logDate = date('Y-m-d H:i:s'); 
 
                     $logStmt = $conn->prepare("
                         INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
