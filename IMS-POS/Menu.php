@@ -412,7 +412,6 @@ $active = "menu";
                                     </nav>
                                 </div>  
                             </div>
-
                             <hr />
                             <span style="font-weight: bold; font-size: 18px;">Variations</span>
                             <div class="row mb-3" id="variationSectionEdit">

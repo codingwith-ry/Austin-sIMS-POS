@@ -420,7 +420,8 @@
                     ?>
                 </div>
             </div>
-
+        </div>
+        
         <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                     <div class="modal-content">
@@ -429,7 +430,6 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form>
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="">
@@ -443,11 +443,9 @@
                                     <div class="col-12">
                                         <div class="">
                                             <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Menu Class</label>
-                                            <select class="form-select" aria-label="Default select example">
+                                            <select id="menuSelect" class="form-select" aria-label="Default select example">
                                                 <option selected>Choose a menu class</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
+
                                             </select>
                                         </div>
                                     </div>
@@ -457,11 +455,9 @@
                                     <div class="col-12">
                                         <div class="">
                                             <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Category</label>
-                                            <select class="form-select" aria-label="Default select example">
-                                                <option selected>Choose a menu class</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
+                                            <select id="categorySelect" class="form-select" aria-label="Default select example">
+                                                <option selected>Choose a category</option>
+                                                
                                             </select>
                                         </div>
                                     </div>
@@ -477,18 +473,17 @@
                                     </div>
                                 </div>
                                 <hr />
-                                <span style="font-weight: bold; font-size: 18px;">Addons</span>
+                                <span style="font-weight: bold; font-size: 18px;">Add-ons</span>
                                 <div class="addonSelectContainer">
                                     
                                 </div>
                                 <div class="row">
-                                    <div class="col-6">
-                                        <button type="button" class="btn btn-primary addonSelectAdd">Add Another Add-on</button>
+                                    <div id="addAddonButtonDiv"class="col-6">
+                                        <button id="addAddonButton" type="button" class="btn btn-primary addonSelectAdd">Add Add-on</button>
                                     </div>
                                     <div class="col-6 ms-auto" style="text-align: right;">
                                        <button id="newAddonButton" class="btn btn-primary pt-3 pb-0" data-bs-toggle="modal" data-bs-target="#addAddonModal" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; font-size: 12px;">Create a new add-on?</button>
                                     </div>
-                                    
                                 </div>
                                 <hr>
                                 <div class="row">
@@ -498,7 +493,7 @@
                                     <div class="col ms-auto" style="text-align: right;">
                                         <div class="input-group">
                                             <div class="input-group-text">₱</div>
-                                            <input type="text" class="form-control form-control-sm" id="specificSizeInputGroupUsername" placeholder="ex. 200">
+                                            <input type="text" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="form-control form-control-sm" id="specificSizeInputGroupUsername" placeholder="ex. 200">
                                         </div>
                                     </div>
                                 </div>
@@ -506,7 +501,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary">Add Product</button>
-                        </div>
+                        </div>   
                     </div>
             </div>
         </div>
@@ -581,54 +576,52 @@
         </div>
 
         <div class="modal fade" id="addAddonModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">Add a new Add-on</h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form>
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <div class="">
-                                                                    <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Add-on Name</label>
-                                                                    <input type="text" class="form-control" id="editProductName" placeholder="ex. Sauce">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr />
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <div class="">
-                                                                    <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Menu Class</label>
-                                                                    <input type="text" class="form-control" id="menuClassName" placeholder="" value="Coffee Menu" readonly>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <hr />
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <div class="">
-                                                                    <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Add-on Price</label>
-                                                                    <input type="text" class="form-control" id="addonPriceValue" placeholder="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <br />
-                                                        <div class="modal-footer pe-0 pb-0">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="button" class="btn btn-primary">Add Add-on</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">Add a new Add-on</h1>
+                        <button id="closeAddonModal" type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="">
+                                        <label for="exampleFormControlInput1" class="form-label" style="font-weight: bold; font-size: 18px;">Add-on Name</label>
+                                        <input type="text" class="form-control" id="addonName" placeholder="ex. Sauce">
                                     </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="">
+                                        <label for="exampleFormControlInput1" class="form-label" style="font-weight: bold; font-size: 18px;">Menu Class</label>
+                                        <input type="text" class="form-control" id="menuClassName" placeholder="" value="" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="">
+                                        <label for="exampleFormControlInput1" class="form-label" style="font-weight: bold; font-size: 18px;">Add-on Price</label>
+                                        <input type="text" pattern="\d*\.?\d{0,2}" 
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..{0,2}).*/g, '$1')" class="form-control" id="addonPriceValue" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="modal-footer pe-0 pb-0">
+                                <button id="cancelAddonConfirm" type="button" class="btn btn-secondary">Cancel</button>
+                                <button id="addAddonConfirm" type="button" class="btn btn-primary">Add Add-on</button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>      
     </div>
 </body>
 <script src="scripts/adminProducts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </html>
-
-
-<?php include "cdnScripts.php" ?>
