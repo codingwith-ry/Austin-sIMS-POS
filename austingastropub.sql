@@ -809,7 +809,7 @@ CREATE TABLE `tbl_userlogs` (
 	`logEmail` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
 	`logRole` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
 	`logContent` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
-	`logDate` DATE NOT NULL
+	`logDate` DATETIME NOT NULL
 )
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
