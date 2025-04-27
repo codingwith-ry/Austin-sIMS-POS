@@ -280,8 +280,151 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Handle Add Variation Button in Add Product Modal
+    const addVariationButton = document.getElementById('addVariationButton');
+    const addVariationContainer = document.querySelector('.addVariationContainer'); 
+
+    // Add variation card when button is clicked
+    addVariationButton.addEventListener('click', function() {
+        const variationCard = `
+            <div id="variationCard" class="card mb-3">
+                <div class="card-header fw-bold" id="variationHeader">
+                    <div class="row">
+                        <div class="col-6 fs-5 mt-1">Variation</div>
+                        <div class="col-6 ms-auto" style="text-align: right;"> 
+                            <button type="button" class="btn btn-danger removeVariationButton" aria-label="Close">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <span class="fw-bold">Variation Name</span>
+                    <input type="text" class="form-control mb-3 variationName" placeholder="ex. 12oz">
+                    <span class="fw-bold">Variation Price</span>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-success text-white">₱</span>
+                        <input type="text" 
+                               pattern="\\d*\\.?\\d{0,2}" 
+                               class="form-control variationPrice" 
+                               placeholder="ex. 200"
+                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..*?)\\.*/g, '$1')">
+                    </div>
+                </div>
+            </div>
+        `;
+
+        addVariationContainer.insertAdjacentHTML('beforeend', variationCard);
+        attachRemoveVariationListeners();
+    });
+
+    const variationCardIdentifier = document.querySelectorAll('#variationCard');
     
 
+    // Function to attach event listeners to remove buttons
+    function attachRemoveVariationListeners() {
+        const removeButtons = document.querySelectorAll('.removeVariationButton');
+        removeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Remove Variation?',
+                    text: "Are you sure you want to remove this variation?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, remove it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const card = this.closest('#variationCard');
+                        card.remove();
+                        Swal.fire(
+                            'Removed!',
+                            'The variation has been removed.',
+                            'success'
+                        );
+                    }
+                });
+            });
+        });
+    }
+
+    //Add Product Confirmation
+
+    const addProductButton = document.getElementById('addProductButton');
+    addProductButton.addEventListener('click', function() {
+        // Get all product data
+        const productName = document.getElementById('exampleFormControlInput1').value;
+        const menuID = document.getElementById('menuSelect').value;
+        const categoryID = document.getElementById('categorySelect').value;
+        const defaultPrice = document.getElementById('specificSizeInputGroupUsername').value;
+
+        // Get all selected addons
+        const addonSelects = document.querySelectorAll('.addon-dropdown');
+        const selectedAddons = Array.from(addonSelects).map(select => select.value);
+
+        // Get all variations
+        const variationCards = document.querySelectorAll('#variationCard');
+        const variations = Array.from(variationCards).map(card => ({
+            name: card.querySelector('.variationName').value,
+            price: card.querySelector('.variationPrice').value
+        }));
+
+        // Validate inputs
+        if (!productName || !menuID || !categoryID || !defaultPrice) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Missing Information',
+                text: 'Please fill in all required fields!'
+            });
+            return;
+        }
+
+        // Compile data
+        const productData = {
+            productName: productName,
+            menuID: menuID,
+            categoryID: categoryID,
+            defaultPrice: defaultPrice,
+            addons: selectedAddons,
+            variations: variations
+        };
+
+        Swal.fire({
+            title: 'Product Data Preview',
+            html: `
+                <div style="text-align: left">
+                    <pre style="background: #f6f8fa; padding: 15px; border-radius: 5px; margin-top: 10px;">
+        Product Name: ${productData.productName}
+        Menu ID: ${productData.menuID}
+        Category ID: ${productData.categoryID}
+        Default Price: ₱${productData.defaultPrice}
+        
+        Addons: ${productData.addons.length ? '\n' + productData.addons.join('\n') : 'None'}
+        
+        Variations: ${productData.variations.length ? '\n' + productData.variations.map(v => 
+            `- ${v.name}: ₱${v.price}`).join('\n') : 'None'}
+                    </pre>
+                </div>
+            `,
+            width: '600px',
+            showCancelButton: true,
+            confirmButtonText: 'Proceed',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Here you can add the code to submit the data to your server
+                Swal.fire(
+                    'Success!',
+                    'Product data has been confirmed.',
+                    'success'
+                );
+            }
+        });
+    });
 
 });
 

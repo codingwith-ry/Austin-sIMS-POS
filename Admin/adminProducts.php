@@ -421,7 +421,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                     <div class="modal-content">
@@ -485,6 +485,14 @@
                                        <button id="newAddonButton" class="btn btn-primary pt-3 pb-0" data-bs-toggle="modal" data-bs-target="#addAddonModal" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; font-size: 12px;">Create a new add-on?</button>
                                     </div>
                                 </div>
+
+                                <hr />
+                                <span style="font-weight: bold; font-size: 18px;">Variations</span>
+                                <div class="addVariationContainer">
+                                    
+                                </div>
+
+                                <button id="addVariationButton" type="button" class="btn btn-primary">Add Variation</button>
                                 <hr>
                                 <div class="row">
                                     <div class="col">
@@ -492,7 +500,7 @@
                                     </div>
                                     <div class="col ms-auto" style="text-align: right;">
                                         <div class="input-group">
-                                            <div class="input-group-text">₱</div>
+                                            <div class="input-group-text bg-success text-white">₱</div>
                                             <input type="text" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="form-control form-control-sm" id="specificSizeInputGroupUsername" placeholder="ex. 200">
                                         </div>
                                     </div>
@@ -500,7 +508,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Add Product</button>
+                            <button id="addProductButton" type="button" class="btn btn-primary">Add Product</button>
                         </div>   
                     </div>
             </div>
