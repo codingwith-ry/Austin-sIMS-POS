@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 menuSelect.innerHTML = '<option selected>Choose a menu class</option>';
                 data.forEach(menu => {
-                    menuSelect.innerHTML += `<option value="${menu.menuID}">${menu.menuName}</option>`;
+                    menuSelect.innerHTML += `<option value="${menu.menuID}" data-menuname="${menu.menuName}">${menu.menuName}</option>`;
                 });
             })
             .catch(error => console.error('Error fetching menu classes:', error));
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 categorySelect.innerHTML = '<option selected>Choose a category</option>';
                 data.forEach(category => {
-                    categorySelect.innerHTML += `<option value="${category.categoryID}">${category.categoryName}</option>`;
+                    categorySelect.innerHTML += `<option value="${category.categoryID}" data-categoryname="${category.categoryName}">${category.categoryName}</option>`;
                 });
             })
             .catch(error => console.error('Error fetching categories:', error));
@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     `;             
                     data.forEach(addon => {
                         addonRow += `
-                                    <option value="${addon.addonID}">${addon.addonName} - ₱${addon.addonPrice}</option>
+                                    <option value="${addon.addonID}" data-name="${addon.addonName}"
+                data-price="${addon.addonPrice}">${addon.addonName} - ₱${addon.addonPrice}</option>
                         `;
                     });
                     addonRow += `
@@ -300,15 +301,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 <div class="card-body">
                     <span class="fw-bold">Variation Name</span>
-                    <input type="text" class="form-control mb-3 variationName" placeholder="ex. 12oz">
+                    <input type="text" class="form-control mb-3 variationName" placeholder="ex. 12oz or 15 pax">
                     <span class="fw-bold">Variation Price</span>
                     <div class="input-group mb-3">
                         <span class="input-group-text bg-success text-white">₱</span>
                         <input type="text" 
-                               pattern="\\d*\\.?\\d{0,2}" 
-                               class="form-control variationPrice" 
-                               placeholder="ex. 200"
-                               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..*?)\\.*/g, '$1')">
+                        pattern="\\d*\\.?\\d{0,2}"
+                        class="form-control variationPrice"
+                        placeholder="ex. 200"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..{0,2}).*/g, '$1')"
+                        >
                     </div>
                 </div>
             </div>
@@ -350,81 +352,313 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    //Format Price Input Function
+    function formatPriceInput(input) {
+        input.addEventListener('blur', function() {
+            let value = this.value.trim();
+            
+            if (value === '') return;
+    
+            // If there's no decimal point, add '.00'
+            if (!value.includes('.')) {
+                this.value = value + '.00';
+            }
+            // If there's a decimal point but no numbers after it, add '00'
+            else if (value.endsWith('.')) {
+                this.value = value + '00';
+            }
+            // If there's only one digit after decimal point, add '0'
+            else if (/\.\d$/.test(value)) {
+                this.value = value + '0';
+            }
+        });
+    }
+
+    // Format default price
+    const defaultPriceInput = document.getElementById('defaultPrice');
+    if (defaultPriceInput) {
+        formatPriceInput(defaultPriceInput);
+    }
+
+    // Format addon price
+    const addonPriceInput = document.getElementById('addonPriceValue');
+    if (addonPriceInput) {
+        formatPriceInput(addonPriceInput);
+    }
+
+    // Format variation prices (including dynamically added ones)
+    if (addVariationButton) {
+        addVariationButton.addEventListener('click', function() {
+            // Wait for the DOM to update
+            setTimeout(() => {
+                document.querySelectorAll('.variationPrice').forEach(input => {
+                    formatPriceInput(input);
+                });
+            }, 100);
+        });
+    }
+
     //Add Product Confirmation
 
     const addProductButton = document.getElementById('addProductButton');
     addProductButton.addEventListener('click', function() {
+
         // Get all product data
         const productName = document.getElementById('exampleFormControlInput1').value;
-        const menuID = document.getElementById('menuSelect').value;
-        const categoryID = document.getElementById('categorySelect').value;
-        const defaultPrice = document.getElementById('specificSizeInputGroupUsername').value;
+        const menuSelect = document.getElementById('menuSelect');
+        const categorySelect = document.getElementById('categorySelect');
+        const defaultPrice = document.getElementById('defaultPrice').value;
 
-        // Get all selected addons
+        if (!productName) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Missing Product Name',
+                text: 'Please enter a product name!'
+            });
+            return;
+        }
+
+        // Validate menu and category selection
+        if (menuSelect.selectedIndex === 0 || categorySelect.selectedIndex === 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Selection',
+                text: 'Please select both menu class and category!'
+            });
+            return;
+        }
+
+        // Validate default price
+        if (!defaultPrice) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Missing Price',
+                text: 'Please enter a default price!'
+            });
+            return;
+        }
+
+        // Get selected addons
         const addonSelects = document.querySelectorAll('.addon-dropdown');
-        const selectedAddons = Array.from(addonSelects).map(select => select.value);
+        const selectedAddons = Array.from(addonSelects).map(select => ({
+            id: select.value,
+            name: select.options[select.selectedIndex].dataset.name,
+            price: select.options[select.selectedIndex].dataset.price
+        }));
 
-        // Get all variations
+        // Check for duplicate addons
+        const addonIds = selectedAddons.map(addon => addon.id);
+        if (new Set(addonIds).size !== addonIds.length) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Duplicate Add-ons',
+                text: 'Please remove duplicate add-ons!'
+            });
+            return;
+        }
+
+        // Get variations
         const variationCards = document.querySelectorAll('#variationCard');
         const variations = Array.from(variationCards).map(card => ({
             name: card.querySelector('.variationName').value,
             price: card.querySelector('.variationPrice').value
         }));
 
-        // Validate inputs
-        if (!productName || !menuID || !categoryID || !defaultPrice) {
+        const emptyVariations = variations.find(v => !v.name || isNaN(v.price));
+        if (emptyVariations) {
             Swal.fire({
                 icon: 'error',
-                title: 'Missing Information',
-                text: 'Please fill in all required fields!'
+                title: 'Invalid Variations',
+                text: 'Please fill in all variation names and prices!'
             });
             return;
         }
 
-        // Compile data
+        // Check for duplicate variation names
+        const variationNames = variations.map(v => v.name);
+        if (new Set(variationNames).size !== variationNames.length) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Duplicate Variations',
+                text: 'Each variation must have a unique name!'
+            });
+            return;
+        }
+
+        const variationPrices = variations.map(v => v.price);
+        if (new Set(variationPrices).size !== variationPrices.length) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Duplicate Variation Prices',
+                text: 'Each variation must have a unique price!'
+            });
+            return;
+        }
+
+
+        // Validate variations against default price
+        if (variations.length > 0) {
+            const defaultPriceValue = defaultPrice;
+            
+            if (variations.length === 1) {
+                // If only one variation, price must match default price
+                if (variations[0].price !== defaultPriceValue) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Price Mismatch',
+                        text: 'With single variation, its price must match the default price!'
+                    });
+                    return;
+                }
+            } else {
+                
+                // If multiple variations, lowest price must match default price
+                const lowestPrice = Math.min(...variations.map(v => parseFloat(v.price))).toFixed(2);
+                const defaultPriceValue = parseFloat(defaultPrice).toFixed(2);
+                console.log(lowestPrice);
+                if (lowestPrice !== defaultPriceValue) {
+                    console.log(lowestPrice, defaultPriceValue);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Price Mismatch',
+                        text: 'The lowest variation price must match the default price!'
+                    });
+                    return;
+                }
+            }
+        }
+
+        // If all validations pass, compile the data
         const productData = {
             productName: productName,
-            menuID: menuID,
-            categoryID: categoryID,
+            menuID: menuSelect.value,
+            menuName: menuSelect.options[menuSelect.selectedIndex].dataset.menuname,
+            categoryID: categorySelect.value,
+            categoryName: categorySelect.options[categorySelect.selectedIndex].dataset.categoryname,
             defaultPrice: defaultPrice,
             addons: selectedAddons,
             variations: variations
         };
+        console.log(productData); // For debugging
 
         Swal.fire({
             title: 'Product Data Preview',
             html: `
-                <div style="text-align: left">
-                    <pre style="background: #f6f8fa; padding: 15px; border-radius: 5px; margin-top: 10px;">
-        Product Name: ${productData.productName}
-        Menu ID: ${productData.menuID}
-        Category ID: ${productData.categoryID}
-        Default Price: ₱${productData.defaultPrice}
+                <div style="text-align: left; font-family: 'Arial', sans-serif;">
+                    <div style="background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div class="card" style="margin-bottom: 20px;">
+                            <div class="card-body">
+                                <h3 class="fw-bold" style="color: #2c3e50; margin-bottom: 15px; font-size: 1.2em;">Basic Information</h3>
+                                <hr />
+                                <div style="padding-left: 15px;">
+                                    <p style="margin: 8px 0;"><strong>Product Name:</strong> <span style="color: #2c3e50">${productData.productName}</span></p>
+                                    <p style="margin: 8px 0;"><strong>Menu Class:</strong> <span style="color: #2c3e50">${productData.menuName}</span></p>
+                                    <p style="margin: 8px 0;"><strong>Category:</strong> <span style="color: #2c3e50">${productData.categoryName}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card" style="margin-bottom: 20px;">
+                            <div class="card-body">
+                                <h3 class="fw-bold" style="color: #2c3e50; margin-bottom: 15px; font-size: 1.2em;">Add-ons</h3>
+                                <hr />
+                                <div>
+                                    ${productData.addons.length ? 
+                                        productData.addons.map(addon => `
+                                            <div style="display: flex; justify-content: space-between; margin: 8px 0; padding: 8px; background: #f8f9fa; border-radius: 4px;">
+                                                <span style="color: #2c3e50">${addon.name}</span>
+                                                <span style="color: #27ae60">₱${addon.price}</span>
+                                            </div>
+                                        `).join('') : 
+                                        '<p style="color: #7f8c8d; font-style: italic;">No add-ons selected</p>'
+                                    }
+                                </div>
+                            </div>
+                        </div>
         
-        Addons: ${productData.addons.length ? '\n' + productData.addons.join('\n') : 'None'}
-        
-        Variations: ${productData.variations.length ? '\n' + productData.variations.map(v => 
-            `- ${v.name}: ₱${v.price}`).join('\n') : 'None'}
-                    </pre>
+                        <div class="card"style="margin-bottom: 20px;">
+                            <div class="card-body">
+                                <h3 class="fw-bold" style="color: #2c3e50; margin-bottom: 15px; font-size: 1.2em;">Variations</h3>
+                                <hr />
+                                <div>
+                                    ${productData.variations.length ? 
+                                        productData.variations.map(v => `
+                                            <div style="display: flex; justify-content: space-between; margin: 8px 0; padding: 8px; background: #f8f9fa; border-radius: 4px;">
+                                                <span style="color: #2c3e50">${v.name}</span>
+                                                <span style="color: #27ae60">₱${v.price}</span>
+                                            </div>
+                                        `).join('') : 
+                                        '<p style="color: #7f8c8d; font-style: italic;">No variations added</p>'
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-bottom: 20px;">
+                            <div class="card-body">
+                                <div style="display: flex; justify-content: space-between; margin: 8px 0; padding: 8px; border-radius: 4px;">
+                                    <span style="color: #2c3e50"><strong>Default Price:</strong></span>
+                                    <span class="fw-bold" style="color: #27ae60">₱${productData.defaultPrice}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `,
             width: '600px',
+            padding: '20px',
+            background: '#f8f9fa',
             showCancelButton: true,
-            confirmButtonText: 'Proceed',
-            cancelButtonText: 'Cancel',
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33'
+            confirmButtonText: '<i class="fas fa-check"></i> Proceed',
+            cancelButtonText: '<i class="fas fa-times"></i> Cancel',
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#dc3545',
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: true
         }).then((result) => {
             if (result.isConfirmed) {
-                // Here you can add the code to submit the data to your server
-                Swal.fire(
-                    'Success!',
-                    'Product data has been confirmed.',
-                    'success'
-                );
+                //Send data to the server
+                fetch('scripts/addProduct.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(productData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Product has been added successfully!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            // Close modal and reset form
+                            const addProductModal = bootstrap.Modal.getInstance(document.getElementById('addProductModal'));
+                            addProductModal.hide();
+                            // Optionally refresh the page or product list
+                            location.reload();
+                        });
+                    } else {
+                        throw new Error(data.message || 'Failed to add product');
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message
+                    });
+                });
             }
         });
     });
+
 
 });
 
