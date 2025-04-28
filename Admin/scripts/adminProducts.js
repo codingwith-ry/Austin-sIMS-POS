@@ -659,6 +659,235 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    function fetchEditMenuClasses() {
+        fetch('scripts/fetchMenuClasses.php')
+            .then(response => response.json())
+            .then(data => {
+                editMenuSelect.innerHTML = '<option selected>Choose a menu class</option>';
+                data.forEach(menu => {
+                    editMenuSelect.innerHTML += `<option value="${menu.menuID}" data-menuname="${menu.menuName}">${menu.menuName}</option>`;
+                });
+            })
+            .catch(error => console.error('Error fetching menu classes:', error));
+    }
 
+    // Fetch categories based on selected menu
+    function fetchEditCategories(menuID) {
+        fetch(`scripts/fetchCategories.php?menuID=${menuID}`)
+            .then(response => response.json())
+            .then(data => {
+                editCategorySelect.innerHTML = '<option selected>Choose a category</option>';
+                data.forEach(category => {
+                    editCategorySelect.innerHTML += `<option value="${category.categoryID}" data-categoryname="${category.categoryName}">${category.categoryName}</option>`;
+                });
+            })
+            .catch(error => console.error('Error fetching categories:', error));
+    }
+
+    function fetchEditAddons(menuID) {
+        const editAddonContainer = document.querySelector('.editAddonSelectContainer');
+        fetch(`scripts/fetchAddons.php?menuID=${menuID}`)
+            .then(response => response.json())
+            .then(data => {
+                editAddonContainer.innerHTML = '';
+                let addonRow = '';
+                addonRow += `
+                    <div class="row mb-3 addonRow">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-12 d-flex">
+                `;
+                if(data.length === 0) {
+                    addonRow += `<span class="text-danger">No add-ons available for this menu.</span>`;
+                    document.getElementById('editAddonButton').disabled = true;
+                } else {   
+                    document.getElementById('editAddonButton').disabled = false;
+                    addonRow += `
+                        <select class="form-select addon-dropdown" aria-label="Default select example">
+                    `;             
+                    data.forEach(addon => {
+                        addonRow += `
+                            <option value="${addon.addonID}" data-name="${addon.addonName}"
+                                data-price="${addon.addonPrice}">${addon.addonName} - ₱${addon.addonPrice}</option>
+                        `;
+                    });
+                    addonRow += `
+                            </select>
+                            <button type="button" class="btn btn-light pt-2 delete-addon">
+                                <i class="fi fi-rr-trash text-danger"></i>
+                            </button>
+                    `;
+                }
+                addonRow += `
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                if(data.length === 0) {
+                    editAddonContainer.insertAdjacentHTML('beforeend', addonRow);
+                }
+                // Attach delete functionality to the new addon rows
+                attachDeleteAddonListeners();
+            })
+            .catch(error => console.error('Error fetching addons:', error));
+    }
+
+
+    function initializeEditProductModal() {
+        // Initialize elements for edit product modal
+
+        const editMenuSelect = document.getElementById('editMenuSelect');
+        const editCategorySelect = document.getElementById('editCategorySelect');
+        const editAddonContainer = document.querySelector('.editAddonSelectContainer');
+        const editAddonButton = document.getElementById('editAddonButton');
+        const editDefaultPriceInput = document.getElementById('editDefaultPrice');
+    
+        // Format price inputs
+        if (editDefaultPriceInput) {
+            formatPriceInput(editDefaultPriceInput);
+        }
+    
+        fetchEditMenuClasses();
+        // Fetch and populate menu classes
+        
+    
+        // Handle menu selection change
+        editMenuSelect.addEventListener('change', function() {
+            const selectedMenuID = editMenuSelect.value;
+            if (selectedMenuID) {
+                fetchEditCategories(selectedMenuID);
+                fetchEditAddons(selectedMenuID);
+            } else {
+                editCategorySelect.innerHTML = '<option selected>Choose a category</option>';
+                editAddonContainer.innerHTML = '';
+            }
+        });
+    
+        
+        // Handle add variation button
+        const editVariationButton = document.getElementById('editVariationButton');
+        const editVariationContainer = document.querySelector('.editVariationContainer');
+    
+        if (editVariationButton) {
+            editVariationButton.addEventListener('click', function() {
+                const variationCard = `
+                    <div id="variationCard" class="card mb-3">
+                        <div class="card-header fw-bold" id="variationHeader">
+                            <div class="row">
+                                <div class="col-6 fs-5 mt-1">Variation</div>
+                                <div class="col-6 ms-auto" style="text-align: right;"> 
+                                    <button type="button" class="btn btn-danger removeVariationButton" aria-label="Close">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <span class="fw-bold">Variation Name</span>
+                            <input type="text" class="form-control mb-3 variationName" placeholder="ex. 12oz">
+                            <span class="fw-bold">Variation Price</span>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-success text-white">₱</span>
+                                <input type="text" 
+                                    pattern="\\d*\\.?\\d{0,2}"
+                                    class="form-control variationPrice"
+                                    placeholder="ex. 200"
+                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..{0,2}).*/g, '$1')"
+                                >
+                            </div>
+                        </div>
+                    </div>
+                `;
+    
+                editVariationContainer.insertAdjacentHTML('beforeend', variationCard);
+                attachRemoveVariationListeners();
+    
+                // Format the price input in the new variation card
+                setTimeout(() => {
+                    const newPriceInput = editVariationContainer.querySelector('.variationPrice:last-child');
+                    if (newPriceInput) {
+                        formatPriceInput(newPriceInput);
+                    }
+                }, 100);
+            });
+        }
+    
+        // Handle Save Changes button
+        const saveChangesButton = document.getElementById('saveChangesButton');
+        if (saveChangesButton) {
+            saveChangesButton.addEventListener('click', function() {
+                // Gather all the updated data
+                const editedData = {
+                    productName: document.getElementById('editProductName').value,
+                    menuID: editMenuSelect.value,
+                    menuName: editMenuSelect.options[editMenuSelect.selectedIndex].dataset.menuname,
+                    categoryID: editCategorySelect.value,
+                    categoryName: editCategorySelect.options[editCategorySelect.selectedIndex].dataset.categoryname,
+                    defaultPrice: editDefaultPriceInput.value,
+                    addons: Array.from(editAddonContainer.querySelectorAll('.addon-dropdown')).map(select => ({
+                        id: select.value,
+                        name: select.options[select.selectedIndex].dataset.name,
+                        price: select.options[select.selectedIndex].dataset.price
+                    })),
+                    variations: Array.from(editVariationContainer.querySelectorAll('#variationCard')).map(card => ({
+                        name: card.querySelector('.variationName').value,
+                        price: card.querySelector('.variationPrice').value
+                    }))
+                };
+    
+                // Perform the same validations as in Add Product
+                // ... (copy validation code from add product)
+    
+                // If validations pass, show confirmation dialog
+                Swal.fire({
+                    title: 'Save Changes?',
+                    text: "Are you sure you want to save these changes?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, save changes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send updated data to server
+                        fetch('scripts/updateProduct.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(editedData)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: 'Product has been updated successfully!',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    const editProductModal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
+                                    editProductModal.hide();
+                                    location.reload();
+                                });
+                            } else {
+                                throw new Error(data.message || 'Failed to update product');
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: error.message
+                            });
+                        });
+                    }
+                });
+            });
+        }
+    }
+
+    initializeEditProductModal();
 });
 
