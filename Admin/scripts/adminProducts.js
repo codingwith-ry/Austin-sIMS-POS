@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', function () {
     //Handle Menu and Category Changes in Add Product Modal
 
@@ -659,6 +657,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    const editAddonContainer = document.querySelector('.editAddonSelectContainer');
+
     function fetchEditMenuClasses() {
         fetch('scripts/fetchMenuClasses.php')
             .then(response => response.json())
@@ -673,7 +673,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Fetch categories based on selected menu
     function fetchEditCategories(menuID) {
-        fetch(`scripts/fetchCategories.php?menuID=${menuID}`)
+        return fetch(`scripts/fetchCategories.php?menuID=${menuID}`)
             .then(response => response.json())
             .then(data => {
                 editCategorySelect.innerHTML = '<option selected>Choose a category</option>';
@@ -684,13 +684,54 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error fetching categories:', error));
     }
 
+    function addAddonSelect(container, addons) {
+        // Get the current menuID for the edit modal
+        const menuID = document.getElementById('editMenuSelect').value;
+    
+        fetch(`scripts/fetchAddons.php?menuID=${menuID}`)
+            .then(response => response.json())
+            .then(data => {
+                addons.forEach(addon => {
+                    let addonRow = `
+                        <div class="row mb-3 addonRow">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-12 d-flex">
+                                        <select class="form-select addon-dropdown" aria-label="Default select example">
+                    `;
+        
+                    data.forEach(opt => {
+                        addonRow += `
+                            <option value="${opt.addonID}" data-name="${opt.addonName}" data-price="${opt.addonPrice}" ${opt.addonID == addon.addonID ? 'selected' : ''}>
+                                ${opt.addonName} - ₱${opt.addonPrice}
+                            </option>
+                        `;
+                    });
+
+                    addonRow += `
+                                        </select>
+                                        <button type="button" class="btn btn-light pt-2 delete-addon">
+                                            <i class="fi fi-rr-trash text-danger"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+        
+                    container.insertAdjacentHTML('beforeend', addonRow);
+                    editAttachDeleteAddonListeners();
+                });
+            })
+            .catch(error => console.error('Error fetching addons:', error));
+    }
+    
     function fetchEditAddons(menuID) {
-        const editAddonContainer = document.querySelector('.editAddonSelectContainer');
         fetch(`scripts/fetchAddons.php?menuID=${menuID}`)
             .then(response => response.json())
             .then(data => {
                 editAddonContainer.innerHTML = '';
-                let addonRow = '';
+                addonRow = ``;
                 addonRow += `
                     <div class="row mb-3 addonRow">
                         <div class="col-12">
@@ -727,9 +768,42 @@ document.addEventListener('DOMContentLoaded', function () {
                     editAddonContainer.insertAdjacentHTML('beforeend', addonRow);
                 }
                 // Attach delete functionality to the new addon rows
-                attachDeleteAddonListeners();
+                editAttachDeleteAddonListeners();
             })
             .catch(error => console.error('Error fetching addons:', error));
+    }
+
+    function editAttachDeleteAddonListeners() {
+        const deleteButtons = editAddonContainer.querySelectorAll('.delete-addon');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const rowToDelete = this.closest('.addonRow'); // Find the closest parent row
+
+                // Show SweetAlert2 confirmation dialog
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to delete this add-on?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If confirmed, remove the row
+                        if (rowToDelete) {
+                            rowToDelete.remove();
+                        }
+                        Swal.fire(
+                            'Deleted!',
+                            'The add-on has been deleted.',
+                            'success'
+                        );
+                    }
+                });
+            });
+        });
     }
 
 
@@ -741,6 +815,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const editAddonContainer = document.querySelector('.editAddonSelectContainer');
         const editAddonButton = document.getElementById('editAddonButton');
         const editDefaultPriceInput = document.getElementById('editDefaultPrice');
+        let addonRow = ``;
     
         // Format price inputs
         if (editDefaultPriceInput) {
@@ -762,8 +837,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 editAddonContainer.innerHTML = '';
             }
         });
-    
+
         
+    
+        editAddonButton.addEventListener('click', function () {
+            editAddonContainer.insertAdjacentHTML('beforeend', addonRow);
+            editAttachDeleteAddonListeners(); // Reattach delete functionality
+        });
+
+
         // Handle add variation button
         const editVariationButton = document.getElementById('editVariationButton');
         const editVariationContainer = document.querySelector('.editVariationContainer');
@@ -886,8 +968,112 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
         }
+
     }
 
     initializeEditProductModal();
+
+    document.querySelectorAll('#editProductBtn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const menuId = this.dataset.menuId;
+            
+            // Populate basic information
+            document.getElementById('editProductName').value = this.dataset.productName;
+            document.getElementById('editDefaultPrice').value = this.dataset.productPrice;
+            //document.getElementById('editProductImage').src = this.dataset.productImage;
+
+            // Fetch product details including addons and variations
+            fetch(`scripts/fetchProductDetails.php?productId=${productId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Populate menu select
+                    const editMenuSelect = document.getElementById('editMenuSelect');
+                    editMenuSelect.value = menuId;
+                    console.log(menuId);
+                    let editCategorySelect = document.getElementById('editCategorySelect');
+                    // Fetch and populate categories for selected menu
+                    fetchEditCategories(menuId).then(() => {
+                        console.log(editCategorySelect);
+                        editCategorySelect.value = data.product.categoryID;
+                    }).then(() => {
+                        let editAddonButton = document.getElementById('editAddonButton');
+                        let addonRow = `
+                            <div class="row mb-3 addonRow">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-12 d-flex">
+                                            <select class="form-select addon-dropdown" aria-label="Default select example">
+                        `;
+                        if (data.length === 0) {
+                            addonRow += `<option disabled selected>No add-ons available for this menu.</option>`;
+                            editAddonButton.disabled = true;
+                        } else {
+                            editAddonButton.disabled = false;
+                            console.log(data.addons);
+                            data.addons.forEach(addon => {
+                                addonRow += `
+                                    <option value="${addon.addonID}" data-name="${addon.addonName}" data-price="${addon.addonPrice}">
+                                        ${addon.addonName} - ₱${addon.addonPrice}
+                                    </option>
+                                `;
+                                console.log(addon.addonID, addon.addonName, addon.addonPrice);
+                            });
+                        }
+                        addonRow += `
+                                            </select>
+                                            <button type="button" class="btn btn-light pt-2 delete-addon">
+                                                <i class="fi fi-rr-trash text-danger"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        editAddonContainer.insertAdjacentHTML('beforeend', addonRow);
+                        editAttachDeleteAddonListeners();
+                    }).then(() => {
+                        const editVariationContainer = document.querySelector('.editVariationContainer');
+                        editVariationContainer.innerHTML = '';
+                        if (data.variations.length > 0) {
+                            data.variations.forEach(variation => {
+                                const variationCard = `
+                                    <div id="variationCard" class="card mb-3">
+                                        <div class="card-header fw-bold">
+                                            <div class="row">
+                                                <div class="col-6 fs-5 mt-1">Variation</div>
+                                                <div class="col-6 ms-auto" style="text-align: right;"> 
+                                                    <button type="button" class="btn btn-danger removeVariationButton">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <span class="fw-bold">Variation Name</span>
+                                            <input type="text" class="form-control mb-3 variationName" 
+                                                value="${variation.variationName}" placeholder="ex. 12oz">
+                                            <span class="fw-bold">Variation Price</span>
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text bg-success text-white">₱</span>
+                                                <input type="text" 
+                                                    pattern="\\d*\\.?\\d{0,2}"
+                                                    class="form-control variationPrice"
+                                                    value="${variation.variationPrice}"
+                                                    placeholder="ex. 200"
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\\..{0,2}).*/g, '$1')"
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                editVariationContainer.insertAdjacentHTML('beforeend', variationCard);
+                            });
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching product details:', error));
+        });
+    });
 });
 
