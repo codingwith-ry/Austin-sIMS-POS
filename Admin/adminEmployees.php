@@ -51,7 +51,6 @@ include("../Login/database.php");
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item text-center text-primary" href="#">View all</a></li>
                     </ul>
                 </div>
 
@@ -124,12 +123,17 @@ include("../Login/database.php");
             </table>
         </div>
         <hr>
-        <div class="table-responsive mt-4">
-            <h3>User Logs</h3>
-            <div class="d-flex align-items-center mb-3">
-    <input type="date" id="logDateInput" class="form-control w-auto me-2">
-    <button id="searchByDateBtn" class="btn btn-primary">Search by Date</button>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <input type="date" id="logDateInput" class="form-control w-auto me-2">
+        <button id="searchByDateBtn" class="btn btn-primary">Search by Date</button>
+    </div>
+    <div>
+        <button id="printLogsBtn" class="btn btn-secondary"><i class="bi bi-printer"></i> Print</button>
+    </div>
 </div>
+
+
 
             <table id="userLogsTable" class="display" style="width:100%">
     <thead>
@@ -325,6 +329,18 @@ $(document).ready(function () {
     fetchLogs();
 });
 
+    </script>
+    <script>
+document.getElementById('printLogsBtn').addEventListener('click', function () {
+    const printContent = document.getElementById('userLogsTable').outerHTML;
+    const printWindow = window.open('', '', 'width=800,height=600');
+    printWindow.document.write('<html><head><title>Print Logs</title></head><body>');
+    printWindow.document.write('<h1>Employee Logs</h1>');
+    printWindow.document.write(printContent);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+});
     </script>
 </body>
 
