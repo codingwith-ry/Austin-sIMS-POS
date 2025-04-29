@@ -705,13 +705,13 @@ foreach ($itemData as $item) {
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Purchase Date</span>
                             <div class="flatpickr col-sm-8">
-                                <input class="form-control" id="focusedInput" type="date" placeholder="Select Date" data-input class="dateInputField" name="purchase_date">
+                                <input class="form-control" id="purchaseDate" type="date" placeholder="Select Date" name="purchase_date" min="">
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Expiration Date</span>
                             <div class="flatpickr col-sm-8">
-                                <input class="form-control" id="focusedInput" type="date" placeholder="Select Date" data-input class="dateInputField" name="expiration_date">
+                                <input class="form-control" id="expirationDate" type="date" placeholder="Select Date" name="expiration_date" min="">
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">
@@ -753,13 +753,6 @@ foreach ($itemData as $item) {
                 <div class="modal-body">
                     <form id="editRecordForm">
                         <input type="hidden" id="recordId" name="recordId">
-                        <div class="mb-3">
-                            <label for="itemName" class="form-label">Item Name</label>
-                            <select class="form-select" id="itemName" name="itemName">
-                                <option value="" disabled selected>Select Item</option>
-                                <!-- Options will be dynamically populated -->
-                            </select>
-                        </div>
                         <div class="mb-3">
                             <label for="itemVolume" class="form-label">Item Volume</label>
                             <input type="text" class="form-control" id="itemVolume" name="itemVolume">
@@ -897,7 +890,18 @@ foreach ($itemData as $item) {
                         alert('An error occurred while updating the item.');
                     });
             });
-        });
+});
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the current date in YYYY-MM-DD format
+        const today = new Date().toISOString().split('T')[0];
+
+        // Set the min attribute for the date fields
+        document.getElementById('purchaseDate').setAttribute('min', today);
+        document.getElementById('expirationDate').setAttribute('min', today);
+            });
     </script>
 </body>
 <?php include 'footer.php' ?>

@@ -310,7 +310,7 @@ let itemRecords = new DataTable("#itemRecords", {
 
             // Fetch the record data for editing
             $.ajax({
-              url: "../../IMS-POS/scripts/fetchRecord.php", // Create this endpoint to fetch record details
+              url: "../../IMS-POS/scripts/fetchRecord.php",
               type: "POST",
               data: { recordId: recordId },
               success: function (response) {
@@ -323,24 +323,6 @@ let itemRecords = new DataTable("#itemRecords", {
                           $("#editRecordModal #itemQuantity").val(res.record.Record_ItemQuantity);
                           $("#editRecordModal #itemPrice").val(res.record.Record_ItemPrice);
                           $("#editRecordModal #itemExpirationDate").val(res.record.Record_ItemExpirationDate);
-          
-                          // Populate the dropdown with items
-                          const itemNameDropdown = document.getElementById("itemName");
-                          itemNameDropdown.innerHTML = ""; // Clear existing options
-          
-                          // Add options dynamically
-                          res.items.forEach((item) => {
-                              const option = document.createElement("option");
-                              option.value = item.Item_ID;
-                              option.textContent = `${item.Item_Name} (${item.Unit_Name})`;
-          
-                              // Set the selected option to the current record's item
-                              if (item.Item_ID === res.record.Item_ID) {
-                                  option.selected = true;
-                              }
-          
-                              itemNameDropdown.appendChild(option);
-                          });
           
                           // Show the edit modal
                           const editRecordModal = new bootstrap.Modal(
