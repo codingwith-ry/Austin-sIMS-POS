@@ -118,21 +118,21 @@
         <div class="row mt-4">
             <div class="col-md-8">
                 <div class="card h-100">
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">Sales Analytics</h5>
                         <h5 id="totalValues"></h5>
-                        <div class="chart-container">
+                        <div class="chart-container flex-grow-1">
                             <canvas id="salesChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
+                <div class="card h-100"> <!-- Added h-100 here -->
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">Daily Sales</h5>
                         <h2 class="fw-bold">2,584</h2>
-                        <div class="chart-container">
+                        <div class="chart-container flex-grow-1">
                             <canvas id="dailySalesChart"></canvas>
                         </div>
                     </div>
@@ -143,7 +143,7 @@
         <div class="row mt-4">
             <div class="col-12">
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table id="productSalesTable" class="table table-bordered">
                         <thead class="table-light">
                             <tr>
                                 <th>Product</th>
@@ -154,39 +154,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><img src="resources/chickenalfredo.jpg" alt="Chicken Alfredo Pasta" width="50">Chicken Alfredo Pasta</td>
-                                <td>₱150.00</td>
-                                <td>124</td>
-                                <td>₱18,600.00</td>
-                                <td>₱18,600.00</td>
-                            </tr>
-                            <tr>
-                                <td><img src="images/iced_biscoff_latte.jpg" alt="Iced Biscoff Latte" width="50">Iced Biscoff Latte</td>
-                                <td>₱115.00</td>
-                                <td>76</td>
-                                <td>₱8,740.00</td>
-                                <td>₱8,740.00</td>
-                            </tr>
-                            <tr>
-                                <td><img src="images/matcha_latte.jpg" alt="Matcha Latte" width="50">Matcha Latte</td>
-                                <td>₱110.00</td>
-                                <td>54</td>
-                                <td>₱5,940.00</td>
-                                <td>₱5,940.00</td>
-                            </tr>
-                            <tr>
-                                <td><img src="images/four_cheese_pizza.jpg" alt="Four Cheese Pizza" width="50">Four Cheese Pizza</td>
-                                <td>₱220.00</td>
-                                <td>39</td>
-                                <td>₱8,580.00</td>
-                                <td>₱8,580.00</td>
-                            </tr>
+                            <!-- Leave tbody EMPTY. We'll fill it with JavaScript -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+
     </main>
 </body>
 <?php

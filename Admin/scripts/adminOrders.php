@@ -3,19 +3,18 @@ include '../../Login/database.php'; // Update path as needed
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     try {
-        // Get count of 'DONE' orders grouped by weekday (1=Sunday, 2=Monday, ..., 7=Saturday in MySQL)
+        // Get total expenses (sum of Record_ItemPrice) grouped by weekday
         $stmt = $conn->query("
             SELECT 
-                DAYOFWEEK(orderDate) AS weekday, 
-                COUNT(*) AS count 
-            FROM tbl_orders 
-            WHERE orderStatus = 'DONE'
+                DAYOFWEEK(Record_ItemPurchaseDate) AS weekday, 
+                SUM(Record_ItemPrice) AS total_expense
+            FROM tbl_record
             GROUP BY weekday
         ");
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Initialize counts for each day (MySQL's DAYOFWEEK: Sunday=1 ... Saturday=7)
+        // Initialize total expenses for each day (Sunday=1, Monday=2, ..., Saturday=7)
         $days = [
             1 => 0, // Sunday
             2 => 0, // Monday
@@ -28,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         foreach ($result as $row) {
             $weekday = (int)$row['weekday'];
-            $days[$weekday] = (int)$row['count'];
+            $days[$weekday] = (float)$row['total_expense']; // Use float for money
         }
 
         // Reorder to: Monday -> Sunday

@@ -28,19 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
               {
                 label: "Income",
                 data: data.income,
-                backgroundColor: "rgba(200, 200, 200, 0.5)",
-                borderWidth: 0,
-              },
-              {
-                label: "Profit",
-                data: data.profit,
-                backgroundColor: "black",
-                borderWidth: 0,
-              },
-              {
-                label: "Expenses",
-                data: data.expenses,
-                backgroundColor: "rgba(255, 99, 132, 0.5)",
+                backgroundColor: "rgba(200, 200, 200, 0.7)",
                 borderWidth: 0,
               },
             ],
@@ -56,14 +44,12 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         });
 
-        // Update total income, profit, and expenses
+        // Update total income only
         const totalIncome = data.income.reduce((a, b) => a + b, 0);
-        const totalProfit = data.profit.reduce((a, b) => a + b, 0);
-        const totalExpenses = data.expenses.reduce((a, b) => a + b, 0);
 
         document.querySelector(
           "#totalValues"
-        ).innerText = `Total Income: ₱${totalIncome.toLocaleString()} | Total Expenses: ₱${totalExpenses.toLocaleString()} | Profit: ₱${totalProfit.toLocaleString()}`;
+        ).innerText = `Total Income: ₱${totalIncome.toLocaleString()}`;
       } else {
         console.error(data.message);
       }
@@ -123,4 +109,65 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     })
     .catch((error) => console.error("Fetch error:", error));
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  function formatPeso(value) {
+    return (
+      "₱" +
+      parseFloat(value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    );
+  }
+
+  $("#productSalesTable").DataTable({
+    ajax: {
+      url: "scripts/fetchOrderDetails.php",
+      method: "POST", // important: must POST
+      dataSrc: function (json) {
+        if (json.success) {
+          return json.data;
+        } else {
+          alert("Failed to fetch product sales");
+          return [];
+        }
+      },
+    },
+    columns: [
+      {
+        data: "productName",
+        render: function (data, type, row) {
+          return `<img src="${row.productImage}" alt="${data}" width="50"> ${data}`;
+        },
+      },
+      {
+        data: "productPrice",
+        render: function (data) {
+          return formatPeso(data);
+        },
+      },
+      {
+        data: "total_quantity",
+      },
+      {
+        data: "total_quantity",
+        render: function (data, type, row) {
+          return data; // same as quantity
+        },
+      },
+      {
+        data: "total_revenue",
+        render: function (data) {
+          return formatPeso(data);
+        },
+      },
+    ],
+    responsive: true,
+    pageLength: 5,
+    language: {
+      emptyTable: "No product sales available",
+    },
+  });
 });
