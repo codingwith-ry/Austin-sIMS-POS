@@ -101,7 +101,8 @@ $active = "menu";
                 </select>
                 <div class="input-group mb-3">
                     <span class="input-group-text bg-success text-light" id="basic-addon1">₱</span>
-                    <input id="amountPaidElem" type="text" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="form-control" placeholder="100.00" aria-label="Username" aria-describedby="basic-addon1">
+                    <input id="amountPaidElem" type="text" pattern="\d*\.?\d{0,2}" 
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..{0,2}).*/g, '$1')" class="form-control" placeholder="100.00" aria-label="Username" aria-describedby="basic-addon1">
                 </div>
                 <div id="referenceNumberField" style="display: none;">
                     <label for="referenceNumber" class="form-label fw-bold">Reference Number</label>
@@ -176,6 +177,31 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     
+    function formatPriceInput(input) {
+        input.addEventListener('blur', function() {
+            let value = this.value.trim();
+            
+            if (value === '') return;
+    
+            // If there's no decimal point, add '.00'
+            if (!value.includes('.')) {
+                this.value = value + '.00';
+            }
+            // If there's a decimal point but no numbers after it, add '00'
+            else if (value.endsWith('.')) {
+                this.value = value + '00';
+            }
+            // If there's only one digit after decimal point, add '0'
+            else if (/\.\d$/.test(value)) {
+                this.value = value + '0';
+            }
+        });
+    }
+
+    if(amountPaidElem) {
+        formatPriceInput(amountPaidElem);
+    }
+
 
     orderItems.forEach(item => {
         const itemElement = document.createElement('div');

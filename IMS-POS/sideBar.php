@@ -164,6 +164,7 @@ if (isset($_GET['orderID'])) {
         data-time-now="<?php echo htmlspecialchars($orderDetail['orderTime']); ?>"
         data-customer-name="<?php echo htmlspecialchars($orderDetail['customerName']); ?>"
         data-order-items="<?php echo htmlspecialchars(json_encode($orderItems)); ?>"
+        data-sub-total="<?php echo htmlspecialchars($orderDetail['subTotal']); ?>"
         data-total-amount="<?php echo htmlspecialchars($orderDetail['totalAmount']); ?>"
         data-amount-paid="<?php echo htmlspecialchars($orderDetail['amountPaid']); ?>"
         data-additional-notes="<?php echo htmlspecialchars($orderDetail['additionalNotes']); ?>"
@@ -183,6 +184,7 @@ if (isset($_GET['orderID'])) {
             let orderTime = event.target.getAttribute('data-time-now');
             let customerName = event.target.getAttribute('data-customer-name');
             let orderItems = event.target.getAttribute('data-order-items');
+            let subTotal = event.target.getAttribute('data-sub-total');
             let totalAmount = event.target.getAttribute('data-total-amount');
             let amountPaid = event.target.getAttribute('data-amount-paid');
             let additionalNotes = event.target.getAttribute('data-additional-notes');
@@ -208,6 +210,7 @@ if (isset($_GET['orderID'])) {
                 orderTime: orderTime,
                 customerName: customerName,
                 orderItems: orderItems,
+                subTotal: subTotal,
                 totalAmount: totalAmount,
                 amountPaid: amountPaid,
                 changeAmount: amountPaid - totalAmount,

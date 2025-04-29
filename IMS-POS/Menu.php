@@ -79,11 +79,6 @@ $active = "menu";
                     <i class="bi-search"></i></span> <input type="text" class="form-control" placeholder="Search product here" aria-describedby="addon-wrapping"> 
                 </div> 
             </div> 
-            <div class="col-auto">
-                <button class="btn btn-secondary" type="button"> 
-                    <i class="fi fi-rr-settings-sliders"></i>
-                </button> 
-            </div> 
         </div>
     </div>
 

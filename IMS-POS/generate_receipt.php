@@ -134,6 +134,10 @@ function generateReceiptHTML($order) {
         <div class="total">
             <table class="items" style="width: 100%;">
                 <tr>
+                    <td">Sub Total:</td>
+                    <td>₱' . number_format($order['subTotal'], 2) . '</td>
+                </tr>
+                <tr>
                     <td">Amount Due:</td>
                     <td>₱' . number_format($order['totalAmount'], 2) . '</td>
                 </tr>
