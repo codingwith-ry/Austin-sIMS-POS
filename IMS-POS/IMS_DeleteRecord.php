@@ -6,14 +6,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($recordId) {
         try {
-            $stmt = $conn->prepare("DELETE FROM tbl_record WHERE Record_ID = :recordId");
-            $stmt->bindParam(':recordId', $recordId);
+            // Delete related rows in tbl_inventory_changes
+            $deleteChangesStmt = $conn->prepare("DELETE FROM tbl_inventory_changes WHERE Record_ID = :recordId");
+            $deleteChangesStmt->bindParam(':recordId', $recordId);
+            $deleteChangesStmt->execute();
 
-            if ($stmt->execute()) {
-                echo json_encode(['success' => true]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to delete record.']);
-            }
+            // Delete the record in tbl_record
+            $deleteRecordStmt = $conn->prepare("DELETE FROM tbl_record WHERE Record_ID = :recordId");
+            $deleteRecordStmt->bindParam(':recordId', $recordId);
+            $deleteRecordStmt->execute();
+
+            echo json_encode(['success' => true]);
         } catch (PDOException $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }

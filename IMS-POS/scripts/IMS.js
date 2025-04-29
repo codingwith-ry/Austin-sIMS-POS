@@ -262,17 +262,14 @@ let itemRecords = new DataTable("#itemRecords", {
                         icon: "success",
                         title: "Deleted!",
                         text: "The selected records have been deleted.",
+                      }).then(() => {
+                        window.location.reload(); // Refresh the page after successful deletion
                       });
-
-                      // Update the DataTable with the new data
-                      itemRecords.clear().rows.add(res.updatedData).draw();
                     } else {
                       Swal.fire({
                         icon: "error",
                         title: "Error",
-                        text:
-                          res.message ||
-                          "Failed to delete the selected records.",
+                        text: res.message || "Failed to delete the selected records.",
                       });
                     }
                   },
@@ -313,81 +310,67 @@ let itemRecords = new DataTable("#itemRecords", {
 
             // Fetch the record data for editing
             $.ajax({
-              url: "../IMS-POS/scripts/fetchRecord.php", // Create this endpoint to fetch record details
+              url: "../../IMS-POS/scripts/fetchRecord.php", // Create this endpoint to fetch record details
               type: "POST",
               data: { recordId: recordId },
               success: function (response) {
-                const res = JSON.parse(response);
-                if (res.success) {
-                  if (res.record) {
-                    // Populate the edit modal with the record data
-                    $("#editRecordModal #recordId").val(res.record.Record_ID);
-                    $("#editRecordModal #itemName").val(res.record.Item_Name);
-                    $("#editRecordModal #itemVolume").val(
-                      res.record.Record_ItemVolume
-                    );
-                    $("#editRecordModal #itemQuantity").val(
-                      res.record.Record_ItemQuantity
-                    );
-                    $("#editRecordModal #itemPrice").val(
-                      res.record.Record_ItemPrice
-                    );
-                    $("#editRecordModal #itemExpirationDate").val(
-                      res.record.Record_ItemExpirationDate
-                    );
-
-                    // Populate the dropdown with only the items associated with the record
-                    const itemNameDropdown =
-                      document.getElementById("itemName");
-                    itemNameDropdown.innerHTML = ""; // Clear existing options
-
-                    // Add a default "Select Item" option
-                    const defaultOption = document.createElement("option");
-                    defaultOption.value = "";
-                    defaultOption.textContent = "Select Item";
-                    defaultOption.disabled = true;
-                    defaultOption.selected = true;
-                    itemNameDropdown.appendChild(defaultOption);
-
-                    // Add options dynamically
-                    res.items.forEach((item) => {
-                      const option = document.createElement("option");
-                      option.value = item.Item_Name;
-                      option.textContent = `${item.Item_Name} (${item.Unit_Name})`;
-                      itemNameDropdown.appendChild(option);
-                    });
-
-                    // Set the selected value to the current record's item
-                    itemNameDropdown.value = res.record.Item_Name;
-
-                    // Show the edit modal
-                    const editRecordModal = new bootstrap.Modal(
-                      document.getElementById("editRecordModal")
-                    );
-                    editRecordModal.show();
+                  const res = JSON.parse(response);
+                  if (res.success) {
+                      if (res.record) {
+                          // Populate the edit modal with the record data
+                          $("#editRecordModal #recordId").val(res.record.Record_ID);
+                          $("#editRecordModal #itemVolume").val(res.record.Record_ItemVolume);
+                          $("#editRecordModal #itemQuantity").val(res.record.Record_ItemQuantity);
+                          $("#editRecordModal #itemPrice").val(res.record.Record_ItemPrice);
+                          $("#editRecordModal #itemExpirationDate").val(res.record.Record_ItemExpirationDate);
+          
+                          // Populate the dropdown with items
+                          const itemNameDropdown = document.getElementById("itemName");
+                          itemNameDropdown.innerHTML = ""; // Clear existing options
+          
+                          // Add options dynamically
+                          res.items.forEach((item) => {
+                              const option = document.createElement("option");
+                              option.value = item.Item_ID;
+                              option.textContent = `${item.Item_Name} (${item.Unit_Name})`;
+          
+                              // Set the selected option to the current record's item
+                              if (item.Item_ID === res.record.Item_ID) {
+                                  option.selected = true;
+                              }
+          
+                              itemNameDropdown.appendChild(option);
+                          });
+          
+                          // Show the edit modal
+                          const editRecordModal = new bootstrap.Modal(
+                              document.getElementById("editRecordModal")
+                          );
+                          editRecordModal.show();
+                      } else {
+                          Swal.fire({
+                              icon: "error",
+                              title: "Error",
+                              text: "Record details are missing.",
+                          });
+                      }
                   } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "Error",
-                      text: "Record details are missing.",
-                    });
+                      Swal.fire({
+                          icon: "error",
+                          title: "Error",
+                          text: res.message || "Failed to fetch record details.",
+                      });
                   }
-                } else {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res.message || "Failed to fetch record details.",
-                  });
-                }
               },
               error: function () {
-                Swal.fire({
-                  icon: "error",
-                  title: "Error",
-                  text: "Failed to fetch record details.",
-                });
+                  Swal.fire({
+                      icon: "error",
+                      title: "Error",
+                      text: "Failed to fetch record details.",
+                  });
               },
-            });
+          });
+          
           },
         },
       ],
