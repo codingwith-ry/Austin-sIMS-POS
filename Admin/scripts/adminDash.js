@@ -238,7 +238,9 @@ fetch("scripts/adminTotalOrders.php")
   });
 
 /****************Stastics Bar Chart Initialization****************/
-const statisticsGraph = document.getElementById("statisticsBarChart");
+const inventoryExpensesChart = document.getElementById(
+  "inventoryExpensesGraph"
+);
 
 const statisticsData = {
   labels: [
@@ -252,7 +254,7 @@ const statisticsData = {
   ],
   datasets: [
     {
-      label: "Orders",
+      label: "Expenses", // changed from "Orders" to "Expenses"
       data: [], // will be filled from backend
       backgroundColor: "rgb(255, 99, 132)",
       borderRadius: 10,
@@ -272,7 +274,7 @@ const chartOptions = {
     y: {
       beginAtZero: true,
       ticks: {
-        stepSize: 100,
+        // stepSize: 100, // Optional: You can adjust/remove stepSize if expenses are large
       },
       grid: {
         display: false,
@@ -284,7 +286,7 @@ const chartOptions = {
 };
 
 // Initialize chart with empty data
-const statisticsChart = new Chart(statisticsGraph, {
+const statisticsChart = new Chart(inventoryExpensesChart, {
   type: "bar",
   data: {
     labels: statisticsData.labels,
@@ -300,7 +302,7 @@ fetch("scripts/adminOrders.php", {
   .then((response) => response.json())
   .then((data) => {
     if (data.success) {
-      statisticsChart.data.datasets[0].data = data.ordersPerDay;
+      statisticsChart.data.datasets[0].data = data.ordersPerDay; // still correct
       statisticsChart.update();
     } else {
       console.error("Failed to fetch data:", data.message);
@@ -357,3 +359,75 @@ var tooltipTriggerList = document.querySelectorAll(
 var tooltipList = [...tooltipTriggerList].map(
   (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
 );
+
+fetch("scripts/getStockBudget.php")
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.success) {
+      const remainingBudget = data.remainingBudget;
+      const totalBudget = data.totalBudget;
+      const totalExpenses = data.totalExpenses;
+
+      // Display remaining budget (formatted)
+      document.getElementById("budget-amount").innerText =
+        remainingBudget.toLocaleString();
+
+      // Calculate percentage decrease (expenses over budget)
+      const percentageDecrease = ((totalExpenses / totalBudget) * 100).toFixed(
+        1
+      );
+
+      // Display as negative percentage (-)
+      document.getElementById("budget-percentage").innerText =
+        "-" + percentageDecrease + "%";
+
+      // Progress bar: How much has been spent (expenses vs budget)
+      const progress = Math.min((totalExpenses / totalBudget) * 100, 100);
+      document.getElementById("budget-progress").style.width = progress + "%";
+
+      // Update aria-valuenow
+      document
+        .querySelector(".progress")
+        .setAttribute("aria-valuenow", progress.toFixed(0));
+    } else {
+      console.error("Failed to fetch budget:", data.message);
+    }
+  })
+  .catch((error) => {
+    console.error("Fetch error:", error);
+  });
+
+fetch("scripts/getInventoryExpenses.php")
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.success) {
+      const totalExpenses = data.totalExpenses;
+
+      // Insert total expenses amount (formatted)
+      document.getElementById("expenses-amount").innerText =
+        totalExpenses.toLocaleString();
+
+      // Fake a percentage change (for now)
+      const previousExpenses = 50000; // assume last week's expenses (example)
+      const percentageChange = (
+        ((totalExpenses - previousExpenses) / previousExpenses) *
+        100
+      ).toFixed(1);
+      document.getElementById("expenses-percentage").innerText =
+        (percentageChange > 0 ? "+" : "") + percentageChange + "%";
+
+      // Progress (assume 100000 is expected max expenses)
+      const progress = Math.min((totalExpenses / 100000) * 100, 100);
+      document.getElementById("expenses-progress").style.width = progress + "%";
+
+      // Optional: update aria-valuenow
+      document
+        .querySelector(".progress")
+        .setAttribute("aria-valuenow", progress.toFixed(0));
+    } else {
+      console.error("Failed to fetch expenses:", data.message);
+    }
+  })
+  .catch((error) => {
+    console.error("Fetch error:", error);
+  });

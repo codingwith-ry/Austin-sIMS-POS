@@ -230,9 +230,9 @@
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <span id="foodPrice">₱'.$product['productPrice'].'</span>
-                                                            <button type="button" id="addtoOrderModal" class="btn btn-primary" data-product-id="'.$product['productID'].'" data-menu-id="'.$product['menuID'].'" data-menu-name="'.$row['menuName'].'" data-product-name="'.$product['productName'].'" 
+                                                            <button type="button" id="editProductBtn" class="btn btn-primary" data-product-id="'.$product['productID'].'" data-menu-id="'.$product['menuID'].'" data-menu-name="'.$row['menuName'].'" data-product-name="'.$product['productName'].'" 
                                                                 data-product-price="'.$product['productPrice'].'"  data-product-image="resources/nachos.jpg"  data-product-category="'.$product['categoryName'].'" 
-                                                                data-product-icon="'.$product['categoryIcon'].'" data-bs-toggle="modal" data-bs-target="#addItemModal" style="width: 100%; margin-top: 10px;">
+                                                                data-product-icon="'.$product['categoryIcon'].'" data-bs-toggle="modal" data-bs-target="#editProductModal" style="width: 100%; margin-top: 10px;">
                                                                 Edit Item
                                                             </button>
                                                         </div>
@@ -287,9 +287,9 @@
                                                         <div class="row">
                                                             <div class="col-12">
                                                                 <span id="foodPrice">₱'.$product['productPrice'].'</span>
-                                                                <button id="addtoOrderModal" type="button" data-product-id="'.$product['productID'].'" data-menu-id="'.$product['menuID'].'" data-menu-name="'.$row['menuName'].'" data-product-name="'.$product['productName'].'" 
+                                                                <button id="editProductBtn" type="button" data-product-id="'.$product['productID'].'" data-menu-id="'.$product['menuID'].'" data-menu-name="'.$row['menuName'].'" data-product-name="'.$product['productName'].'" 
                                                                 data-product-price="'.$product['productPrice'].'"  data-product-icon="'.$product['categoryIcon'].'" data-product-image="resources/nachos.jpg"  data-product-category="'.$product['categoryName'].'"
-                                                                class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal" style="width: 100%; margin-top: 10px;">Edit Item</button>
+                                                                class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProductModal" style="width: 100%; margin-top: 10px;">Edit Item</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -424,54 +424,60 @@
 
         <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                    <div class="modal-content">
+                    <div class="modal-content" style="width: 800px;">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">Add Item</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                                 <div class="row">
-                                    <div class="col-12">
-                                        <div class="">
-                                            <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Product Name</label>
-                                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="ex. Nachos">
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr />
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="">
-                                            <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Menu Class</label>
-                                            <select id="menuSelect" class="form-select" aria-label="Default select example">
-                                                <option selected>Choose a menu class</option>
-
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr />
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="">
-                                            <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Category</label>
-                                            <select id="categorySelect" class="form-select" aria-label="Default select example">
-                                                <option selected>Choose a category</option>
-                                                
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr />
-                                <div class="row">
                                     <div class="col-6">
-                                        <span style="font-weight: bold; font-size: 18px;">Product Image</span>
-                                        <img src="resources/nachos.jpg" class="card-img-top img-fluid rounded-start rounded-end mt-2 mb-2" id="productImage" alt="...">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="">
+                                                <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Product Name</label>
+                                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="ex. Nachos">
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-12">
-                                        <input class="form-control ps-2 pe-2" type="file" id="formFile" placeholder="Upload Image here">
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="">
+                                                <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Menu Class</label>
+                                                <select id="menuSelect" class="form-select" aria-label="Default select example">
+                                                    <option selected>Choose a menu class</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="">
+                                                <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Category</label>
+                                                <select id="categorySelect" class="form-select" aria-label="Default select example">
+                                                    <option selected>Choose a category</option>
+                                                    
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <span style="font-weight: bold; font-size: 18px;">Product Image</span>
+                                                <img src="resources/nachos.jpg" class="card-img-top img-fluid rounded-start rounded-end mt-2 mb-2" id="productImage" alt="...">
+                                            </div>
+
+                                            <div class="col-12">
+                                                <input class="form-control ps-2 pe-2" type="file" id="formFile" placeholder="Upload Image here">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                
                                 <hr />
                                 <span style="font-weight: bold; font-size: 18px;">Add-ons</span>
                                 <div class="addonSelectContainer">
@@ -496,12 +502,13 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col">
-                                        <span style="font-weight: bold; font-size: 16px;">Default Amount</span>
+                                        <span style="font-weight: bold; font-size: 16px;">Default Price</span>
                                     </div>
                                     <div class="col ms-auto" style="text-align: right;">
                                         <div class="input-group">
                                             <div class="input-group-text bg-success text-white">₱</div>
-                                            <input type="text" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="form-control form-control-sm" id="specificSizeInputGroupUsername" placeholder="ex. 200">
+                                            <input type="text" pattern="\d*\.?\d{0,2}" 
+                                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..{0,2}).*/g, '$1')" class="form-control form-control-sm" id="defaultPrice" placeholder="ex. 200">
                                         </div>
                                     </div>
                                 </div>
@@ -515,72 +522,101 @@
         </div>
 
         <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">Edit Item</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width: 800px;">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">Edit Item</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="">
-                                            <label for="exampleFormControlInput1" class="form-label"  style="font-weight: bold; font-size: 18px;">Product Name</label>
+                                            <label for="editProductName" class="form-label" style="font-weight: bold; font-size: 18px;">Product Name</label>
                                             <input type="text" class="form-control" id="editProductName" placeholder="ex. Nachos">
                                         </div>
                                     </div>
                                 </div>
                                 <hr />
                                 <div class="row">
-                                    <div class="col-6">
-                                        <span style="font-weight: bold; font-size: 18px;">Product Image</span>
-                                        <img src="resources/nachos.jpg" class="card-img-top img-fluid rounded-start rounded-end mt-2 mb-2" id="productImage" alt="...">
-                                    </div>
                                     <div class="col-12">
-                                        <input class="form-control ps-2 pe-2" type="file" id="formFile" placeholder="Upload Image here">
-                                    </div>
-                                </div>
-                                <hr />
-                                <span style="font-weight: bold; font-size: 18px;">Variations</span>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="mb-3">
-                                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="ex. Cheese">
-                                        </div>
-                                        <button type="button" class="btn btn-primary">Add Another Variation</button>
-                                    </div>
-                                </div>
+                                        <div class="">
+                                            <label for="editMenuSelect" class="form-label" style="font-weight: bold; font-size: 18px;">Menu Class</label>
+                                            <select id="editMenuSelect" class="form-select" aria-label="Default select example">
 
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <hr />
-                                <span style="font-weight: bold; font-size: 18px;">Add-ons</span>
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="mb-3">
-                                            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="ex. Cheese">
+                                        <div class="">
+                                            <label for="editCategorySelect" class="form-label" style="font-weight: bold; font-size: 18px;">Category</label>
+                                            <select id="editCategorySelect" class="form-select" aria-label="Default select example">
+                                                <option selected>Choose a category</option>
+                                            </select>
                                         </div>
-                                        <button type="button" class="btn btn-primary">Add Another Add-on</button>
                                     </div>
                                 </div>
-                                <hr>
+                            </div>
+                            <div class="col-6">
                                 <div class="row">
-                                    <div class="col">
-                                        <span style="font-weight: bold; font-size: 16px;">Default Price</span>
+                                    <div class="col-7">
+                                        <span style="font-weight: bold; font-size: 18px;">Product Image</span>
+                                        <img src="resources/nachos.jpg" class="card-img-top img-fluid rounded-start rounded-end mt-2 mb-2" id="editProductImage" alt="...">
                                     </div>
-                                    <div class="col ms-auto" style="text-align: right;">
-                                        <div class="input-group">
-                                            <div class="input-group-text">₱</div>
-                                            <input type="text" class="form-control form-control-sm" id="editProductPrice" placeholder="ex. 200">
-                                        </div>
+                                    <div class="col-12">
+                                        <input class="form-control ps-2 pe-2" type="file" id="editFormFile" placeholder="Upload Image here">
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save Product Changes</button>
+
+                        <hr />
+                        <span style="font-weight: bold; font-size: 18px;">Add-ons</span>
+                        <div class="editAddonSelectContainer">
+                        </div>
+                        <div class="row">
+                            <div id="editAddonButtonDiv" class="col-6">
+                                <button id="editAddonButton" type="button" class="btn btn-primary addonSelectAdd">Add Add-on</button>
+                            </div>
+                            <div class="col-6 ms-auto" style="text-align: right;">
+                                <button id="editNewAddonButton" class="btn btn-primary pt-3 pb-0" data-bs-toggle="modal" data-bs-target="#addAddonModal" style="background: none; border: none; color: blue; text-decoration: underline; cursor: pointer; font-size: 12px;">Create a new add-on?</button>
+                            </div>
+                        </div>
+
+                        <hr />
+                        <span style="font-weight: bold; font-size: 18px;">Variations</span>
+                        <div class="editVariationContainer">
+                        </div>
+                        <button id="editVariationButton" type="button" class="btn btn-primary">Add Variation</button>
+
+                        <hr>
+                        <div class="row">
+                            <div class="col">
+                                <span style="font-weight: bold; font-size: 16px;">Default Price</span>
+                            </div>
+                            <div class="col ms-auto" style="text-align: right;">
+                                <div class="input-group">
+                                    <div class="input-group-text bg-success text-white">₱</div>
+                                    <input type="text" pattern="\d*\.?\d{0,2}" 
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..{0,2}).*/g, '$1')" 
+                                        class="form-control form-control-sm" 
+                                        id="editDefaultPrice" 
+                                        placeholder="ex. 200">
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save Changes</button>
+                    </div>   
                 </div>
+            </div>
         </div>
 
         <div class="modal fade" id="addAddonModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">

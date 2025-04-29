@@ -448,14 +448,11 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="card-body">
                             <div class="card-title">
                                 <div>
-                                    <strong style="font-size: 20px;">Statistics</strong>
-                                </div>
-                                <div>
-                                    <span>Total Sales and purchases</span>
+                                    <strong style="font-size: 20px;">Total Inventory Expenses</strong>
                                 </div>
                             </div>
                             <div id="statisticsChartContainer" style="margin-top: 5%;">
-                                <canvas id="statisticsBarChart" width="20px" height="7px"></canvas>
+                                <canvas id="inventoryExpensesGraph" width="20px" height="7px"></canvas>
                             </div>
                         </div>
                     </div>
@@ -488,10 +485,10 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div>
                                             <div style="font-size: 20px;">
-                                                <strong>Total Products<br />Sold</strong>
+                                                <strong>Remaining Inventory Budget</strong>
                                             </div>
                                             <div>
-                                                <span style="opacity: 0.5;">-2.3%</span>
+                                                <span id="budget-percentage" style="opacity: 0.5;"></span>
                                             </div>
                                         </div>
                                         <div style="font-size: 30px;">
@@ -500,14 +497,15 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </div>
                                 </div>
                                 <div style="font-size: 30px;">
-                                    <strong>1,274</strong>
+                                    <strong id="budget-amount"></strong>
                                 </div>
                                 <div class="progress" role="progressbar" aria-label="Example 1px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 2px">
-                                    <div class="progress-bar" style="width: 25%"></div>
+                                    <div id="budget-progress" class="progress-bar" style="width: 25%"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="row flex-grow-1">
                         <div class="card">
                             <div class="card-body">
@@ -515,26 +513,27 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div>
                                             <div style="font-size: 20px;">
-                                                <strong>Total Products<br />Sold</strong>
+                                                <strong>Total Inventory Expenses</strong>
                                             </div>
                                             <div>
-                                                <span style="opacity: 0.5;">-2.3%</span>
+                                                <span id="expenses-percentage" style="opacity: 0.5;">-2.3%</span>
                                             </div>
                                         </div>
                                         <div style="font-size: 30px;">
-                                            <span class="mdi mdi-invoice-list-outline"></span>
+                                            <span class="mdi mdi-clipboard-check-outline"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div style="font-size: 30px;">
-                                    <strong>1,274</strong>
+                                    <strong id="expenses-amount">1,274</strong>
                                 </div>
                                 <div class="progress" role="progressbar" aria-label="Example 1px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 2px">
-                                    <div class="progress-bar" style="width: 25%"></div>
+                                    <div id="expenses-progress" class="progress-bar" style="width: 25%"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
             </div>
