@@ -520,7 +520,7 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             </div>
                                         </div>
                                         <div style="font-size: 30px;">
-                                            <span class="mdi mdi-invoice-list-outline"></span>
+                                            <span class="mdi mdi-clipboard-check-outline"></span>
                                         </div>
                                     </div>
                                 </div>
