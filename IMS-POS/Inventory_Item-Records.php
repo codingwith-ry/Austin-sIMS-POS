@@ -319,82 +319,82 @@ foreach ($itemData as $item) {
                             </div>
 
 
-                                <!-- Edit Item Modal -->
-                                <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form id="editItemForm">
-                                                    <!-- Dropdown to select an item -->
-                                                    <div class="mb-3">
-                                                        <label for="editItemDropdown" class="form-label">Select Item</label>
-                                                        <select class="form-select" id="editItemDropdown" name="item_id" required>
-                                                            <option value="" disabled selected>Select an item</option>
-                                                            <?php
-                                                            // Fetch items from tbl_item
-                                                            $itemsQuery = "SELECT Item_ID, Item_Name FROM tbl_item";
-                                                            $items = $pdo->query($itemsQuery)->fetchAll(PDO::FETCH_ASSOC);
+                            <!-- Edit Item Modal -->
+                            <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="editItemForm">
+                                                <!-- Dropdown to select an item -->
+                                                <div class="mb-3">
+                                                    <label for="editItemDropdown" class="form-label">Select Item</label>
+                                                    <select class="form-select" id="editItemDropdown" name="item_id" required>
+                                                        <option value="" disabled selected>Select an item</option>
+                                                        <?php
+                                                        // Fetch items from tbl_item
+                                                        $itemsQuery = "SELECT Item_ID, Item_Name FROM tbl_item";
+                                                        $items = $pdo->query($itemsQuery)->fetchAll(PDO::FETCH_ASSOC);
 
-                                                            foreach ($items as $item) {
-                                                                echo '<option value="' . htmlspecialchars($item['Item_ID']) . '">' . htmlspecialchars($item['Item_Name']) . '</option>';
-                                                            }
-                                                            ?>
-                                                        </select>
-                                                    </div>
+                                                        foreach ($items as $item) {
+                                                            echo '<option value="' . htmlspecialchars($item['Item_ID']) . '">' . htmlspecialchars($item['Item_Name']) . '</option>';
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
 
-                                                    <!-- Fields to edit item details -->
-                                                    <div class="mb-3">
-                                                        <label for="editItemName" class="form-label">Item Name</label>
-                                                        <input type="text" class="form-control" id="editItemName" name="item_name" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="editItemCategory" class="form-label">Category</label>
-                                                        <select class="form-select" id="editItemCategory" name="item_category" required>
-                                                            <option value="" disabled selected>Select a category</option>
-                                                            <?php
-                                                            // Fetch categories from tbl_itemcategories
-                                                            $categoriesQuery = "SELECT Category_ID, Category_Name FROM tbl_itemcategories";
-                                                            $categories = $pdo->query($categoriesQuery)->fetchAll(PDO::FETCH_ASSOC);
+                                                <!-- Fields to edit item details -->
+                                                <div class="mb-3">
+                                                    <label for="editItemName" class="form-label">Item Name</label>
+                                                    <input type="text" class="form-control" id="editItemName" name="item_name" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="editItemCategory" class="form-label">Category</label>
+                                                    <select class="form-select" id="editItemCategory" name="item_category" required>
+                                                        <option value="" disabled selected>Select a category</option>
+                                                        <?php
+                                                        // Fetch categories from tbl_itemcategories
+                                                        $categoriesQuery = "SELECT Category_ID, Category_Name FROM tbl_itemcategories";
+                                                        $categories = $pdo->query($categoriesQuery)->fetchAll(PDO::FETCH_ASSOC);
 
-                                                            foreach ($categories as $category) {
-                                                                echo '<option value="' . htmlspecialchars($category['Category_ID']) . '">' . htmlspecialchars($category['Category_Name']) . '</option>';
-                                                            }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="editItemUnit" class="form-label">Unit of Measurement</label>
-                                                        <select class="form-select" id="editItemUnit" name="unit_id" required>
-                                                            <option value="" disabled selected>Select a unit</option>
-                                                            <?php
-                                                            // Fetch units from tbl_unitofmeasurments
-                                                            $unitsQuery = "SELECT Unit_ID, Unit_Name, Unit_Acronym FROM tbl_unitofmeasurments";
-                                                            $units = $pdo->query($unitsQuery)->fetchAll(PDO::FETCH_ASSOC);
+                                                        foreach ($categories as $category) {
+                                                            echo '<option value="' . htmlspecialchars($category['Category_ID']) . '">' . htmlspecialchars($category['Category_Name']) . '</option>';
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="editItemUnit" class="form-label">Unit of Measurement</label>
+                                                    <select class="form-select" id="editItemUnit" name="unit_id" required>
+                                                        <option value="" disabled selected>Select a unit</option>
+                                                        <?php
+                                                        // Fetch units from tbl_unitofmeasurments
+                                                        $unitsQuery = "SELECT Unit_ID, Unit_Name, Unit_Acronym FROM tbl_unitofmeasurments";
+                                                        $units = $pdo->query($unitsQuery)->fetchAll(PDO::FETCH_ASSOC);
 
-                                                            foreach ($units as $unit) {
-                                                                echo '<option value="' . htmlspecialchars($unit['Unit_ID']) . '">' . htmlspecialchars($unit['Unit_Name']) . ' (' . htmlspecialchars($unit['Unit_Acronym']) . ')</option>';
-                                                            }
-                                                            ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="editItemImage" class="form-label">Item Image</label>
-                                                        <input type="file" class="form-control" id="editItemImage" name="item_image">
-                                                        <img id="editItemImagePreview" src="" alt="Item Image" class="mt-2" width="100">
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="button" class="btn btn-primary" id="saveEditItem">Save Changes</button>
-                                            </div>
+                                                        foreach ($units as $unit) {
+                                                            echo '<option value="' . htmlspecialchars($unit['Unit_ID']) . '">' . htmlspecialchars($unit['Unit_Name']) . ' (' . htmlspecialchars($unit['Unit_Acronym']) . ')</option>';
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="editItemImage" class="form-label">Item Image</label>
+                                                    <input type="file" class="form-control" id="editItemImage" name="item_image">
+                                                    <img id="editItemImagePreview" src="" alt="Item Image" class="mt-2" width="100">
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-primary" id="saveEditItem">Save Changes</button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
                             <!-- Edit Item Details Modal -->
                             <div class="modal fade" id="editItemDetailsModal" tabindex="-1" aria-labelledby="editItemDetailsModalLabel" aria-hidden="true">
@@ -609,7 +609,7 @@ foreach ($itemData as $item) {
                                                                     </div>
                                                                     <input type="hidden" name="item_id" value="' . $itemID . '">
                                                                     <input type="hidden" name="volume" value="' . $volume . '">
-                                                                    <input type="hidden" name="item_name" value="'.$itemName.'">
+                                                                    <input type="hidden" name="item_name" value="' . $itemName . '">
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -842,61 +842,63 @@ foreach ($itemData as $item) {
         });
     </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Handle item selection from the dropdown
-    document.getElementById('editItemDropdown').addEventListener('change', function () {
-        const itemId = this.value;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle item selection from the dropdown
+            document.getElementById('editItemDropdown').addEventListener('change', function() {
+                const itemId = this.value;
 
-        // Fetch item details via AJAX
-        fetch('../IMS-POS/scripts/fetchItemDetails.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `item_id=${itemId}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Populate the modal fields with item details
-                document.getElementById('editItemName').value = data.item.Item_Name;
-                document.getElementById('editItemCategory').value = data.item.Item_Category; // Set the category ID
-                document.getElementById('editItemUnit').value = data.item.Unit_ID; // Set the unit ID
-                document.getElementById('editItemImagePreview').src = data.item.Item_Image;
-            } else {
-                alert('Failed to fetch item details.');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching item details:', error);
-            alert('An error occurred while fetching item details.');
+                // Fetch item details via AJAX
+                fetch('../IMS-POS/scripts/fetchItemDetails.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `item_id=${itemId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Populate the modal fields with item details
+                            document.getElementById('editItemName').value = data.item.Item_Name;
+                            document.getElementById('editItemCategory').value = data.item.Item_Category; // Set the category ID
+                            document.getElementById('editItemUnit').value = data.item.Unit_ID; // Set the unit ID
+                            document.getElementById('editItemImagePreview').src = data.item.Item_Image;
+                        } else {
+                            alert('Failed to fetch item details.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching item details:', error);
+                        alert('An error occurred while fetching item details.');
+                    });
+            });
+
+            // Handle Save Changes button click
+            document.getElementById('saveEditItem').addEventListener('click', function() {
+                const formData = new FormData(document.getElementById('editItemForm'));
+
+                // Submit the form via AJAX
+                fetch('../IMS-POS/scripts/updateItemDetails.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Item updated successfully!');
+                            location.reload(); // Reload the page to reflect changes
+                        } else {
+                            alert('Failed to update item: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error updating item:', error);
+                        alert('An error occurred while updating the item.');
+                    });
+            });
         });
-    });
-
-    // Handle Save Changes button click
-    document.getElementById('saveEditItem').addEventListener('click', function () {
-        const formData = new FormData(document.getElementById('editItemForm'));
-
-        // Submit the form via AJAX
-        fetch('../IMS-POS/scripts/updateItemDetails.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Item updated successfully!');
-                location.reload(); // Reload the page to reflect changes
-            } else {
-                alert('Failed to update item: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error updating item:', error);
-            alert('An error occurred while updating the item.');
-        });
-    });
-});
-</script>
+    </script>
 </body>
 <?php include 'footer.php' ?>
 

@@ -33,11 +33,10 @@ $totalExpenses = $expenseStmt->fetch(PDO::FETCH_ASSOC)['total_expenses'];
 $budgetQuery = "SELECT Total_Stock_Budget FROM tbl_stocks WHERE Stock_ID = 1";
 $budgetStmt = $conn->prepare($budgetQuery);
 $budgetStmt->execute();
-$totalStockBudget = $budgetStmt->fetch(PDO::FETCH_ASSOC)['Total_Stock_Budget'];
-
+$budgetResult = $budgetStmt->fetch(PDO::FETCH_ASSOC);
+$totalStockBudget = $budgetResult ? $budgetResult['Total_Stock_Budget'] : 0;
 // Calculate the adjusted stock budget
 $adjustedStockBudget = $totalStockBudget - $totalExpenses;
-
 
 ?>
 
