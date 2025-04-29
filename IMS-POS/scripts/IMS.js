@@ -310,7 +310,7 @@ let itemRecords = new DataTable("#itemRecords", {
 
             // Fetch the record data for editing
             $.ajax({
-              url: "../../IMS-POS/scripts/fetchRecord.php",
+              url: "../IMS-POS/scripts/fetchRecord.php",
               type: "POST",
               data: { recordId: recordId },
               success: function (response) {
