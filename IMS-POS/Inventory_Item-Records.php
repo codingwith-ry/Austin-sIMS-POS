@@ -754,13 +754,6 @@ foreach ($itemData as $item) {
                     <form id="editRecordForm">
                         <input type="hidden" id="recordId" name="recordId">
                         <div class="mb-3">
-                            <label for="itemName" class="form-label">Item Name</label>
-                            <select class="form-select" id="itemName" name="itemName">
-                                <option value="" disabled selected>Select Item</option>
-                                <!-- Options will be dynamically populated -->
-                            </select>
-                        </div>
-                        <div class="mb-3">
                             <label for="itemVolume" class="form-label">Item Volume</label>
                             <input type="text" class="form-control" id="itemVolume" name="itemVolume">
                         </div>
