@@ -21,38 +21,49 @@ document.querySelectorAll('.dineStatus').forEach(radio => {
 
 
 document.addEventListener('DOMContentLoaded', function () {
+    let activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
+    let activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
     const searchInput = document.querySelector('.form-control[placeholder="Search product here"]');
 
-    searchInput.addEventListener('input', function () {
-        console.log("active");
-        const query = searchInput.value.toLowerCase().trim();
-
-        // Get the currently active menu tab
-        const activeMenuTab = document.querySelector('.menuPanels .tab-pane.active');
-        if (!activeMenuTab){
-            console.log("No active menu tab found.");
-            return; // Exit if no active menu tab is found
-        } 
-        console.log(activeMenuTab);
-
-        // Get the currently active category tab within the active menu
-        const activeCategoryTab = activeMenuTab.querySelector('.menuPanel .tab-pane.active');
-        if (!activeCategoryTab) return; // Exit if no active category tab is found
-
-        console.log(activeCategoryTab);
-        // Get all product cards within the active category
-        const productCards = activeCategoryTab.querySelectorAll('.productCardClass');
-
-        // Filter products based on the search query
-        productCards.forEach(card => {
-            const productName = card.querySelector('.productName').textContent.toLowerCase();
-            if (productName.includes(query)) {
-                card.style.display = 'block'; // Show matching product
-            } else {
-                card.style.display = 'none'; // Hide non-matching product
-            }
+    document.querySelectorAll('.menuPills').forEach(pill => {
+        pill.addEventListener('click', function() {
+            activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
+            activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
+            console.log(activeMenuTab);
+            console.log(activeCategoryTab);
         });
     });
+    
+    document.querySelectorAll('.categoryButtons').forEach(pill => {
+        pill.addEventListener('click', function() {
+            activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
+            activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
+            console.log(activeMenuTab);
+            console.log(activeCategoryTab);
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            const query = searchInput.value.toLowerCase().trim();
+
+            activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
+            activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
+     
+    
+            const productCards = activeCategoryTab.querySelectorAll('.productCardClass');
+            // Filter products based on the search query
+
+            productCards.forEach(card => {
+                const productName = card.querySelector('.productName').textContent.toLowerCase();
+                if (productName.includes(query)) {
+                    card.style.display = 'block'; // Show matching product
+                } else {
+                    card.style.display = 'none'; // Hide non-matching product
+                }
+            });
+        });
+    }
 });
 
 
@@ -481,7 +492,6 @@ function initializeEditModal(orderItemEdit, index) {
                     }
                 }
             });
-            
             updateTotalEdit();
         }
         else {
