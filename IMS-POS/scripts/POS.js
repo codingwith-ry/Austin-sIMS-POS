@@ -150,6 +150,9 @@ document.addEventListener('click', function (event) {
                             </label>
                         </div>
                     `;
+                    if(variation.variationID === data[0].variationID){
+                        updateTotal();
+                    }
                 });
                 document.querySelectorAll("variation-radio").checked = true;
                 basePrice = parseFloat(data[0].variationPrice);

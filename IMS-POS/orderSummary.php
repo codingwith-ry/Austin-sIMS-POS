@@ -463,13 +463,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                     icon: 'success',
                                     showConfirmButton: true,
                                     confirmButtonText: 'Print Receipt',
-                                    showCancelButton: true,
-                                    cancelButtonText: 'Close',
                                     customClass: {
                                         popup: 'receipt-popup',
                                         htmlContainer: 'receipt-html-container'
                                     },
-                                    width: '600px'
+                                    width: '600px',
+                                    allowOutsideClick: false
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         // Send orderObj to the server to insert into the database

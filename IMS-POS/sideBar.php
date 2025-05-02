@@ -174,8 +174,7 @@ if (isset($_GET['orderID'])) {
 </div>
 
 <script>
-    document.addEventListener('click', function (event) {
-        if (event.target.matches('#printHistoryInvoice')) {
+    document.getElementById("printHistoryInvoice").addEventListener('click', function (event) {
             let orderNumber = event.target.getAttribute('data-order-number');
             let salesOrderNumber = event.target.getAttribute('data-sales-order-number');
             let employeeID = event.target.getAttribute('data-employee-id');
@@ -246,6 +245,5 @@ if (isset($_GET['orderID'])) {
                 console.error('Error:', error);
                 Swal.fire('Error', 'Failed to generate receipt', 'error');
             });
-        }
     });
 </script>
