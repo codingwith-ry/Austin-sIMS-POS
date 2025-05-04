@@ -249,8 +249,8 @@ $active = "orderQueue_History";
                                         <td>${order.orderStatus}</td>
                                         <td class="p-3">
                                             ${orderStatus === 'IN PROCESS' || orderStatus === 'PICKUP' ? `
-                                                <button class="btn btn-success" data-sales-ordernum=${order.salesOrderNumber}><i class="fas fa-check"></i> Done</button>
-                                                <button class="btn btn-danger"><i class="fas fa-times"></i> Cancel</button>
+                                                <button class="btn btn-success" data-ordernum=${order.orderNumber} data-sales-ordernum=${order.salesOrderNumber}><i class="fas fa-check"></i> Done</button>
+                                                <button class="btn btn-danger" data-ordernum=${order.orderNumber} data-sales-ordernum=${order.salesOrderNumber}><i class="fas fa-times"></i> Cancel</button>
                                             ` : ''}
                                         </td>
                                     </tr>
@@ -419,6 +419,24 @@ $active = "orderQueue_History";
         }
       });
   
+      function toggleCancelButtons(currentTab) {
+        if (currentTab === 'pickup') {
+            document.querySelectorAll('.btn-danger').forEach(button => {
+                button.style.display = "none"; // Hide all .btn-danger buttons
+            });
+        } else {
+            document.querySelectorAll('.btn-danger').forEach(button => {
+                button.style.display = "inline"; // Show all .btn-danger buttons
+            });
+        }
+    }
+
+    // Run the toggleCancelButtons function when the tab changes
+    $('#orderTabs .nav-link').on('shown.bs.tab', function () {
+      let currentTab = $('#orderTabs .nav-link.active').attr('id').replace('-tab', ''); // Get the current tab
+      toggleCancelButtons(currentTab);
+    });
+
       // Handle Done/Cancel button clicks with confirmation
       // Handle Done/Cancel button clicks with SweetAlert
       $(document).on('click', '.btn-success, .btn-danger', function () {
@@ -427,7 +445,8 @@ $active = "orderQueue_History";
           
           const isDone = $(this).hasClass('btn-success'); // Check if the button is "Done"
           const orderRow = $(this).closest('tr'); // Get the row of the clicked button
-          const orderNum = orderRow.find('td:eq(0)').text(); // Get the Order ID from the first column
+          const orderID = orderRow.find('td:eq(0)').text(); // Get the Order ID from the first column
+          const orderNum = $(this).data('ordernum'); // Get the Order Num from the second column
           const salesOrderNum = $(this).data('sales-ordernum'); // Get the Sales Order Number from the button data attribute 
           const currentTab = $('#orderTabs .nav-link.active').attr('id').replace('-tab', ''); // Get the current tab (queue or pickup)
           
@@ -436,6 +455,7 @@ $active = "orderQueue_History";
               : 'CANCELLED';
 
           console.log(status);
+
 
           // SweetAlert confirmation dialog
           Swal.fire({

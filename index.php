@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("database.php");
+include("Login/database.php");
 
 date_default_timezone_set('Asia/Manila'); 
 
@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="Login/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body class="d-flex justify-content-center align-items-center vh-100" style="font-family: 'Rubik', sans-serif; background-color: #cdc7b0;">
     <center>
         <div>
-            <img src="logo.png" alt="Austin's Logo" class="mb-4" style="width: 30%; height: auto;">
+            <img src="Login/logo.png" alt="Austin's Logo" class="mb-4" style="width: 30%; height: auto;">
             <p class="mb-4" style="color: #6a4413; font-size: 20px; margin: auto;">Inventory Management - Point of Sale System</p>
             <div class="card text-bg-light mx-auto" style="width: 25rem;">
                 <div class="card-body p-4">

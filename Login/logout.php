@@ -2,5 +2,5 @@
     session_start();
     session_unset();
     session_destroy();
-    header("Location: /Austin-sIMS-POS/Login/index.php");
+    header("Location: /Austin-sIMS-POS/index.php");
 ?>

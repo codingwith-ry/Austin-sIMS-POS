@@ -25,12 +25,32 @@ document.addEventListener('DOMContentLoaded', function () {
     let activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
     const searchInput = document.querySelector('.form-control[placeholder="Search product here"]');
 
+    function searchInputHandler(){
+        const query = searchInput.value.toLowerCase().trim();
+
+        activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
+        activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
+     
+    
+        const productCards = activeCategoryTab.querySelectorAll('.productCardClass');
+            // Filter products based on the search query
+
+        productCards.forEach(card => {
+            const productName = card.querySelector('.productName').textContent.toLowerCase();
+            if (productName.includes(query)) {
+                card.style.display = 'block'; // Show matching product
+            } else {
+                card.style.display = 'none'; // Hide non-matching product
+            }
+        });
+    }
+
     document.querySelectorAll('.menuPills').forEach(pill => {
         pill.addEventListener('click', function() {
             activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
             activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
-            console.log(activeMenuTab);
-            console.log(activeCategoryTab);
+            searchInput.value = "";
+            searchInputHandler();
         });
     });
     
@@ -38,30 +58,14 @@ document.addEventListener('DOMContentLoaded', function () {
         pill.addEventListener('click', function() {
             activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
             activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
-            console.log(activeMenuTab);
-            console.log(activeCategoryTab);
+            searchInput.value = "";
+            searchInputHandler();
         });
     });
 
     if (searchInput) {
         searchInput.addEventListener('input', function () {
-            const query = searchInput.value.toLowerCase().trim();
-
-            activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
-            activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
-     
-    
-            const productCards = activeCategoryTab.querySelectorAll('.productCardClass');
-            // Filter products based on the search query
-
-            productCards.forEach(card => {
-                const productName = card.querySelector('.productName').textContent.toLowerCase();
-                if (productName.includes(query)) {
-                    card.style.display = 'block'; // Show matching product
-                } else {
-                    card.style.display = 'none'; // Hide non-matching product
-                }
-            });
+            searchInputHandler();
         });
     }
 });
@@ -265,7 +269,6 @@ document.addEventListener('click', function (event) {
             };
 
             orderItem = product;
-            console.log(product);
         }
 
         addToOrder.addEventListener('click', function() {
@@ -423,7 +426,6 @@ function initializeEditModal(orderItemEdit, index) {
                         </label>
                     </div>
                 `;
-                console.log(variation.variationName);
             });
             
             
@@ -603,7 +605,6 @@ function updateOrderBar(){
     let displayTotalAmount = 0;
     // Retrieve orderItems from localStorage
     let orderItems = JSON.parse(localStorage.getItem('orderItems')) || [];
-    console.log(orderItems);
     // Get the container element
     let orderItemsContainer = document.getElementById('orderItemsContainer');
     orderItemsContainer.innerHTML = "";

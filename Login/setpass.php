@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         echo "Password reset successfully.";
-        header("Location: index.php");
+        header("Location: ../index.php");
         exit();
     } else {
         echo "Error updating password: " . htmlspecialchars($stmt->errorInfo()[2]);

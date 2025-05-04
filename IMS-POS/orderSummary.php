@@ -43,11 +43,11 @@ $active = "menu";
                 <h6 class="fw-bold mb-3">Order Details</h6>
                 <div id="orderItemsContainer"></div>
                 <hr>
-                <div class="d-flex justify-content-between fw-bold p-4 pt-0">
+                <div class="d-flex justify-content-between p-4 pt-0">
                     <span>Sub Total</span>
                     <span id="subTotal"></span>
                 </div>
-                <div id="discountElements" class="d-none justify-content-between fw-bold p-4 pt-0">
+                <div id="discountElements" class="d-none justify-content-between p-4 pt-0">
                     <span>Discount(SC/PWD)</span>
                     <span id="discountValue"></span>
                 </div>
@@ -561,9 +561,20 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 </div>
                                                 ` : ''}
                                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
+                                                    <span><strong>Senior Citizen/PWD:</strong></span>
+                                                    <span><strong>${order.discountCardID ? `Yes` : `No`}</strong></span>
+                                                </div>
+                                                
+                                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
                                                     <span><strong>Payment Method:</strong></span>
                                                     <span><strong>${order.paymentMode}</strong></span>
                                                 </div>
+                                                ${order.paymentMode == "GCash" || order.paymentMode == "PayMaya"?
+                                                `<div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
+                                                    <span><strong>Reference Number:</strong></span>
+                                                    <span><strong>${order.payReferenceNumber}</strong></span>
+                                                </div>`
+                                                : ``}
                                             </div>
                                             <hr style="border-top: 1px dashed; margin: 15px 0;">
                                             <div class="receipt-items" style="margin-bottom: 15px;">
@@ -593,17 +604,27 @@ document.addEventListener('DOMContentLoaded', function() {
                                             </div>
                                             <hr style="border: 1px dashed;" />
                                             <div class="receipt-totals" style="margin-bottom: 15px;">
-                                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                                    <span><strong>Total Amount:</strong></span>
+                                                <div class="fw-normal" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                    <span>Sub Total:</span>
+                                                    <span>₱${order.subTotal.toFixed(2)}</span>
+                                                </div>
+                                                ${order.discountCardID ? `
+                                                <div class="fw-normal" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                    <span>Discount:</span>
+                                                    <span>₱${(order.subTotal.toFixed(2) - order.totalAmount.toFixed(2)).toFixed(2)}</span>
+                                                </div>` 
+                                                : ``}
+                                                <div class="fw-bold" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                    <span class="fw-normal"><strong>Amount Due:</strong></span>
                                                     <span>₱${order.totalAmount.toFixed(2)}</span>
                                                 </div>
-                                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                                    <span><strong>Amount Paid:</strong></span>
+                                                <div class="fw-bold" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                    <span class="fw-normal"><strong>Amount Paid:</strong></span>
                                                     <span>₱${order.amountPaid.toFixed(2)}</span>
                                                 </div>
-                                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
-                                                    <span><strong>Change:</strong></span>
-                                                    <span><strong>₱${order.changeAmount.toFixed(2)}</strong></span>
+                                                <div class="fw-bold" style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
+                                                    <span class="fw-normal"><strong>Change:</strong></span>
+                                                    <span>₱${order.changeAmount.toFixed(2)}</span>
                                                 </div>
                                             </div>
                                             ${order.additionalNotes ? `
