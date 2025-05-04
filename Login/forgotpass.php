@@ -30,7 +30,7 @@
             <!-- Submit button -->
             <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
             <div class="text-center">
-            <a href="/Austin-sIMS-POS/Login/index.php" style="color: #6a4413;">Back to Login</a>
+            <a href="/Austin-sIMS-POS/index.php" style="color: #6a4413;">Back to Login</a>
         </div>
         </form>
     </div>

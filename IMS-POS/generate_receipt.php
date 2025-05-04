@@ -54,8 +54,6 @@ function generateReceiptHTML($order) {
             </tr>
             <br />
         ';
-
-
     }
 
     return '
@@ -122,7 +120,14 @@ function generateReceiptHTML($order) {
             Employee: ' . $order['employeeID'] . '<br>
             POS: POS 1<br>
             Order Type: ' . $order['orderType'] . '<br>
-            Customer Name:' . ($order['customerName'] ? htmlspecialchars($order['customerName']) : 'Unknown') . '
+            Customer Name:' . ($order['customerName'] ? htmlspecialchars($order['customerName']) : 'Unknown') . '<br>
+            Senior Citizen/PWD: '. ($order['discountCardID'] ? 'Yes' : 'No') .'<br>
+            Payment Mode: '.$order['paymentMode'].'<br>
+            ' . (
+                ($order['paymentMode'] == "GCash" || $order['paymentMode'] == "PayMaya")
+                    ? 'Reference Number: ' . $order["payReferenceNumber"] . '<br>'
+                    : ''
+            ) . '
         </div>
         <hr style="border: 1px dashed;" />
         <span style="font-size: 12px">Order Items</span>
@@ -134,11 +139,16 @@ function generateReceiptHTML($order) {
         <div class="total">
             <table class="items" style="width: 100%;">
                 <tr>
-                    <td">Sub Total:</td>
+                    <td>Sub Total:</td>
                     <td>₱' . number_format($order['subTotal'], 2) . '</td>
                 </tr>
+                ' . (
+                ($order['discountCardID'])
+                    ? '<tr><td>Discount: </td><td>₱' . number_format(($order["subTotal"] - $order["totalAmount"]),2) . '</td></tr>'
+                    : ''
+                ) . '
                 <tr>
-                    <td">Amount Due:</td>
+                    <td>Amount Due:</td>
                     <td>₱' . number_format($order['totalAmount'], 2) . '</td>
                 </tr>
                 <tr>

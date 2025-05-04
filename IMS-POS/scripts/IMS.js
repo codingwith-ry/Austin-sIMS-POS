@@ -103,9 +103,11 @@ function printTableWithChildren() {
 }
 
 // Trigger this function from a custom button
-document
-  .getElementById("customPrintBtn")
-  .addEventListener("click", printTableWithChildren);
+let customPrintBtn = document.getElementById("customPrintBtn");
+
+if(customPrintBtn){
+  customPrintBtn.addEventListener("click", printTableWithChildren);
+}
 
 function format(groupItems) {
   let content = "";
@@ -145,12 +147,14 @@ function format(groupItems) {
 }
 // ✅ Group data by purchase date
 const groupedData = {};
-window.inventoryData.forEach((record) => {
-  if (!groupedData[record.Record_ItemPurchaseDate]) {
-    groupedData[record.Record_ItemPurchaseDate] = [];
-  }
-  groupedData[record.Record_ItemPurchaseDate].push(record);
-});
+if(window.inventoryData){
+  window.inventoryData.forEach((record) => {
+    if (!groupedData[record.Record_ItemPurchaseDate]) {
+      groupedData[record.Record_ItemPurchaseDate] = [];
+    }
+    groupedData[record.Record_ItemPurchaseDate].push(record);
+  });
+}
 
 // ✅ Prepare rows - one per purchase date
 const tableData = Object.keys(groupedData).map((purchaseDate, index) => {
