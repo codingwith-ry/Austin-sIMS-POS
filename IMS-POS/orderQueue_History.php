@@ -200,6 +200,18 @@ $active = "orderQueue_History";
   <script>
     $(document).ready(function() {
 
+      function toggleCancelButtons(currentTab) {
+          if (currentTab === 'pickup') {
+              document.querySelectorAll('.btn-danger').forEach(button => {
+                  button.style.display = "none"; // Hide all .btn-danger buttons
+              });
+          } else {
+              document.querySelectorAll('.btn-danger').forEach(button => {
+                  button.style.display = "inline"; // Show all .btn-danger buttons
+              });
+          }
+      }
+
       function refreshTable(orderStatus, tableId) {
         $.ajax({
             url: 'scripts/fetchOrders.php',
@@ -209,9 +221,11 @@ $active = "orderQueue_History";
                 orderStatus: orderStatus,
             },
             success: function (data) {
+                
                 // Clear the existing table body
                 const tableBody = $(`#${tableId} tbody`);
                 tableBody.empty();
+
 
                 // Create an array of promises for nested AJAX calls
                 
@@ -345,6 +359,9 @@ $active = "orderQueue_History";
                     rows.forEach(row => {
                         tableBody.append(row);
                     });
+
+                    let currentTab = $('#orderTabs .nav-link.active').attr('id').replace('-tab', ''); // Get the current tab
+                    toggleCancelButtons(currentTab);
                 }).catch(() => {
                     console.error('Failed to fetch some order items.');
                 });
@@ -419,17 +436,7 @@ $active = "orderQueue_History";
         }
       });
   
-      function toggleCancelButtons(currentTab) {
-        if (currentTab === 'pickup') {
-            document.querySelectorAll('.btn-danger').forEach(button => {
-                button.style.display = "none"; // Hide all .btn-danger buttons
-            });
-        } else {
-            document.querySelectorAll('.btn-danger').forEach(button => {
-                button.style.display = "inline"; // Show all .btn-danger buttons
-            });
-        }
-    }
+      
 
     // Run the toggleCancelButtons function when the tab changes
     $('#orderTabs .nav-link').on('shown.bs.tab', function () {
@@ -512,7 +519,6 @@ $active = "orderQueue_History";
               }
           });
       });
-      
   
       // Toggle collapse for order rows on click
       $(document).on('click', '.order-row', function (event) {
