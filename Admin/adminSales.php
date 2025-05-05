@@ -75,41 +75,36 @@
         </div>
         <hr>
         <div class="row g-3">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column justify-content-between">
-                        <div><strong>Total Sales</strong>
-                            <h1>₱10,418.00</h1>
+                        <div>
+                            <strong>Total Sales</strong>
+                            <h1>₱<?php include 'scripts/fetchSale.php'; ?></h1>
                         </div>
-                        <div><span style="opacity: 0.5;">+4.56%</span></div>
+
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column justify-content-between">
-                        <div><strong>Total Revenue</strong>
-                            <h1>₱7,059.00</h1>
+                        <div>
+                            <strong>Total Orders</strong>
+                            <h1><?php include 'scripts/fetchOrders.php'; ?></h1>
                         </div>
-                        <div><span style="opacity: 0.5;">-2.6%</span></div>
+
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column justify-content-between">
-                        <div><strong>Total Orders</strong>
-                            <h1>9,102</h1>
+                        <div>
+                            <strong>Total Products Sold</strong>
+                            <h1><?php include 'scripts/fetchTotalSold.php'; ?></h1>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <div><strong>Total Products Sold</strong>
-                            <h1>9,576</h1>
-                        </div>
+
                     </div>
                 </div>
             </div>
