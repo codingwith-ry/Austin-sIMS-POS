@@ -23,36 +23,54 @@
     </div>
     <div class="col-md-6 d-flex justify-content-end align-items-center gap-3">
     <!-- Notification Dropdown -->
-    <div class="dropdown me-2">
-        <button class="btn btn-outline-secondary position-relative dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fa-solid fa-bell"></i>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                3
-                <span class="visually-hidden">unread notifications</span>
-            </span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationDropdown" style="width: 300px; max-height: 300px; overflow-y: auto;">
-            <li><strong class="dropdown-header">Notifications</strong></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">🛒 New order received</a></li>
-            <li><a class="dropdown-item" href="#">📦 Inventory stock low</a></li>
-            <li><a class="dropdown-item" href="#">👤 New employee registered</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-center text-primary" href="#">View all</a></li>
-        </ul>
+<div class="dropdown">
+  <button class="btn position-relative p-0 border-0 bg-transparent" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+      <i class="fas fa-bell fa-lg text-white"></i>
     </div>
+    <span id="notificationDot"
+      class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-white rounded-circle"
+      style="width: 12px; height: 12px;">
+    </span>
+  </button>
 
-    <!-- Administrator Dropdown -->
-    <div class="dropdown">
-        <button class="btn btn-outline-secondary dropdown-toggle" id="accountDropdownBtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Administrator
-        </button>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-        </ul>
+  <ul class="dropdown-menu dropdown-menu-end shadow p-3" aria-labelledby="notificationDropdown" style="width: 320px; max-height: 360px; overflow-y: auto;">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <strong>Notifications</strong>
     </div>
+    <hr>
+
+    <!-- Notification Items -->
+    <li class="mb-2">
+      <span class="d-flex">
+        <span class="text-primary me-2">●</span>
+        <span><strong>Low inventory alert</strong> – a total of 3 items are in low stock.</span>
+      </span>
+      <small class="text-muted ms-4">Now</small>
+    </li>
+    <li class="mb-2">
+      <span class="d-flex">
+        <span class="text-primary me-2">●</span>
+        <span><strong>New employee</strong> has been successfully registered.</span>
+      </span>
+      <small class="text-muted ms-4">1h ago</small>
+    </li>
+    <li class="mb-2">
+      <span class="d-flex">
+        <span class="text-primary me-2">●</span>
+        <span><strong>Negative inventory alert</strong> has been triggered.</span>
+      </span>
+      <small class="text-muted ms-4">4h ago</small>
+    </li>
+
+    <!-- Footer -->
+    <li><hr></li>
+    <li class="text-center">
+      <a href="#" class="text-decoration-none text-primary" id="markAllAsRead">Mark all as read</a>
+    </li>
+  </ul>
+</div>
+
 </div>
         </div>
         <hr />

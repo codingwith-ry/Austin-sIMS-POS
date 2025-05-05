@@ -92,16 +92,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div id="adminContent">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h1 class="page-title">Add New User</h1>
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" id="accountDropdownBtn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Administrator
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-            </div>
         </div>
         <div class="card p-4">
             <h2 class="text-center h4 fw-bold">Please fill in information</h2>
@@ -203,7 +193,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
                 <input type="hidden" name="status" value="Active">
-                <div class="d-flex justify-content-end mt-3">
+                <div class="d-flex justify-content-end mt-3 gap-2">
+                    <a href="/Austin-sIMS-POS/Admin/adminEmployees.php" class="btn btn-secondary px-4">Cancel</a> <!-- Added Cancel button -->
                     <button type="submit" class="btn btn-custom px-4">Save</button>
                 </div>
             </form>
