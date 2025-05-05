@@ -491,6 +491,7 @@ document.addEventListener("DOMContentLoaded", function () {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
+    // Validation
     if (!category.value || category.selectedIndex === 0) {
       Swal.fire("Missing Field", "Please select a category.", "warning");
       return;
@@ -515,16 +516,27 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Optional: Confirmation before submitting
+    // Confirmation Dialog
     Swal.fire({
       title: "Confirm Add",
       text: "Are you sure you want to add this item?",
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Yes, add it!",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        form.submit(); // now submit the form
+        // Optional: Simulate delay if form is AJAX-based
+        // If you're submitting via AJAX, show success after success response
+        Swal.fire({
+          icon: "success",
+          title: "Item Added",
+          text: "The item was successfully added!",
+          confirmButtonColor: "#3085d6",
+        }).then(() => {
+          form.submit(); // Proceed with submission
+        });
       }
     });
   });
