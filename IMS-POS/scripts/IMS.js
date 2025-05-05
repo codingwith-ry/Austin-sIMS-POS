@@ -480,3 +480,52 @@ document.addEventListener("DOMContentLoaded", function () {
     ); // passive: false is needed to use preventDefault
   }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector("#addItemModal form");
+  const category = form.querySelector('select[name="item_category"]');
+  const unit = form.querySelector('select[name="item_unit"]');
+  const name = form.querySelector('input[name="item_name"]');
+  const image = form.querySelector('input[name="image"]');
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    if (!category.value || category.selectedIndex === 0) {
+      Swal.fire("Missing Field", "Please select a category.", "warning");
+      return;
+    }
+
+    if (!unit.value || unit.selectedIndex === 0) {
+      Swal.fire(
+        "Missing Field",
+        "Please select a unit of measurement.",
+        "warning"
+      );
+      return;
+    }
+
+    if (!name.value.trim()) {
+      Swal.fire("Missing Field", "Please enter an item name.", "warning");
+      return;
+    }
+
+    if (!image.files || image.files.length === 0) {
+      Swal.fire("Missing Field", "Please upload an item image.", "warning");
+      return;
+    }
+
+    // Optional: Confirmation before submitting
+    Swal.fire({
+      title: "Confirm Add",
+      text: "Are you sure you want to add this item?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, add it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        form.submit(); // now submit the form
+      }
+    });
+  });
+});
