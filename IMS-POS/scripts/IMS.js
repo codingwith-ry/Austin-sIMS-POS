@@ -105,7 +105,7 @@ function printTableWithChildren() {
 // Trigger this function from a custom button
 let customPrintBtn = document.getElementById("customPrintBtn");
 
-if(customPrintBtn){
+if (customPrintBtn) {
   customPrintBtn.addEventListener("click", printTableWithChildren);
 }
 
@@ -147,7 +147,7 @@ function format(groupItems) {
 }
 // ✅ Group data by purchase date
 const groupedData = {};
-if(window.inventoryData){
+if (window.inventoryData) {
   window.inventoryData.forEach((record) => {
     if (!groupedData[record.Record_ItemPurchaseDate]) {
       groupedData[record.Record_ItemPurchaseDate] = [];
@@ -273,7 +273,9 @@ let itemRecords = new DataTable("#itemRecords", {
                       Swal.fire({
                         icon: "error",
                         title: "Error",
-                        text: res.message || "Failed to delete the selected records.",
+                        text:
+                          res.message ||
+                          "Failed to delete the selected records.",
                       });
                     }
                   },
@@ -318,45 +320,52 @@ let itemRecords = new DataTable("#itemRecords", {
               type: "POST",
               data: { recordId: recordId },
               success: function (response) {
-                  const res = JSON.parse(response);
-                  if (res.success) {
-                      if (res.record) {
-                          // Populate the edit modal with the record data
-                          $("#editRecordModal #recordId").val(res.record.Record_ID);
-                          $("#editRecordModal #itemVolume").val(res.record.Record_ItemVolume);
-                          $("#editRecordModal #itemQuantity").val(res.record.Record_ItemQuantity);
-                          $("#editRecordModal #itemPrice").val(res.record.Record_ItemPrice);
-                          $("#editRecordModal #itemExpirationDate").val(res.record.Record_ItemExpirationDate);
-          
-                          // Show the edit modal
-                          const editRecordModal = new bootstrap.Modal(
-                              document.getElementById("editRecordModal")
-                          );
-                          editRecordModal.show();
-                      } else {
-                          Swal.fire({
-                              icon: "error",
-                              title: "Error",
-                              text: "Record details are missing.",
-                          });
-                      }
+                const res = JSON.parse(response);
+                if (res.success) {
+                  if (res.record) {
+                    // Populate the edit modal with the record data
+                    $("#editRecordModal #recordId").val(res.record.Record_ID);
+                    $("#editRecordModal #itemVolume").val(
+                      res.record.Record_ItemVolume
+                    );
+                    $("#editRecordModal #itemQuantity").val(
+                      res.record.Record_ItemQuantity
+                    );
+                    $("#editRecordModal #itemPrice").val(
+                      res.record.Record_ItemPrice
+                    );
+                    $("#editRecordModal #itemExpirationDate").val(
+                      res.record.Record_ItemExpirationDate
+                    );
+
+                    // Show the edit modal
+                    const editRecordModal = new bootstrap.Modal(
+                      document.getElementById("editRecordModal")
+                    );
+                    editRecordModal.show();
                   } else {
-                      Swal.fire({
-                          icon: "error",
-                          title: "Error",
-                          text: res.message || "Failed to fetch record details.",
-                      });
-                  }
-              },
-              error: function () {
-                  Swal.fire({
+                    Swal.fire({
                       icon: "error",
                       title: "Error",
-                      text: "Failed to fetch record details.",
+                      text: "Record details are missing.",
+                    });
+                  }
+                } else {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res.message || "Failed to fetch record details.",
                   });
+                }
               },
-          });
-          
+              error: function () {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Failed to fetch record details.",
+                });
+              },
+            });
           },
         },
       ],
@@ -452,4 +461,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Default display of all items on page load
   filterItems("all");
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const scrollContainer = document.querySelector(".custom-scrollbar");
+
+  if (scrollContainer) {
+    scrollContainer.addEventListener(
+      "wheel",
+      function (e) {
+        // Only if there's horizontal overflow
+        if (scrollContainer.scrollWidth > scrollContainer.clientWidth) {
+          e.preventDefault(); // Prevent vertical scroll
+          scrollContainer.scrollLeft += e.deltaY; // Scroll horizontally
+        }
+      },
+      { passive: false }
+    ); // passive: false is needed to use preventDefault
+  }
 });
