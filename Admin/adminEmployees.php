@@ -267,16 +267,16 @@ include("../Login/database.php");
         });
     </script>
 
-<script>  
+<script>
 $(document).ready(function () {
     const logsPerPage = 10;
 
     // Function to fetch logs
     function fetchLogs(page = 1, logDate = null) {
         $.ajax({
-            url: 'fetchUserLogs.php',
+            url: 'fetchUserLogs.php', // Backend script
             type: 'POST',
-            data: { page: page, logDate: logDate },
+            data: { page: page, logDate: logDate, logsPerPage: logsPerPage },
             success: function (response) {
                 const res = JSON.parse(response);
                 if (res.success) {
@@ -286,12 +286,7 @@ $(document).ready(function () {
                     const tbody = $('#userLogsTable tbody');
                     tbody.empty();
 
-                    // Destroy DataTable instance if it already exists
-                    if ($.fn.DataTable.isDataTable('#userLogsTable')) {
-                        $('#userLogsTable').DataTable().destroy();
-                    }
-
-                    // Append logs
+                    // Append logs to the table
                     logs.forEach(log => {
                         tbody.append(`
                             <tr>
@@ -302,14 +297,6 @@ $(document).ready(function () {
                                 <td>${log.logDate}</td>
                             </tr>
                         `);
-                    });
-
-                    // Re-initialize DataTable (for sorting/styling)
-                    $('#userLogsTable').DataTable({
-                        paging: false,
-                        searching: false,
-                        ordering: true,
-                        info: false
                     });
 
                     // Update pagination controls
@@ -334,7 +321,7 @@ $(document).ready(function () {
             const button = $(`<button class="btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1">${i}</button>`);
             button.on('click', function () {
                 const logDate = $('#logDateInput').val();
-                fetchLogs(i, logDate);
+                fetchLogs(i, logDate); // Fetch logs for the selected page
             });
             paginationControls.append(button);
         }
@@ -344,7 +331,7 @@ $(document).ready(function () {
     $('#searchByDateBtn').on('click', function () {
         const logDate = $('#logDateInput').val();
         if (logDate) {
-            fetchLogs(1, logDate);
+            fetchLogs(1, logDate); // Fetch logs for the selected date
         } else {
             alert('Please select a date to search.');
         }
