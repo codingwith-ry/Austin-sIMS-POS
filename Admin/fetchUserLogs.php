@@ -2,9 +2,9 @@
 include '../Login/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $logsPerPage = 10;
+    $logsPerPage = isset($_POST['logsPerPage']) ? (int)$_POST['logsPerPage'] : 10;
     $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
-    $offset = ($page - 1) * $logsPerPage;
+    $offset = ($page - 1) * $logsPerPage; // Calculate the offset for pagination
     $logDate = isset($_POST['logDate']) ? $_POST['logDate'] : null;
 
     try {
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Add date filter if logDate is provided
         if ($logDate) {
-            $query .= " WHERE DATE(logDate) = :logDate"; // Use DATE() to filter by date only
+            $query .= " WHERE DATE(logDate) = :logDate";
         }
 
         // Add ordering and pagination
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Fetch total number of logs for pagination
         $countQuery = "SELECT COUNT(*) AS totalLogs FROM tbl_userlogs";
         if ($logDate) {
-            $countQuery .= " WHERE DATE(logDate) = :logDate"; // Use DATE() to filter by date only
+            $countQuery .= " WHERE DATE(logDate) = :logDate";
         }
         $countStmt = $conn->prepare($countQuery);
         if ($logDate) {
