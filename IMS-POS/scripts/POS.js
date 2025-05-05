@@ -21,29 +21,20 @@ document.querySelectorAll('.dineStatus').forEach(radio => {
 
 
 document.addEventListener('DOMContentLoaded', function () {
+    let activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
+    let activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
     const searchInput = document.querySelector('.form-control[placeholder="Search product here"]');
 
-    searchInput.addEventListener('input', function () {
-        console.log("active");
+    function searchInputHandler(){
         const query = searchInput.value.toLowerCase().trim();
 
-        // Get the currently active menu tab
-        const activeMenuTab = document.querySelector('.menuPanels .tab-pane.active');
-        if (!activeMenuTab){
-            console.log("No active menu tab found.");
-            return; // Exit if no active menu tab is found
-        } 
-        console.log(activeMenuTab);
-
-        // Get the currently active category tab within the active menu
-        const activeCategoryTab = activeMenuTab.querySelector('.menuPanel .tab-pane.active');
-        if (!activeCategoryTab) return; // Exit if no active category tab is found
-
-        console.log(activeCategoryTab);
-        // Get all product cards within the active category
+        activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
+        activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
+     
+    
         const productCards = activeCategoryTab.querySelectorAll('.productCardClass');
+            // Filter products based on the search query
 
-        // Filter products based on the search query
         productCards.forEach(card => {
             const productName = card.querySelector('.productName').textContent.toLowerCase();
             if (productName.includes(query)) {
@@ -52,7 +43,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 card.style.display = 'none'; // Hide non-matching product
             }
         });
+    }
+
+    document.querySelectorAll('.menuPills').forEach(pill => {
+        pill.addEventListener('click', function() {
+            activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
+            activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
+            searchInput.value = "";
+            searchInputHandler();
+        });
     });
+    
+    document.querySelectorAll('.categoryButtons').forEach(pill => {
+        pill.addEventListener('click', function() {
+            activeMenuTab = document.querySelector('.menuPanels .menuPanel.tab-pane.active');
+            activeCategoryTab = activeMenuTab.querySelector('.products .tab-pane.active');
+            searchInput.value = "";
+            searchInputHandler();
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            searchInputHandler();
+        });
+    }
 });
 
 
@@ -150,6 +165,9 @@ document.addEventListener('click', function (event) {
                             </label>
                         </div>
                     `;
+                    if(variation.variationID === data[0].variationID){
+                        updateTotal();
+                    }
                 });
                 document.querySelectorAll("variation-radio").checked = true;
                 basePrice = parseFloat(data[0].variationPrice);
@@ -251,7 +269,6 @@ document.addEventListener('click', function (event) {
             };
 
             orderItem = product;
-            console.log(product);
         }
 
         addToOrder.addEventListener('click', function() {
@@ -409,7 +426,6 @@ function initializeEditModal(orderItemEdit, index) {
                         </label>
                     </div>
                 `;
-                console.log(variation.variationName);
             });
             
             
@@ -478,7 +494,6 @@ function initializeEditModal(orderItemEdit, index) {
                     }
                 }
             });
-            
             updateTotalEdit();
         }
         else {
@@ -590,7 +605,6 @@ function updateOrderBar(){
     let displayTotalAmount = 0;
     // Retrieve orderItems from localStorage
     let orderItems = JSON.parse(localStorage.getItem('orderItems')) || [];
-    console.log(orderItems);
     // Get the container element
     let orderItemsContainer = document.getElementById('orderItemsContainer');
     orderItemsContainer.innerHTML = "";

@@ -79,11 +79,6 @@ $active = "menu";
                     <i class="bi-search"></i></span> <input type="text" class="form-control" placeholder="Search product here" aria-describedby="addon-wrapping"> 
                 </div> 
             </div> 
-            <div class="col-auto">
-                <button class="btn btn-secondary" type="button"> 
-                    <i class="fi fi-rr-settings-sliders"></i>
-                </button> 
-            </div> 
         </div>
     </div>
 
@@ -108,7 +103,7 @@ $active = "menu";
                         $isTabActive = "";
                     }
                     echo '<li class="nav-item" role="presentation">
-                            <button class="nav-link '.$isTabActive.' me-2" id="'.$arrTabs[$index].'Tab" data-bs-toggle="pill" data-bs-target="#'.$arrTabs[$index].'" type="button" role="tab" aria-controls="pills-home" aria-selected="true">'.$row['menuName'].'</button>
+                            <button class="nav-link '.$isTabActive.' me-2 menuPills" id="'.$arrTabs[$index].'Tab" data-bs-toggle="pill" data-bs-target="#'.$arrTabs[$index].'" type="button" role="tab" aria-controls="pills-home" aria-selected="true">'.$row['menuName'].'</button>
                         </li>';
                         $index++;
                 }
@@ -151,7 +146,7 @@ $active = "menu";
                         $isActiveCat = "fw-bold active";
                         echo'
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link '.$isActiveCat.'  flex-shrink-0 align-baseline me-3 nav-item "  style="width: 12rem; text-align: left; padding:15px;" data-bs-toggle="pill" data-bs-target="#all'.$menuCategoryName.'Row" role="tab" aria-selected="true">
+                            <button class="nav-link '.$isActiveCat.'  flex-shrink-0 align-baseline me-3 nav-item categoryButtons"  style="width: 12rem; text-align: left; padding:15px;" data-bs-toggle="pill" data-bs-target="#all'.$menuCategoryName.'Row" role="tab" aria-selected="true">
                                 <span>
                                     <i class="fi fi-ss-apps" id="categoryIcon"></i>
                                 </span>
@@ -172,7 +167,7 @@ $active = "menu";
                         $categoryIDArr[$index][$catIndex]= $category['categoryID'];
                         echo'
                         <li class="nav-item" role="presentation">
-                            <button class="nav-item nav-link flex-shrink-0 align-baseline me-3 "  style="width: 12rem; text-align: left; padding:15px;" data-bs-toggle="pill" data-bs-target="#'.$tabName.'" role="tab" aria-selected="true">
+                            <button class="nav-item nav-link flex-shrink-0 align-baseline me-3 categoryButtons"  style="width: 12rem; text-align: left; padding:15px;" data-bs-toggle="pill" data-bs-target="#'.$tabName.'" role="tab" aria-selected="true">
                                         <span>
                                             <i class="'.$category['categoryIcon'].'" id="categoryIcon"></i>  
                                         </span>
@@ -197,7 +192,7 @@ $active = "menu";
                         $searchProducts = "SELECT tbl_menu.productID, tbl_menu.menuID, tbl_menu.productName, tbl_menu.productImage, tbl_menu.productPrice, tbl_categories.categoryName, tbl_categories.categoryIcon FROM tbl_menu INNER JOIN tbl_categories ON tbl_menu.categoryID = tbl_categories.categoryID  WHERE tbl_menu.menuID = $currID ORDER BY tbl_menu.productName ASC;";
                         $products = $conn->prepare("$searchProducts");
                         $products->execute();
-                        echo'<div class="tab-pane fade '.$ifShow.'" id="all'.$menuCategoryName.'Row">
+                        echo'<div class="tab-pane fade '.$ifShow.' categoryPanel" id="all'.$menuCategoryName.'Row">
                              <div class="row">   
                         ';
                         if($products->rowCount()  <= 0){
@@ -207,16 +202,16 @@ $active = "menu";
                         }
                         while($product = $products->fetch()){
                             echo'
-                                <div class="card-parent col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0">
+                                <div class="card-parent col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0 productCardClass">
                                     <div class="card flex-shrink-0" id="productCard" style="width: 100%; padding: 15px;">
                                         <img src="resources/nachos.jpg" class="card-img-top rounded-start rounded-end mb-2" id="productImage" alt="...">
                                         <div class="card-body" id="productBody">
                                             <div class="row">
                                                 <div class="col-xl-8 col-lg-6 flex-shrink-0">
-                                                    <span id="productName">'.$product['productName'].'</span>
+                                                    <span id="productName" class="productName">'.$product['productName'].'</span>
                                                 </div>
                                                 <div class="col-xl-4 col-lg-6 flex-shrink-0 ps-0" style="justify-content: right; display: flex;">
-                                                    <span class="text-success" style="font-size: 12px; display: flex; justify-content: center; "><i class="'.$product['categoryIcon'].'" style="margin-top: 1px; padding-right: 3px;"></i>'.$product['categoryName'].'</span>
+                                                    <span class="text-success displayCategory" style="font-size: 12px; display: flex; justify-content: center; "><i class="'.$product['categoryIcon'].'" style="margin-top: 1px; padding-right: 3px;"></i>'.$product['categoryName'].'</span>
                                                 </div>
                                             </div>
                                                                                                 

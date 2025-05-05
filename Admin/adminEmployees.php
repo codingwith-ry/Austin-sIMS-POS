@@ -123,16 +123,27 @@ include("../Login/database.php");
             </table>
         </div>
         <hr>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-        <input type="date" id="logDateInput" class="form-control w-auto me-2">
-        <button id="searchByDateBtn" class="btn btn-primary">Search by Date</button>
+        
+<div class="table-responsive">
+    <h2 class="mt-4">User Logs</h2>
+    <p class="text-muted mb-0">View and manage user activity logs.</p>
+    <hr>
+    <div class="row align-items-center mb-3">
+    <!-- Print button now on the left -->
+    <div class="col-md-6 text-md-start text-start mb-2 mb-md-0">
+        <button id="printLogsBtn" class="btn btn-secondary">
+            <i class="bi bi-printer"></i> Print
+        </button>
     </div>
-    <div>
-        <button id="printLogsBtn" class="btn btn-secondary"><i class="bi bi-printer"></i> Print</button>
+
+    <!-- Search by date input now on the right -->
+    <div class="col-md-6">
+        <div class="input-group w-75 ms-md-auto">
+            <input type="date" id="logDateInput" class="form-control">
+            <button id="searchByDateBtn" class="btn btn-primary" type="button">Search by Date</button>
+        </div>
     </div>
 </div>
-
 
 
             <table id="userLogsTable" class="display" style="width:100%">
@@ -256,25 +267,26 @@ include("../Login/database.php");
         });
     </script>
 
-    <script>  
+<script>
 $(document).ready(function () {
     const logsPerPage = 10;
 
     // Function to fetch logs
     function fetchLogs(page = 1, logDate = null) {
         $.ajax({
-            url: 'fetchUserLogs.php',
+            url: 'fetchUserLogs.php', // Backend script
             type: 'POST',
-            data: { page: page, logDate: logDate },
+            data: { page: page, logDate: logDate, logsPerPage: logsPerPage },
             success: function (response) {
                 const res = JSON.parse(response);
                 if (res.success) {
                     const logs = res.logs;
                     const totalLogs = res.totalLogs;
 
-                    // Populate the logs table
                     const tbody = $('#userLogsTable tbody');
                     tbody.empty();
+
+                    // Append logs to the table
                     logs.forEach(log => {
                         tbody.append(`
                             <tr>
@@ -308,8 +320,8 @@ $(document).ready(function () {
         for (let i = 1; i <= totalPages; i++) {
             const button = $(`<button class="btn btn-sm ${i === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1">${i}</button>`);
             button.on('click', function () {
-                const logDate = $('#logDateInput').val(); // Get the selected date
-                fetchLogs(i, logDate);
+                const logDate = $('#logDateInput').val();
+                fetchLogs(i, logDate); // Fetch logs for the selected page
             });
             paginationControls.append(button);
         }
@@ -328,8 +340,8 @@ $(document).ready(function () {
     // Initial fetch
     fetchLogs();
 });
+</script>
 
-    </script>
     <script>
 document.getElementById('printLogsBtn').addEventListener('click', function () {
     const printContent = document.getElementById('userLogsTable').outerHTML;

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Receipt Printer</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    #receipt {
+      white-space: pre;
+      border: 1px solid #000;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="selection">
+    <h2>Select Items</h2>
+    <label>
+      Coffee:
+      <select id="coffeeSize">
+        <option value="None">None</option>
+        <option value="Small">Small</option>
+        <option value="Medium">Medium</option>
+        <option value="Large">Large</option>
+      </select>
+      Qty: <input type="number" id="coffeeQty" value="1" min="1">
+    </label><br><br>
+
+    <label>
+      Tea:
+      <select id="teaSize">
+        <option value="None">None</option>
+        <option value="Small">Small</option>
+        <option value="Medium">Medium</option>
+        <option value="Large">Large</option>
+      </select>
+      Qty: <input type="number" id="teaQty" value="1" min="1">
+    </label><br><br>
+
+    <label>Amount Paid: ₱<input type="number" id="amountPaid" value="500"></label><br><br>
+    <button onclick="submitOrder()">Generate Receipt</button>
+  </div>
+
+  <div id="receiptSection" class="hidden">
+    <h2>Receipt Preview</h2>
+    <div id="receipt"></div>
+    <button onclick="printWithRawBT()">Print with RawBT</button>
+  </div>
+
+  <script>
+    let orderObj;
+
+    function submitOrder() {
+      const items = [];
+
+      const coffeeSize = document.getElementById('coffeeSize').value;
+      const coffeeQty = parseInt(document.getElementById('coffeeQty').value);
+      if (coffeeSize !== 'None') {
+        let price = coffeeSize === 'Small' ? 60 : coffeeSize === 'Medium' ? 90 : 120;
+        items.push({ name: 'Coffee', size: coffeeSize, price, qty: coffeeQty });
+      }
+
+      const teaSize = document.getElementById('teaSize').value;
+      const teaQty = parseInt(document.getElementById('teaQty').value);
+      if (teaSize !== 'None') {
+        let price = teaSize === 'Small' ? 50 : teaSize === 'Medium' ? 70 : 100;
+        items.push({ name: 'Tea', size: teaSize, price, qty: teaQty });
+      }
+
+      const amountPaid = parseFloat(document.getElementById('amountPaid').value);
+
+      orderObj = {
+        orderNumber: 'A' + Math.floor(Math.random() * 10000),
+        orderDate: new Date().toLocaleDateString(),
+        orderTime: new Date().toLocaleTimeString(),
+        customerName: 'Guest',
+        orderItems: items,
+        get subTotal() {
+          return this.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+        },
+        get totalAmount() {
+          return this.subTotal;
+        },
+        amountPaid,
+        get changeAmount() {
+          return this.amountPaid - this.totalAmount;
+        },
+        paymentMode: 'Cash'
+      };
+
+      document.getElementById("receipt").textContent = generateReceipt(orderObj);
+      document.getElementById("selection").classList.add("hidden");
+      document.getElementById("receiptSection").classList.remove("hidden");
+    }
+
+    function generateReceipt(obj) {
+      let receipt = '';
+      receipt += 'Austin\'s Cafe & Gastro Pub\n';
+      receipt += '---------------------------\n';
+      receipt += `Order #: ${obj.orderNumber}\n`;
+      receipt += `Date: ${obj.orderDate} ${obj.orderTime}\n`;
+      receipt += `Customer: ${obj.customerName}\n\n`;
+      receipt += 'Items:\n';
+      obj.orderItems.forEach(item => {
+        receipt += `${item.qty} x ${item.name} (${item.size}) - ₱${item.price * item.qty}\n`;
+      });
+      receipt += '\n---------------------------\n';
+      receipt += `Subtotal: ₱${obj.subTotal}\n`;
+      receipt += `Total: ₱${obj.totalAmount}\n`;
+      receipt += `Paid: ₱${obj.amountPaid}\n`;
+      receipt += `Change: ₱${obj.changeAmount}\n`;
+      receipt += `Payment Mode: ${obj.paymentMode}\n`;
+      receipt += '---------------------------\n';
+      receipt += 'Thank you for your purchase!\n';
+      return receipt;
+    }
+
+    function printWithRawBT() {
+      const receiptText = generateReceipt(orderObj);
+      const encodedText = encodeURIComponent(receiptText);
+      const rawbtUrl = `rawbt:text:${encodedText}`;
+      window.location.href = rawbtUrl;
+    }
+  </script>
+
+</body>
+</html>

@@ -43,11 +43,11 @@ $active = "menu";
                 <h6 class="fw-bold mb-3">Order Details</h6>
                 <div id="orderItemsContainer"></div>
                 <hr>
-                <div class="d-flex justify-content-between fw-bold p-4 pt-0">
+                <div class="d-flex justify-content-between p-4 pt-0">
                     <span>Sub Total</span>
                     <span id="subTotal"></span>
                 </div>
-                <div id="discountElements" class="d-none justify-content-between fw-bold p-4 pt-0">
+                <div id="discountElements" class="d-none justify-content-between p-4 pt-0">
                     <span>Discount(SC/PWD)</span>
                     <span id="discountValue"></span>
                 </div>
@@ -101,7 +101,8 @@ $active = "menu";
                 </select>
                 <div class="input-group mb-3">
                     <span class="input-group-text bg-success text-light" id="basic-addon1">₱</span>
-                    <input id="amountPaidElem" type="text" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="form-control" placeholder="100.00" aria-label="Username" aria-describedby="basic-addon1">
+                    <input id="amountPaidElem" type="text" pattern="\d*\.?\d{0,2}" 
+                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..{0,2}).*/g, '$1')" class="form-control" placeholder="100.00" aria-label="Username" aria-describedby="basic-addon1">
                 </div>
                 <div id="referenceNumberField" style="display: none;">
                     <label for="referenceNumber" class="form-label fw-bold">Reference Number</label>
@@ -176,6 +177,31 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     
+    function formatPriceInput(input) {
+        input.addEventListener('blur', function() {
+            let value = this.value.trim();
+            
+            if (value === '') return;
+    
+            // If there's no decimal point, add '.00'
+            if (!value.includes('.')) {
+                this.value = value + '.00';
+            }
+            // If there's a decimal point but no numbers after it, add '00'
+            else if (value.endsWith('.')) {
+                this.value = value + '00';
+            }
+            // If there's only one digit after decimal point, add '0'
+            else if (/\.\d$/.test(value)) {
+                this.value = value + '0';
+            }
+        });
+    }
+
+    if(amountPaidElem) {
+        formatPriceInput(amountPaidElem);
+    }
+
 
     orderItems.forEach(item => {
         const itemElement = document.createElement('div');
@@ -437,13 +463,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                     icon: 'success',
                                     showConfirmButton: true,
                                     confirmButtonText: 'Print Receipt',
-                                    showCancelButton: true,
-                                    cancelButtonText: 'Close',
                                     customClass: {
                                         popup: 'receipt-popup',
                                         htmlContainer: 'receipt-html-container'
                                     },
-                                    width: '600px'
+                                    width: '600px',
+                                    allowOutsideClick: false
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         // Send orderObj to the server to insert into the database
@@ -536,9 +561,20 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 </div>
                                                 ` : ''}
                                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
+                                                    <span><strong>Senior Citizen/PWD:</strong></span>
+                                                    <span><strong>${order.discountCardID ? `Yes` : `No`}</strong></span>
+                                                </div>
+                                                
+                                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
                                                     <span><strong>Payment Method:</strong></span>
                                                     <span><strong>${order.paymentMode}</strong></span>
                                                 </div>
+                                                ${order.paymentMode == "GCash" || order.paymentMode == "PayMaya"?
+                                                `<div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
+                                                    <span><strong>Reference Number:</strong></span>
+                                                    <span><strong>${order.payReferenceNumber}</strong></span>
+                                                </div>`
+                                                : ``}
                                             </div>
                                             <hr style="border-top: 1px dashed; margin: 15px 0;">
                                             <div class="receipt-items" style="margin-bottom: 15px;">
@@ -568,17 +604,27 @@ document.addEventListener('DOMContentLoaded', function() {
                                             </div>
                                             <hr style="border: 1px dashed;" />
                                             <div class="receipt-totals" style="margin-bottom: 15px;">
-                                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                                    <span><strong>Total Amount:</strong></span>
+                                                <div class="fw-normal" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                    <span>Sub Total:</span>
+                                                    <span>₱${order.subTotal.toFixed(2)}</span>
+                                                </div>
+                                                ${order.discountCardID ? `
+                                                <div class="fw-normal" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                    <span>Discount:</span>
+                                                    <span>₱${(order.subTotal.toFixed(2) - order.totalAmount.toFixed(2)).toFixed(2)}</span>
+                                                </div>` 
+                                                : ``}
+                                                <div class="fw-bold" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                    <span class="fw-normal"><strong>Amount Due:</strong></span>
                                                     <span>₱${order.totalAmount.toFixed(2)}</span>
                                                 </div>
-                                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                                    <span><strong>Amount Paid:</strong></span>
+                                                <div class="fw-bold" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                    <span class="fw-normal"><strong>Amount Paid:</strong></span>
                                                     <span>₱${order.amountPaid.toFixed(2)}</span>
                                                 </div>
-                                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
-                                                    <span><strong>Change:</strong></span>
-                                                    <span><strong>₱${order.changeAmount.toFixed(2)}</strong></span>
+                                                <div class="fw-bold" style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 18px;">
+                                                    <span class="fw-normal"><strong>Change:</strong></span>
+                                                    <span>₱${order.changeAmount.toFixed(2)}</span>
                                                 </div>
                                             </div>
                                             ${order.additionalNotes ? `

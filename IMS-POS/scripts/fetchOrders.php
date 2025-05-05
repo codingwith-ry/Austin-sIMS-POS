@@ -13,7 +13,7 @@ $orders = $conn->query("
     tbl_orders.additionalNotes, 
     COALESCE(SUM(tbl_orderItems.productQuantity), 0) AS productQuantity
     FROM tbl_orders
-    LEFT JOIN tbl_orderItems ON tbl_orders.orderNumber = tbl_orderItems.orderNumber
+    LEFT JOIN tbl_orderItems ON tbl_orders.salesOrderNumber = tbl_orderItems.salesOrderNumber
     GROUP BY 
     tbl_orders.orderNumber, 
     tbl_orders.salesOrderNumber, 

@@ -163,18 +163,20 @@ if (isset($_GET['orderID'])) {
         data-date-now="<?php echo htmlspecialchars($orderDetail['orderDate']); ?>"
         data-time-now="<?php echo htmlspecialchars($orderDetail['orderTime']); ?>"
         data-customer-name="<?php echo htmlspecialchars($orderDetail['customerName']); ?>"
+        data-discount-id = "<?php echo htmlspecialchars($orderDetail['discountCardID']); ?>"
         data-order-items="<?php echo htmlspecialchars(json_encode($orderItems)); ?>"
+        data-sub-total="<?php echo htmlspecialchars($orderDetail['subTotal']); ?>"
         data-total-amount="<?php echo htmlspecialchars($orderDetail['totalAmount']); ?>"
         data-amount-paid="<?php echo htmlspecialchars($orderDetail['amountPaid']); ?>"
         data-additional-notes="<?php echo htmlspecialchars($orderDetail['additionalNotes']); ?>"
         data-payment-method="<?php echo htmlspecialchars($orderDetail['paymentMode']); ?>"
+        data-payment-reference="<?php echo htmlspecialchars($orderDetail['payReferenceNumber']); ?>"
         aria-label="Print Invoice"
     >Print Invoice</button>
 </div>
 
 <script>
-    document.addEventListener('click', function (event) {
-        if (event.target.matches('#printHistoryInvoice')) {
+    document.getElementById("printHistoryInvoice").addEventListener('click', function (event) {
             let orderNumber = event.target.getAttribute('data-order-number');
             let salesOrderNumber = event.target.getAttribute('data-sales-order-number');
             let employeeID = event.target.getAttribute('data-employee-id');
@@ -182,11 +184,14 @@ if (isset($_GET['orderID'])) {
             let orderDate = event.target.getAttribute('data-date-now');
             let orderTime = event.target.getAttribute('data-time-now');
             let customerName = event.target.getAttribute('data-customer-name');
+            let discountID = event.target.getAttribute('data-discount-id');
             let orderItems = event.target.getAttribute('data-order-items');
+            let subTotal = event.target.getAttribute('data-sub-total');
             let totalAmount = event.target.getAttribute('data-total-amount');
             let amountPaid = event.target.getAttribute('data-amount-paid');
             let additionalNotes = event.target.getAttribute('data-additional-notes');
             let paymentMethod = event.target.getAttribute('data-payment-method');
+            let payReferenceNumber = event.target.getAttribute('data-payment-reference');
 
             orderItems = JSON.parse(orderItems);
 
@@ -207,12 +212,15 @@ if (isset($_GET['orderID'])) {
                 orderDate: orderDate,
                 orderTime: orderTime,
                 customerName: customerName,
+                discountCardID: discountID,
                 orderItems: orderItems,
+                subTotal: subTotal,
                 totalAmount: totalAmount,
                 amountPaid: amountPaid,
                 changeAmount: amountPaid - totalAmount,
                 additionalNotes: additionalNotes,
-                paymentMode: paymentMethod
+                paymentMode: paymentMethod,
+                payReferenceNumber : payReferenceNumber
             };
 
             console.log(orderObj);
@@ -243,6 +251,5 @@ if (isset($_GET['orderID'])) {
                 console.error('Error:', error);
                 Swal.fire('Error', 'Failed to generate receipt', 'error');
             });
-        }
     });
 </script>

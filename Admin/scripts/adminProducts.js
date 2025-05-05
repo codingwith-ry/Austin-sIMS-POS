@@ -320,7 +320,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const variationCardIdentifier = document.querySelectorAll('#variationCard');
     
-
     // Function to attach event listeners to remove buttons
     function attachRemoveVariationListeners() {
         const removeButtons = document.querySelectorAll('.removeVariationButton');
@@ -686,9 +685,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function addAddonSelect(container, addons) {
         // Get the current menuID for the edit modal
+        
         const menuID = document.getElementById('editMenuSelect').value;
     
-        fetch(`scripts/fetchAddons.php?menuID=${menuID}`)
+        return fetch(`scripts/fetchAddons.php?menuID=${menuID}`)
             .then(response => response.json())
             .then(data => {
                 addons.forEach(addon => {
@@ -975,6 +975,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('#editProductBtn').forEach(button => {
         button.addEventListener('click', function() {
+            
             const productId = this.dataset.productId;
             const menuId = this.dataset.menuId;
             
@@ -986,7 +987,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Fetch product details including addons and variations
             fetch(`scripts/fetchProductDetails.php?productId=${productId}`)
                 .then(response => response.json())
-                .then(data => {
+                .then(productData => {
                     // Populate menu select
                     const editMenuSelect = document.getElementById('editMenuSelect');
                     editMenuSelect.value = menuId;
@@ -995,48 +996,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Fetch and populate categories for selected menu
                     fetchEditCategories(menuId).then(() => {
                         console.log(editCategorySelect);
-                        editCategorySelect.value = data.product.categoryID;
+                        editCategorySelect.value = productData.product.categoryID;
                     }).then(() => {
-                        let editAddonButton = document.getElementById('editAddonButton');
-                        let addonRow = `
-                            <div class="row mb-3 addonRow">
-                                <div class="col-12">
-                                    <div class="row">
-                                        <div class="col-12 d-flex">
-                                            <select class="form-select addon-dropdown" aria-label="Default select example">
-                        `;
-                        if (data.length === 0) {
-                            addonRow += `<option disabled selected>No add-ons available for this menu.</option>`;
-                            editAddonButton.disabled = true;
-                        } else {
-                            editAddonButton.disabled = false;
-                            console.log(data.addons);
-                            data.addons.forEach(addon => {
-                                addonRow += `
-                                    <option value="${addon.addonID}" data-name="${addon.addonName}" data-price="${addon.addonPrice}">
-                                        ${addon.addonName} - ₱${addon.addonPrice}
-                                    </option>
-                                `;
-                                console.log(addon.addonID, addon.addonName, addon.addonPrice);
-                            });
-                        }
-                        addonRow += `
-                                            </select>
-                                            <button type="button" class="btn btn-light pt-2 delete-addon">
-                                                <i class="fi fi-rr-trash text-danger"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        editAddonContainer.insertAdjacentHTML('beforeend', addonRow);
-                        editAttachDeleteAddonListeners();
+                        console.log(editMenuSelect.value);
+                        editAddonContainer.innerHTML = '';
+                        addonRow = ``;
+                        fetchEditAddons(editMenuSelect.value);
+                        addAddonSelect(editAddonContainer, productData.addons);
+                        document.getElementById("editAddonButton").addEventListener('click', function () {
+                            console.log(addonRow);
+                            editAddonContainer.insertAdjacentHTML('beforeend', addonRow);
+                            editAttachDeleteAddonListeners(); // Reattach delete functionality
+                        });
                     }).then(() => {
                         const editVariationContainer = document.querySelector('.editVariationContainer');
                         editVariationContainer.innerHTML = '';
-                        if (data.variations.length > 0) {
-                            data.variations.forEach(variation => {
+                        if (productData.variations.length > 0) {
+                            productData.variations.forEach(variation => {
                                 const variationCard = `
                                     <div id="variationCard" class="card mb-3">
                                         <div class="card-header fw-bold">
