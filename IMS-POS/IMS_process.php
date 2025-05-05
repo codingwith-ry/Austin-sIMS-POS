@@ -1,7 +1,7 @@
 <?php include '../Login/database.php' ?>
 <?php
 
-date_default_timezone_set('Asia/Manila'); 
+date_default_timezone_set('Asia/Manila');
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -134,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $logEmail = $_SESSION['email'];
                     $logRole = $_SESSION['userRole'];
                     $logContent = "Added a new item: $itemName (Item Name: $item_Name, Category: $item_Category)";
-                    $logDate = date('Y-m-d H:i:s'); 
+                    $logDate = date('Y-m-d H:i:s');
 
                     $logStmt = $conn->prepare("
                         INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
@@ -179,25 +179,26 @@ $inventoryRecords = $pdo->query($fetchInventoryQuery)->fetchAll(PDO::FETCH_ASSOC
 
 $fetchItemDataQuery = "
     SELECT 
-    i.Item_ID,
-    i.Item_Name, 
-    i.Item_Image, 
-    i.Item_Category, 
-    ic_cat.Category_Name, 
-    um.Unit_Acronym, 
-    r.Record_ItemQuantity, 
-    r.Record_ItemVolume,
-    r.Record_ItemExpirationDate,  -- Add this line to fetch the expiration date
-    IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change, 
-    IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease 
-FROM tbl_item i
-JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
-JOIN tbl_record r ON i.Item_ID = r.Item_ID
-LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
-LEFT JOIN tbl_inventory_changes ic ON r.Record_ID = ic.Record_ID
-GROUP BY i.Item_ID, r.Record_ItemVolume, ic_cat.Category_Name, um.Unit_Acronym, i.Item_Name, i.Item_Image, r.Record_ItemExpirationDate
-ORDER BY r.Record_ItemExpirationDate DESC
+        i.Item_ID,
+        i.Item_Name, 
+        i.Item_Image, 
+        i.Item_Category, 
+        ic_cat.Category_Name, 
+        um.Unit_Acronym, 
+        IFNULL(r.Record_ItemQuantity, 0) AS Record_ItemQuantity,
+        IFNULL(r.Record_ItemVolume, 0) AS Record_ItemVolume,
+        r.Record_ItemExpirationDate,
+        IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change, 
+        IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease 
+    FROM tbl_item i
+    JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
+    LEFT JOIN tbl_record r ON i.Item_ID = r.Item_ID
+    LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
+    LEFT JOIN tbl_inventory_changes ic ON r.Record_ID = ic.Record_ID
+    GROUP BY i.Item_ID, r.Record_ItemVolume, ic_cat.Category_Name, um.Unit_Acronym, i.Item_Name, i.Item_Image, r.Record_ItemExpirationDate
+    ORDER BY r.Record_ItemExpirationDate DESC
 ";
+
 
 $itemData = $pdo->query($fetchItemDataQuery)->fetchAll(PDO::FETCH_ASSOC);
 

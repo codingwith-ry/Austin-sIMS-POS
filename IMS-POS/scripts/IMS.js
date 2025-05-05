@@ -105,7 +105,7 @@ function printTableWithChildren() {
 // Trigger this function from a custom button
 let customPrintBtn = document.getElementById("customPrintBtn");
 
-if(customPrintBtn){
+if (customPrintBtn) {
   customPrintBtn.addEventListener("click", printTableWithChildren);
 }
 
@@ -147,7 +147,7 @@ function format(groupItems) {
 }
 // ✅ Group data by purchase date
 const groupedData = {};
-if(window.inventoryData){
+if (window.inventoryData) {
   window.inventoryData.forEach((record) => {
     if (!groupedData[record.Record_ItemPurchaseDate]) {
       groupedData[record.Record_ItemPurchaseDate] = [];
@@ -273,7 +273,9 @@ let itemRecords = new DataTable("#itemRecords", {
                       Swal.fire({
                         icon: "error",
                         title: "Error",
-                        text: res.message || "Failed to delete the selected records.",
+                        text:
+                          res.message ||
+                          "Failed to delete the selected records.",
                       });
                     }
                   },
@@ -318,45 +320,52 @@ let itemRecords = new DataTable("#itemRecords", {
               type: "POST",
               data: { recordId: recordId },
               success: function (response) {
-                  const res = JSON.parse(response);
-                  if (res.success) {
-                      if (res.record) {
-                          // Populate the edit modal with the record data
-                          $("#editRecordModal #recordId").val(res.record.Record_ID);
-                          $("#editRecordModal #itemVolume").val(res.record.Record_ItemVolume);
-                          $("#editRecordModal #itemQuantity").val(res.record.Record_ItemQuantity);
-                          $("#editRecordModal #itemPrice").val(res.record.Record_ItemPrice);
-                          $("#editRecordModal #itemExpirationDate").val(res.record.Record_ItemExpirationDate);
-          
-                          // Show the edit modal
-                          const editRecordModal = new bootstrap.Modal(
-                              document.getElementById("editRecordModal")
-                          );
-                          editRecordModal.show();
-                      } else {
-                          Swal.fire({
-                              icon: "error",
-                              title: "Error",
-                              text: "Record details are missing.",
-                          });
-                      }
+                const res = JSON.parse(response);
+                if (res.success) {
+                  if (res.record) {
+                    // Populate the edit modal with the record data
+                    $("#editRecordModal #recordId").val(res.record.Record_ID);
+                    $("#editRecordModal #itemVolume").val(
+                      res.record.Record_ItemVolume
+                    );
+                    $("#editRecordModal #itemQuantity").val(
+                      res.record.Record_ItemQuantity
+                    );
+                    $("#editRecordModal #itemPrice").val(
+                      res.record.Record_ItemPrice
+                    );
+                    $("#editRecordModal #itemExpirationDate").val(
+                      res.record.Record_ItemExpirationDate
+                    );
+
+                    // Show the edit modal
+                    const editRecordModal = new bootstrap.Modal(
+                      document.getElementById("editRecordModal")
+                    );
+                    editRecordModal.show();
                   } else {
-                      Swal.fire({
-                          icon: "error",
-                          title: "Error",
-                          text: res.message || "Failed to fetch record details.",
-                      });
-                  }
-              },
-              error: function () {
-                  Swal.fire({
+                    Swal.fire({
                       icon: "error",
                       title: "Error",
-                      text: "Failed to fetch record details.",
+                      text: "Record details are missing.",
+                    });
+                  }
+                } else {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res.message || "Failed to fetch record details.",
                   });
+                }
               },
-          });
-          
+              error: function () {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "Failed to fetch record details.",
+                });
+              },
+            });
           },
         },
       ],
@@ -452,4 +461,83 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Default display of all items on page load
   filterItems("all");
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const scrollContainer = document.querySelector(".custom-scrollbar");
+
+  if (scrollContainer) {
+    scrollContainer.addEventListener(
+      "wheel",
+      function (e) {
+        // Only if there's horizontal overflow
+        if (scrollContainer.scrollWidth > scrollContainer.clientWidth) {
+          e.preventDefault(); // Prevent vertical scroll
+          scrollContainer.scrollLeft += e.deltaY; // Scroll horizontally
+        }
+      },
+      { passive: false }
+    ); // passive: false is needed to use preventDefault
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.querySelector("#addItemModal form");
+  const category = form.querySelector('select[name="item_category"]');
+  const unit = form.querySelector('select[name="item_unit"]');
+  const name = form.querySelector('input[name="item_name"]');
+  const image = form.querySelector('input[name="image"]');
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // Validation
+    if (!category.value || category.selectedIndex === 0) {
+      Swal.fire("Missing Field", "Please select a category.", "warning");
+      return;
+    }
+
+    if (!unit.value || unit.selectedIndex === 0) {
+      Swal.fire(
+        "Missing Field",
+        "Please select a unit of measurement.",
+        "warning"
+      );
+      return;
+    }
+
+    if (!name.value.trim()) {
+      Swal.fire("Missing Field", "Please enter an item name.", "warning");
+      return;
+    }
+
+    if (!image.files || image.files.length === 0) {
+      Swal.fire("Missing Field", "Please upload an item image.", "warning");
+      return;
+    }
+
+    // Confirmation Dialog
+    Swal.fire({
+      title: "Confirm Add",
+      text: "Are you sure you want to add this item?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, add it!",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Optional: Simulate delay if form is AJAX-based
+        // If you're submitting via AJAX, show success after success response
+        Swal.fire({
+          icon: "success",
+          title: "Item Added",
+          text: "The item was successfully added!",
+          confirmButtonColor: "#3085d6",
+        }).then(() => {
+          form.submit(); // Proceed with submission
+        });
+      }
+    });
+  });
 });
