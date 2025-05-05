@@ -23,6 +23,8 @@
             overflow: hidden;
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
 </head>
 
 <body>
@@ -232,22 +234,18 @@
                             <div class="col-8 border rounded p-4">
                                 <h3 class="fw-bold">Menu Sales</h3>
                                 <hr>
+                                <br />
                                 <canvas id="menuSalesChart" class="h-75"></canvas>
                             </div>
                             <div class="col-4 border rounded p-4">
                                 <h3 class="fw-bold">Category Sales</h3>
                                 <hr>
-                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Coffee Menu</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Gastro Pub Menu</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Party Tray Menu</button>
-                                    </li>
-                                </ul>
+                                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                    <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Coffee Menu</button>
+                                    <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Gastro Pub Menu</button>
+                                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Party Tray Menu</button>
+                                </div>
+
                                 <hr />
                                 <div class="tab-content" id="pills-tabContent">
                                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">

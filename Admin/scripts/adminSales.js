@@ -274,3 +274,35 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
       }
     }
   });
+
+  $(document).ready(function () {
+    // Initialize DataTable
+    $('#productSalesTable').DataTable({
+        ajax: 'scripts/fetchProductSales.php', // Replace with your server-side script URL
+        columns: [
+            { data: 'product' },       // Product Name
+            { data: 'price' },         // Price
+            { data: 'quantity' },      // Quantity
+            { data: 'total_sales' },   // Total Sales
+            { data: 'total_revenue' }  // Total Revenue
+        ],
+        responsive: true, // Makes the table responsive
+        paging: true,     // Enables pagination
+        searching: true,  // Enables search functionality
+        ordering: true,   // Enables column sorting
+        lengthChange: true, // Allows changing the number of rows displayed
+        pageLength: 10,   // Default number of rows per page
+        language: {
+            emptyTable: "No data available in table",
+            search: "Search:",
+            lengthMenu: "Show _MENU_ entries",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            paginate: {
+                first: "First",
+                last: "Last",
+                next: "Next",
+                previous: "Previous"
+            }
+        }
+    });
+});

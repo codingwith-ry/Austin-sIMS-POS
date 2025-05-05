@@ -147,14 +147,14 @@ function format(groupItems) {
 }
 // ✅ Group data by purchase date
 const groupedData = {};
-if(window.inventoryData){
-  window.inventoryData.forEach((record) => {
+
+window.inventoryData.forEach((record) => {
     if (!groupedData[record.Record_ItemPurchaseDate]) {
       groupedData[record.Record_ItemPurchaseDate] = [];
     }
     groupedData[record.Record_ItemPurchaseDate].push(record);
   });
-}
+
 
 // ✅ Prepare rows - one per purchase date
 const tableData = Object.keys(groupedData).map((purchaseDate, index) => {
