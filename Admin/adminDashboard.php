@@ -5,7 +5,7 @@ if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'administrator') 
     exit();
 }
 
-include '/xampp/htdocs/Austin-sIMS-POS/Login/database.php';
+include '../Login/database.php';
 
 $fetchItemDataQuery = "
     SELECT 
