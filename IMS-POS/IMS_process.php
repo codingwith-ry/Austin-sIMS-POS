@@ -108,12 +108,12 @@ if (isset($_POST['add_record'])) {
 
 /* PUSHING ITEM DATA TO THE DATABASE */
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST["item_name"]) && isset($_POST["item_category"]) && isset($_POST["item_unit"])) {
-
+    if (isset($_POST["item_name"]) && isset($_POST["item_category"]) && isset($_POST["item_unit"]) && isset($_POST["item_lowstock"])) {
         // Assign POST data to variables
         $item_Name = $_POST["item_name"];
         $item_Category = $_POST["item_category"];
         $item_Unit = $_POST["item_unit"];
+        $item_Lowstock = $_POST["item_lowstock"];
 
         // File upload handling
         $file_name = $_FILES["image"]["name"];
@@ -123,40 +123,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Move uploaded file
         if (move_uploaded_file($tempname, $folder)) {
             try {
-                // Insert query without prepared statement
-                $sql = "INSERT INTO tbl_item (Item_Name, Item_Category, Item_Image, Unit_ID) 
-                        VALUES ('$item_Name', '$item_Category', '$folder', '$item_Unit')";
+                // Insert query to add the new item, including Item_Lowstock
+                $sql = "INSERT INTO tbl_item (Item_Name, Item_Category, Item_Image, Unit_ID, Item_Lowstock) 
+                        VALUES (:item_name, :item_category, :item_image, :unit_id, :item_lowstock)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':item_name', $item_Name);
+                $stmt->bindParam(':item_category', $item_Category);
+                $stmt->bindParam(':item_image', $folder);
+                $stmt->bindParam(':unit_id', $item_Unit);
+                $stmt->bindParam(':item_lowstock', $item_Lowstock);
 
-                // Execute query
-                $pdo->exec($sql);
-
-                if (isset($_SESSION['email']) && isset($_SESSION['userRole'])) {
-                    $logEmail = $_SESSION['email'];
-                    $logRole = $_SESSION['userRole'];
-                    $logContent = "Added a new item: $itemName (Item Name: $item_Name, Category: $item_Category)";
-                    $logDate = date('Y-m-d H:i:s');
-
-                    $logStmt = $conn->prepare("
-                        INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
-                        VALUES (:logEmail, :logRole, :logContent, :logDate)
-                    ");
-                    $logStmt->bindParam(':logEmail', $logEmail);
-                    $logStmt->bindParam(':logRole', $logRole);
-                    $logStmt->bindParam(':logContent', $logContent);
-                    $logStmt->bindParam(':logDate', $logDate);
-                    $logStmt->execute();
+                if ($stmt->execute()) {
+                    echo "<script>alert('Item added successfully!');</script>";
+                    header("Location: Inventory_Item-Records.php");
+                    exit();
                 } else {
-                    error_log("Session variables 'email' or 'userRole' are not set.");
+                    echo "<script>alert('Failed to add item.');</script>";
                 }
-
-                // Redirect after successful insert
-                header("Location: Inventory_Item-Records.php");
-                exit();
             } catch (PDOException $e) {
                 echo "Error: " . $e->getMessage();
             }
         } else {
-            echo "Failed to upload image.";
+            echo "<script>alert('Failed to upload image.');</script>";
         }
     }
 }
@@ -188,6 +176,7 @@ $fetchItemDataQuery = "
         IFNULL(r.Record_ItemQuantity, 0) AS Record_ItemQuantity,
         IFNULL(r.Record_ItemVolume, 0) AS Record_ItemVolume,
         r.Record_ItemExpirationDate,
+        i.Item_Lowstock,
         IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change, 
         IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease 
     FROM tbl_item i
