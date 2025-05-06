@@ -19,6 +19,7 @@ $fetchItemDataQuery = "
     r.Record_ItemQuantity, 
     r.Record_ItemVolume,
     r.Record_ItemExpirationDate,
+    i.Item_Lowstock, -- Include the Item_Lowstock field
     IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change,
     IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease,
     IFNULL(SUM(CASE WHEN ic.Change_Type = 'increase' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Increase
@@ -36,9 +37,9 @@ GROUP BY
     um.Unit_Acronym,
     r.Record_ItemQuantity,
     r.Record_ItemVolume,
-    r.Record_ItemExpirationDate
+    r.Record_ItemExpirationDate,
+    i.Item_Lowstock -- Group by Item_Lowstock as well
 ORDER BY i.Item_Name ASC;
-
 ";
 
 $itemData = $pdo->query($fetchItemDataQuery)->fetchAll(PDO::FETCH_ASSOC);
@@ -62,8 +63,8 @@ foreach ($itemData as $item) {
     elseif ($currentStock <= 0) {
         $outOfStockItems[] = $item;
     }
-    // Check if the item is low in stock (less than 4 items)
-    elseif ($currentStock > 0 && $currentStock < 4) {
+    // Check if the item is low in stock based on Item_Lowstock
+    elseif ($currentStock > 0 && $currentStock <= $item['Item_Lowstock']) {
         $lowStockItems[] = $item;
     }
 }
@@ -135,8 +136,7 @@ foreach ($itemData as $item) {
                                             <div class="flex-grow-1">
                                                 <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong><br>
                                                 <span>
-                                                    <?php echo htmlspecialchars($item['Total_Quantity']); ?> pcs
-                                                    (<?php echo htmlspecialchars($item['Record_ItemVolume']) . ' ' . htmlspecialchars($item['Unit_Acronym']); ?>)
+                                                    <?php echo htmlspecialchars($item['Total_Quantity']); ?> pcs (Low Stock Threshold: <?php echo htmlspecialchars($item['Item_Lowstock']); ?> pcs)
                                                 </span>
                                             </div>
                                         </li>
@@ -232,9 +232,6 @@ foreach ($itemData as $item) {
 
                                     </div>
                                     <div class="col-auto" style="display: flex; gap: 10px">
-                                        <button class="btn btn-secondary" type="button">
-                                            <i class="fi fi-rr-settings-sliders"></i>
-                                        </button>
                                         <ul class="nav nav-pills" id="pills-tab" role="tablist">
                                             <li class="nav-item ms-auto" role="presentation">
                                                 <!-- Add Item Button -->
@@ -296,6 +293,12 @@ foreach ($itemData as $item) {
                                                     <label for="itemNameInput" class="form-label fw-bold" style="font-size: 18px;">Item Name</label>
                                                     <input type="text" class="form-control" id="itemNameInput" placeholder="ex. Nachos" name="item_name">
                                                 </div>
+
+                                                <!-- Item Low Stock -->
+                                                <div class="mb-3">
+                                                    <label for="itemLowStock" class="form-label fw-bold" style="font-size: 18px;">Low Stock Threshold</label>
+                                                    <input type="number" class="form-control" id="itemLowStock" placeholder="Enter low stock threshold" name="item_lowstock" required>
+                                                </div>                                                
 
                                                 <hr />
                                                 <!-- Item Picture -->
@@ -381,6 +384,11 @@ foreach ($itemData as $item) {
                                                         ?>
                                                     </select>
                                                 </div>
+                                                <!-- Item Low Stock -->
+                                                <div class="mb-3">
+                                                    <label for="editItemLowStock" class="form-label">Low Stock Threshold</label>
+                                                    <input type="number" class="form-control" id="editItemLowStock" name="item_lowstock" required>
+                                                </div>
                                                 <div class="mb-3">
                                                     <label for="editItemImage" class="form-label">Item Image</label>
                                                     <input type="file" class="form-control" id="editItemImage" name="item_image">
@@ -424,12 +432,20 @@ foreach ($itemData as $item) {
                                                     <input type="text" class="form-control" id="unitOfMeasurement" name="unitOfMeasurement" readonly required>
                                                 </div>
 
+                                                                                                <!-- Item Low Stock -->
+                                                                                                <div class="mb-3">
+                                                    <label for="editItemLowStock" class="form-label">Low Stock Threshold</label>
+                                                    <input type="number" class="form-control" id="editItemLowStock" name="item_lowstock" required>
+                                                </div>
+
                                                 <!-- Item Image -->
                                                 <div class="mb-3">
                                                     <label for="itemImage" class="form-label">Item Image</label>
                                                     <input type="file" class="form-control" id="itemImage" name="itemImage" onchange="previewImage(event)">
                                                     <img id="imagePreview" src="" alt="Item Image" class="mt-2" width="100">
                                                 </div>
+
+
 
                                                 <!-- Submit Button -->
                                                 <button type="submit" class="btn btn-primary">Update Item</button>
@@ -524,6 +540,7 @@ foreach ($itemData as $item) {
                                             $itemName = htmlspecialchars($row['Item_Name']);
                                             $itemQty = htmlspecialchars($row['Record_ItemQuantity']);
                                             $volume = htmlspecialchars($row['Record_ItemVolume']);
+                                            $lowStockThreshold = htmlspecialchars($row['Item_Lowstock']); 
                                             $uniqueKey = $itemID . '_' . $volume;
                                             $modalID = "decreaseModal_" . $uniqueKey;
 
@@ -546,21 +563,21 @@ foreach ($itemData as $item) {
                                                 $cardBorderClass = 'border border-danger';
                                                 $imageStyle = 'filter: grayscale(100%) brightness(60%);';
                                                 $outOfStockOverlay = '
-                                                        <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
-                                                            Out of Stock
-                                                        </div>';
+                                                    <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
+                                                        Out of Stock
+                                                    </div>';
                                             } elseif ($isExpired) {
                                                 // Expired
                                                 $cardBorderClass = 'border border-secondary';
                                                 $expiredOverlay = '
-                                                                <div class="position-absolute top-50 start-50 translate-middle bg-secondary text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
-                                                                    Expired
-                                                                </div>';
+                                                    <div class="position-absolute top-50 start-50 translate-middle bg-secondary text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
+                                                        Expired
+                                                    </div>';
                                                 $imageStyle = 'filter: grayscale(100%) brightness(50%);';
-                                            } elseif ($itemQty <= 3) {
+                                            } elseif ($itemQty <= $row['Item_Lowstock']) {
                                                 // Low stock
                                                 $cardBorderClass = 'border border-warning';
-                                                $tooltipAttr = 'data-bs-toggle="tooltip" data-bs-title="Quantity of this item is low"';
+                                                $tooltipAttr = 'data-bs-toggle="tooltip" data-bs-title="Quantity of this item is below the low stock threshold"';
                                             }
 
                                             echo '
@@ -601,6 +618,7 @@ foreach ($itemData as $item) {
                                                                 <div class="modal-body">
                                                                     <p><strong>' . $itemName . '</strong></p>
                                                                     <p>Available Quantity: <strong>' . $itemQty . ' pcs</strong></p>
+                                                                     <p>Low Stock Threshold: <strong>' . $lowStockThreshold . ' pcs</strong></p> <!-- Display Low Stock Threshold -->
                                                                     <div class="mb-3">
                                                                         <label for="slider_' . $itemID . '" class="form-label">Select amount to decrease:</label>
                                                                         <input type="range" class="form-range" min="0" max="' . $itemQty . '" value="1" id="slider_' . $uniqueKey . '" name="decrease_amount" oninput="updatePreview_' . $uniqueKey . '()">
@@ -684,6 +702,8 @@ foreach ($itemData as $item) {
                             </div>
                         </div>
 
+
+
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Item Price</span>
                             <div class="col-sm-8">
@@ -692,8 +712,9 @@ foreach ($itemData as $item) {
                         </div>
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Item Volume</span>
-                            <div class="col-sm-8">
-                                <input class="form-control" id="focusedInput" type="text" placeholder="0.00" name="item_volume">
+                            <div class="col-sm-8" style="display: flex; align-items: center;">
+                                <input class="form-control" id="itemVolume" type="text" placeholder="0.00" name="item_volume" style="flex: 1;">
+                                <span id="unitAcronym" style="margin-left: 10px; font-weight: bold;"></span>
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">
@@ -837,35 +858,35 @@ foreach ($itemData as $item) {
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle item selection from the dropdown
-            document.getElementById('editItemDropdown').addEventListener('change', function() {
-                const itemId = this.value;
+            document.getElementById('editItemDropdown').addEventListener('change', function () {
+        const itemId = this.value;
 
-                // Fetch item details via AJAX
-                fetch('../IMS-POS/scripts/fetchItemDetails.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: `item_id=${itemId}`
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Populate the modal fields with item details
-                            document.getElementById('editItemName').value = data.item.Item_Name;
-                            document.getElementById('editItemCategory').value = data.item.Item_Category; // Set the category ID
-                            document.getElementById('editItemUnit').value = data.item.Unit_ID; // Set the unit ID
-                            document.getElementById('editItemImagePreview').src = data.item.Item_Image;
-                        } else {
-                            alert('Failed to fetch item details.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching item details:', error);
-                        alert('An error occurred while fetching item details.');
-                    });
-            });
+        // Fetch item details via AJAX
+        fetch('../IMS-POS/scripts/fetchItemDetails.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `item_id=${itemId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Populate the modal fields with item details
+                document.getElementById('editItemName').value = data.item.Item_Name;
+                document.getElementById('editItemCategory').value = data.item.Item_Category;
+                document.getElementById('editItemUnit').value = data.item.Unit_ID;
+                document.getElementById('editItemLowStock').value = data.item.Item_Lowstock; // Populate Low Stock
+                document.getElementById('editItemImagePreview').src = data.item.Item_Image;
+            } else {
+                alert('Failed to fetch item details.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching item details:', error);
+            alert('An error occurred while fetching item details.');
+        });
+    });
 
             // Handle Save Changes button click
             document.getElementById('saveEditItem').addEventListener('click', function() {
@@ -894,14 +915,38 @@ foreach ($itemData as $item) {
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get the current date in YYYY-MM-DD format
-        const today = new Date().toISOString().split('T')[0];
+document.addEventListener('DOMContentLoaded', function () {
+    const itemDropdown = document.getElementById('itemDropdown');
+    const unitAcronymSpan = document.getElementById('unitAcronym');
 
-        // Set the min attribute for the date fields
-        document.getElementById('purchaseDate').setAttribute('min', today);
-        document.getElementById('expirationDate').setAttribute('min', today);
-            });
+    itemDropdown.addEventListener('change', function () {
+        const itemName = this.value; // Use Item_Name instead of Item_ID
+
+        // Fetch UOM details via AJAX
+        fetch('../IMS-POS/scripts/fetchUnitOfMeasurement.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `item_name=${encodeURIComponent(itemName)}` // Pass Item_Name
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Display the Unit_Acronym next to the Item Volume field
+                unitAcronymSpan.textContent = data.unit.Unit_Acronym;
+            } else {
+                unitAcronymSpan.textContent = ''; // Clear the Unit_Acronym if not found
+                alert(data.message || 'Failed to fetch Unit of Measurement.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching Unit of Measurement:', error);
+            unitAcronymSpan.textContent = ''; // Clear the Unit_Acronym on error
+            alert('An error occurred while fetching Unit of Measurement.');
+        });
+    });
+});
     </script>
 </body>
 <?php include 'footer.php' ?>
