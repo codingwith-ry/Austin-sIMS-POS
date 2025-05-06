@@ -64,7 +64,7 @@ foreach ($itemData as $item) {
         $outOfStockItems[] = $item;
     }
     // Check if the item is low in stock based on Item_Lowstock
-    elseif ($currentStock > 0 && $currentStock < $item['Item_Lowstock']) {
+    elseif ($currentStock > 0 && $currentStock <= $item['Item_Lowstock']) {
         $lowStockItems[] = $item;
     }
 }
@@ -387,6 +387,11 @@ foreach ($itemData as $item) {
                                                         ?>
                                                     </select>
                                                 </div>
+                                                <!-- Item Low Stock -->
+                                                <div class="mb-3">
+                                                    <label for="editItemLowStock" class="form-label">Low Stock Threshold</label>
+                                                    <input type="number" class="form-control" id="editItemLowStock" name="item_lowstock" required>
+                                                </div>
                                                 <div class="mb-3">
                                                     <label for="editItemImage" class="form-label">Item Image</label>
                                                     <input type="file" class="form-control" id="editItemImage" name="item_image">
@@ -430,12 +435,20 @@ foreach ($itemData as $item) {
                                                     <input type="text" class="form-control" id="unitOfMeasurement" name="unitOfMeasurement" readonly required>
                                                 </div>
 
+                                                                                                <!-- Item Low Stock -->
+                                                                                                <div class="mb-3">
+                                                    <label for="editItemLowStock" class="form-label">Low Stock Threshold</label>
+                                                    <input type="number" class="form-control" id="editItemLowStock" name="item_lowstock" required>
+                                                </div>
+
                                                 <!-- Item Image -->
                                                 <div class="mb-3">
                                                     <label for="itemImage" class="form-label">Item Image</label>
                                                     <input type="file" class="form-control" id="itemImage" name="itemImage" onchange="previewImage(event)">
                                                     <img id="imagePreview" src="" alt="Item Image" class="mt-2" width="100">
                                                 </div>
+
+
 
                                                 <!-- Submit Button -->
                                                 <button type="submit" class="btn btn-primary">Update Item</button>
@@ -530,6 +543,7 @@ foreach ($itemData as $item) {
                                             $itemName = htmlspecialchars($row['Item_Name']);
                                             $itemQty = htmlspecialchars($row['Record_ItemQuantity']);
                                             $volume = htmlspecialchars($row['Record_ItemVolume']);
+                                            $lowStockThreshold = htmlspecialchars($row['Item_Lowstock']); 
                                             $uniqueKey = $itemID . '_' . $volume;
                                             $modalID = "decreaseModal_" . $uniqueKey;
 
@@ -563,7 +577,7 @@ foreach ($itemData as $item) {
                                                         Expired
                                                     </div>';
                                                 $imageStyle = 'filter: grayscale(100%) brightness(50%);';
-                                            } elseif ($itemQty < $row['Item_Lowstock']) {
+                                            } elseif ($itemQty <= $row['Item_Lowstock']) {
                                                 // Low stock
                                                 $cardBorderClass = 'border border-warning';
                                                 $tooltipAttr = 'data-bs-toggle="tooltip" data-bs-title="Quantity of this item is below the low stock threshold"';
@@ -607,6 +621,7 @@ foreach ($itemData as $item) {
                                                                 <div class="modal-body">
                                                                     <p><strong>' . $itemName . '</strong></p>
                                                                     <p>Available Quantity: <strong>' . $itemQty . ' pcs</strong></p>
+                                                                     <p>Low Stock Threshold: <strong>' . $lowStockThreshold . ' pcs</strong></p> <!-- Display Low Stock Threshold -->
                                                                     <div class="mb-3">
                                                                         <label for="slider_' . $itemID . '" class="form-label">Select amount to decrease:</label>
                                                                         <input type="range" class="form-range" min="0" max="' . $itemQty . '" value="1" id="slider_' . $uniqueKey . '" name="decrease_amount" oninput="updatePreview_' . $uniqueKey . '()">
@@ -843,35 +858,35 @@ foreach ($itemData as $item) {
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle item selection from the dropdown
-            document.getElementById('editItemDropdown').addEventListener('change', function() {
-                const itemId = this.value;
+            document.getElementById('editItemDropdown').addEventListener('change', function () {
+        const itemId = this.value;
 
-                // Fetch item details via AJAX
-                fetch('../IMS-POS/scripts/fetchItemDetails.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: `item_id=${itemId}`
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Populate the modal fields with item details
-                            document.getElementById('editItemName').value = data.item.Item_Name;
-                            document.getElementById('editItemCategory').value = data.item.Item_Category; // Set the category ID
-                            document.getElementById('editItemUnit').value = data.item.Unit_ID; // Set the unit ID
-                            document.getElementById('editItemImagePreview').src = data.item.Item_Image;
-                        } else {
-                            alert('Failed to fetch item details.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching item details:', error);
-                        alert('An error occurred while fetching item details.');
-                    });
-            });
+        // Fetch item details via AJAX
+        fetch('../IMS-POS/scripts/fetchItemDetails.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `item_id=${itemId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Populate the modal fields with item details
+                document.getElementById('editItemName').value = data.item.Item_Name;
+                document.getElementById('editItemCategory').value = data.item.Item_Category;
+                document.getElementById('editItemUnit').value = data.item.Unit_ID;
+                document.getElementById('editItemLowStock').value = data.item.Item_Lowstock; // Populate Low Stock
+                document.getElementById('editItemImagePreview').src = data.item.Item_Image;
+            } else {
+                alert('Failed to fetch item details.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching item details:', error);
+            alert('An error occurred while fetching item details.');
+        });
+    });
 
             // Handle Save Changes button click
             document.getElementById('saveEditItem').addEventListener('click', function() {
