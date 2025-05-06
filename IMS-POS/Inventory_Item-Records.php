@@ -702,6 +702,8 @@ foreach ($itemData as $item) {
                             </div>
                         </div>
 
+
+
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Item Price</span>
                             <div class="col-sm-8">
@@ -710,8 +712,9 @@ foreach ($itemData as $item) {
                         </div>
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Item Volume</span>
-                            <div class="col-sm-8">
-                                <input class="form-control" id="focusedInput" type="text" placeholder="0.00" name="item_volume">
+                            <div class="col-sm-8" style="display: flex; align-items: center;">
+                                <input class="form-control" id="itemVolume" type="text" placeholder="0.00" name="item_volume" style="flex: 1;">
+                                <span id="unitAcronym" style="margin-left: 10px; font-weight: bold;"></span>
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">
@@ -912,14 +915,38 @@ foreach ($itemData as $item) {
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get the current date in YYYY-MM-DD format
-        const today = new Date().toISOString().split('T')[0];
+document.addEventListener('DOMContentLoaded', function () {
+    const itemDropdown = document.getElementById('itemDropdown');
+    const unitAcronymSpan = document.getElementById('unitAcronym');
 
-        // Set the min attribute for the date fields
-        document.getElementById('purchaseDate').setAttribute('min', today);
-        document.getElementById('expirationDate').setAttribute('min', today);
-            });
+    itemDropdown.addEventListener('change', function () {
+        const itemName = this.value; // Use Item_Name instead of Item_ID
+
+        // Fetch UOM details via AJAX
+        fetch('../IMS-POS/scripts/fetchUnitOfMeasurement.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `item_name=${encodeURIComponent(itemName)}` // Pass Item_Name
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Display the Unit_Acronym next to the Item Volume field
+                unitAcronymSpan.textContent = data.unit.Unit_Acronym;
+            } else {
+                unitAcronymSpan.textContent = ''; // Clear the Unit_Acronym if not found
+                alert(data.message || 'Failed to fetch Unit of Measurement.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching Unit of Measurement:', error);
+            unitAcronymSpan.textContent = ''; // Clear the Unit_Acronym on error
+            alert('An error occurred while fetching Unit of Measurement.');
+        });
+    });
+});
     </script>
 </body>
 <?php include 'footer.php' ?>
