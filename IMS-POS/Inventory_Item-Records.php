@@ -232,9 +232,6 @@ foreach ($itemData as $item) {
 
                                     </div>
                                     <div class="col-auto" style="display: flex; gap: 10px">
-                                        <button class="btn btn-secondary" type="button">
-                                            <i class="fi fi-rr-settings-sliders"></i>
-                                        </button>
                                         <ul class="nav nav-pills" id="pills-tab" role="tablist">
                                             <li class="nav-item ms-auto" role="presentation">
                                                 <!-- Add Item Button -->
