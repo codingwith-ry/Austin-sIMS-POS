@@ -1,10 +1,10 @@
 const ctxElem = document.getElementById("stockAnalyticsChart");
 let ctx = null;
-if(ctxElem){
+if (ctxElem) {
   ctx = ctxElem.getContext("2d");
 }
 
-if(ctx != null){
+if (ctx != null) {
   let chart = new Chart(ctx, {
     type: "bar",
     data: {
@@ -41,15 +41,15 @@ if(ctx != null){
     } else if (type === "yearly") {
       endpoint = "fetchYearlyExpenses.php";
     }
-  
+
     try {
       const response = await fetch(endpoint);
       const result = await response.json();
-  
+
       if (result.success) {
         const labels = result.labels;
         const data = result.expenses;
-  
+
         chart.data.labels = labels;
         chart.data.datasets[0].data = data;
         chart.update();
@@ -61,7 +61,7 @@ if(ctx != null){
       alert("Error fetching data.");
     }
   }
-  
+
   // Button group listeners
   document.getElementById("btnradio1").addEventListener("change", () => {
     document.getElementById("startDate").value = ""; // reset input
@@ -73,7 +73,7 @@ if(ctx != null){
   document
     .getElementById("btnradio3")
     .addEventListener("change", () => updateChart("yearly"));
-  
+
   // 🎯 New: Input field listener
   document.getElementById("startDate").addEventListener("change", (e) => {
     const selectedDate = e.target.value;
@@ -83,9 +83,7 @@ if(ctx != null){
       updateChart("weekly", selectedDate);
     }
   });
-  
+
   // Load default chart
   updateChart("weekly");
 }
-
-

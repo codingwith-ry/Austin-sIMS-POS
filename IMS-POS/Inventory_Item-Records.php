@@ -172,9 +172,18 @@ foreach ($itemData as $item) {
                             Items
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#InventoryLogs-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">
+                            Inventory Logs
+                        </button>
+                    </li>
                 </ul>
             </div>
+
             <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="InventoryLogs-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                    Tralalelo Tralala
+                </div>
                 <div class="tab-pane fade show active" id="Records-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                     <div class="card">
                         <div class="card-body">
@@ -298,7 +307,7 @@ foreach ($itemData as $item) {
                                                 <div class="mb-3">
                                                     <label for="itemLowStock" class="form-label fw-bold" style="font-size: 18px;">Low Stock Threshold</label>
                                                     <input type="number" class="form-control" id="itemLowStock" placeholder="Enter low stock threshold" name="item_lowstock" required>
-                                                </div>                                                
+                                                </div>
 
                                                 <hr />
                                                 <!-- Item Picture -->
@@ -432,8 +441,8 @@ foreach ($itemData as $item) {
                                                     <input type="text" class="form-control" id="unitOfMeasurement" name="unitOfMeasurement" readonly required>
                                                 </div>
 
-                                                                                                <!-- Item Low Stock -->
-                                                                                                <div class="mb-3">
+                                                <!-- Item Low Stock -->
+                                                <div class="mb-3">
                                                     <label for="editItemLowStock" class="form-label">Low Stock Threshold</label>
                                                     <input type="number" class="form-control" id="editItemLowStock" name="item_lowstock" required>
                                                 </div>
@@ -540,7 +549,7 @@ foreach ($itemData as $item) {
                                             $itemName = htmlspecialchars($row['Item_Name']);
                                             $itemQty = htmlspecialchars($row['Record_ItemQuantity']);
                                             $volume = htmlspecialchars($row['Record_ItemVolume']);
-                                            $lowStockThreshold = htmlspecialchars($row['Item_Lowstock']); 
+                                            $lowStockThreshold = htmlspecialchars($row['Item_Lowstock']);
                                             $uniqueKey = $itemID . '_' . $volume;
                                             $modalID = "decreaseModal_" . $uniqueKey;
 
@@ -858,35 +867,35 @@ foreach ($itemData as $item) {
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('editItemDropdown').addEventListener('change', function () {
-        const itemId = this.value;
+            document.getElementById('editItemDropdown').addEventListener('change', function() {
+                const itemId = this.value;
 
-        // Fetch item details via AJAX
-        fetch('../IMS-POS/scripts/fetchItemDetails.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `item_id=${itemId}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Populate the modal fields with item details
-                document.getElementById('editItemName').value = data.item.Item_Name;
-                document.getElementById('editItemCategory').value = data.item.Item_Category;
-                document.getElementById('editItemUnit').value = data.item.Unit_ID;
-                document.getElementById('editItemLowStock').value = data.item.Item_Lowstock; // Populate Low Stock
-                document.getElementById('editItemImagePreview').src = data.item.Item_Image;
-            } else {
-                alert('Failed to fetch item details.');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching item details:', error);
-            alert('An error occurred while fetching item details.');
-        });
-    });
+                // Fetch item details via AJAX
+                fetch('../IMS-POS/scripts/fetchItemDetails.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `item_id=${itemId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Populate the modal fields with item details
+                            document.getElementById('editItemName').value = data.item.Item_Name;
+                            document.getElementById('editItemCategory').value = data.item.Item_Category;
+                            document.getElementById('editItemUnit').value = data.item.Unit_ID;
+                            document.getElementById('editItemLowStock').value = data.item.Item_Lowstock; // Populate Low Stock
+                            document.getElementById('editItemImagePreview').src = data.item.Item_Image;
+                        } else {
+                            alert('Failed to fetch item details.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching item details:', error);
+                        alert('An error occurred while fetching item details.');
+                    });
+            });
 
             // Handle Save Changes button click
             document.getElementById('saveEditItem').addEventListener('click', function() {
@@ -911,42 +920,42 @@ foreach ($itemData as $item) {
                         alert('An error occurred while updating the item.');
                     });
             });
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const itemDropdown = document.getElementById('itemDropdown');
-    const unitAcronymSpan = document.getElementById('unitAcronym');
-
-    itemDropdown.addEventListener('change', function () {
-        const itemName = this.value; // Use Item_Name instead of Item_ID
-
-        // Fetch UOM details via AJAX
-        fetch('../IMS-POS/scripts/fetchUnitOfMeasurement.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `item_name=${encodeURIComponent(itemName)}` // Pass Item_Name
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Display the Unit_Acronym next to the Item Volume field
-                unitAcronymSpan.textContent = data.unit.Unit_Acronym;
-            } else {
-                unitAcronymSpan.textContent = ''; // Clear the Unit_Acronym if not found
-                alert(data.message || 'Failed to fetch Unit of Measurement.');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching Unit of Measurement:', error);
-            unitAcronymSpan.textContent = ''; // Clear the Unit_Acronym on error
-            alert('An error occurred while fetching Unit of Measurement.');
         });
-    });
-});
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const itemDropdown = document.getElementById('itemDropdown');
+            const unitAcronymSpan = document.getElementById('unitAcronym');
+
+            itemDropdown.addEventListener('change', function() {
+                const itemName = this.value; // Use Item_Name instead of Item_ID
+
+                // Fetch UOM details via AJAX
+                fetch('../IMS-POS/scripts/fetchUnitOfMeasurement.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `item_name=${encodeURIComponent(itemName)}` // Pass Item_Name
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Display the Unit_Acronym next to the Item Volume field
+                            unitAcronymSpan.textContent = data.unit.Unit_Acronym;
+                        } else {
+                            unitAcronymSpan.textContent = ''; // Clear the Unit_Acronym if not found
+                            alert(data.message || 'Failed to fetch Unit of Measurement.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching Unit of Measurement:', error);
+                        unitAcronymSpan.textContent = ''; // Clear the Unit_Acronym on error
+                        alert('An error occurred while fetching Unit of Measurement.');
+                    });
+            });
+        });
     </script>
 </body>
 <?php include 'footer.php' ?>
