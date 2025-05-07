@@ -726,7 +726,7 @@ CREATE TABLE `tbl_item` (
 	`Item_Image` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
 	`Item_Category` INT(11) NOT NULL,
 	`Unit_ID` INT(11) NULL DEFAULT NULL,
-	`Item_Lowstock` int(11) NOT NULL
+	`Item_Lowstock` int(11) NOT NULL,
 	PRIMARY KEY (`Item_ID`) USING BTREE,
 	INDEX `FK__tbl_itemcategories` (`Item_Category`) USING BTREE,
 	INDEX `FK_tbl_item_tbl_unitofmeasurments` (`Unit_ID`) USING BTREE
