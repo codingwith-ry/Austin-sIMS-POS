@@ -112,54 +112,50 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <div class="col-md-6 d-flex justify-content-end align-items-center gap-3">
                 <!-- Notification Bell with Dot Badge -->
-<div class="dropdown">
-  <button class="btn position-relative p-0 border-0 bg-transparent" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-      <i class="fas fa-bell fa-lg text-white"></i>
-    </div>
-    <span id="notificationDot"
-      class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-white rounded-circle"
-      style="width: 12px; height: 12px;">
-    </span>
-  </button>
+                <div class="dropdown">
+                    <button class="btn position-relative p-0 border-0 bg-transparent" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            <i class="fas fa-bell fa-lg text-white"></i>
+                        </div>
+                        <span id="notificationDot" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-white rounded-circle" style="width: 12px; height: 12px;"></span>
+                    </button>
 
-  <ul class="dropdown-menu dropdown-menu-end shadow p-3" aria-labelledby="notificationDropdown" style="width: 320px; max-height: 360px; overflow-y: auto;">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <strong>Notifications</strong>
-    </div>
-    <hr>
+                    <ul class="dropdown-menu dropdown-menu-end shadow p-3" aria-labelledby="notificationDropdown" style="width: 320px; max-height: 360px; overflow-y: auto;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong>Notifications</strong>
+                    </div>
+                    <hr>
 
-    <!-- Notification Items -->
-    <li class="mb-2">
-      <span class="d-flex">
-        <span class="text-primary me-2">●</span>
-        <span><strong>Low inventory alert</strong> – a total of 3 items are in low stock.</span>
-      </span>
-      <small class="text-muted ms-4">Now</small>
-    </li>
-    <li class="mb-2">
-      <span class="d-flex">
-        <span class="text-primary me-2">●</span>
-        <span><strong>New employee</strong> has been successfully registered.</span>
-      </span>
-      <small class="text-muted ms-4">1h ago</small>
-    </li>
-    <li class="mb-2">
-      <span class="d-flex">
-        <span class="text-primary me-2">●</span>
-        <span><strong>Negative inventory alert</strong> has been triggered.</span>
-      </span>
-      <small class="text-muted ms-4">4h ago</small>
-    </li>
+                 <!-- Notification Items -->
+                <li class="mb-2">
+                    <span class="d-flex">
+                        <span class="text-primary me-2">●</span>
+                            <span><strong>Low inventory alert</strong> – a total of 3 items are in low stock.</span>
+                    </span>
+                        <small class="text-muted ms-4">Now</small>
+                </li>
+                <li class="mb-2">
+                    <span class="d-flex">
+                        <span class="text-primary me-2">●</span>
+                            <span><strong>New employee</strong> has been successfully registered.</span>
+                    </span>
+                        <small class="text-muted ms-4">1h ago</small>
+                </li>
+                <li class="mb-2">
+                    <span class="d-flex">
+                        <span class="text-primary me-2">●</span>
+                            <span><strong>Negative inventory alert</strong> has been triggered.</span>
+                    </span>
+                        <small class="text-muted ms-4">4h ago</small>
+                </li>
 
-    <!-- Footer -->
-    <li><hr></li>
-    <li class="text-center">
-      <a href="#" class="text-decoration-none text-primary" id="markAllAsRead">Mark all as read</a>
-    </li>
-  </ul>
-</div>
-
+                <!-- Footer -->
+                <li><hr></li>
+                    <li class="text-center">
+                        <a href="#" class="text-decoration-none text-primary" id="markAllAsRead">Mark all as read</a>
+                    </li>
+                </ul>
+            </div>
 
                     <!-- New Order Modal -->
                     <div class="modal fade" id="newOrderModal" tabindex="-1" aria-labelledby="newOrderModalLabel" aria-hidden="true">
@@ -206,8 +202,6 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
                     <!-- Inventory Stock Modal -->
-
-
                     <div class="modal fade" id="inventoryStockModal" tabindex="-1" aria-labelledby="inventoryStockModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
@@ -322,210 +316,181 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
 
-        <div class="row" style="padding-left: 10px; padding-right: 10px;">
-            <!-- Regular Employees Card -->
-            <div class="col-3 d-flex align-items-stretch mb-4">
-                <div class="card h-100 shadow-sm bg-light" style="border-left: 5px solid #17a2b8;">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>Regular<br />Employees</strong>
-                            <h1 class="text-info" id="regularEmployeesCount">0</h1>
-                        </div>
-                        <div class="chart-container d-flex justify-content-center" style="width: 200px; height: 200px;">
-                            <canvas id="Regular_Chart" width="200" height="200"></canvas>
-                        </div>
-                    </div>
+        <div class="row px-3">
+    <!-- Employee Role Cards -->
+    <div class="col-12 col-sm-6 col-lg-3 d-flex align-items-stretch mb-4">
+        <div class="card h-100 shadow-sm bg-light w-100" style="border-left: 5px solid #17a2b8;">
+            <div class="card-body d-flex flex-column justify-content-between">
+                <div>
+                    <strong>Regular<br />Employees</strong>
+                    <h1 class="text-info" id="regularEmployeesCount">0</h1>
+                </div>
+                <div class="chart-container mt-auto text-center">
+                    <canvas id="Regular_Chart" class="employee-chart"></canvas>
                 </div>
             </div>
+        </div>
+    </div>
 
-
-            <!-- POS Employees Card -->
-            <div class="col-3 d-flex align-items-stretch mb-4">
-                <div class="card h-100 shadow-sm bg-light" style="border-left: 5px solid #28a745;">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>POS<br />Employees</strong>
-                            <h1 class="text-success" id="posEmployeesCount">0</h1>
-                        </div>
-                        <div class="chart-container d-flex justify-content-center" style="width: 200px; height: 200px;">
-                            <canvas id="No_POS_Employees_Chart" width="200" height="200"></canvas>
-                        </div>
-                    </div>
+    <div class="col-12 col-sm-6 col-lg-3 d-flex align-items-stretch mb-4">
+        <div class="card h-100 shadow-sm bg-light w-100" style="border-left: 5px solid #28a745;">
+            <div class="card-body d-flex flex-column justify-content-between">
+                <div>
+                    <strong>POS<br />Employees</strong>
+                    <h1 class="text-success" id="posEmployeesCount">0</h1>
+                </div>
+                <div class="chart-container mt-auto text-center">
+                    <canvas id="No_POS_Employees_Chart" class="employee-chart"></canvas>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Inventory Employees Card -->
-            <div class="col-3 d-flex align-items-stretch mb-4">
-                <div class="card h-100 shadow-sm bg-light" style="border-left: 5px solid #ffc107;">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>Inventory<br />Employees</strong>
-                            <h1 class="text-warning" id="imsEmployeesCount">0</h1>
-                        </div>
-                        <div class="chart-container d-flex justify-content-center" style="width: 200px; height: 200px;">
-                            <canvas id="No_IMS_Employees_Chart" width="200" height="200"></canvas>
-                        </div>
-                    </div>
+    <div class="col-12 col-sm-6 col-lg-3 d-flex align-items-stretch mb-4">
+        <div class="card h-100 shadow-sm bg-light w-100" style="border-left: 5px solid #ffc107;">
+            <div class="card-body d-flex flex-column justify-content-between">
+                <div>
+                    <strong>Inventory<br />Employees</strong>
+                    <h1 class="text-warning" id="imsEmployeesCount">0</h1>
+                </div>
+                <div class="chart-container mt-auto text-center">
+                    <canvas id="No_IMS_Employees_Chart" class="employee-chart"></canvas>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Administrator Card -->
-            <div class="col-3 d-flex align-items-stretch mb-4">
-                <div class="card h-100 shadow-sm bg-light" style="border-left: 5px solid #dc3545;">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>Administrator</strong>
-                            <h1 class="text-danger" id="adminEmployeesCount">0</h1>
-                        </div>
-                        <div class="chart-container d-flex justify-content-center" style="width: 200px; height: 200px;">
-                            <canvas id="Admin_Chart" width="200" height="200"></canvas>
-                        </div>
+    <div class="col-12 col-sm-6 col-lg-3 d-flex align-items-stretch mb-4">
+        <div class="card h-100 shadow-sm bg-light w-100" style="border-left: 5px solid #dc3545;">
+            <div class="card-body d-flex flex-column justify-content-between">
+                <div>
+                    <strong>Administrator</strong>
+                    <h1 class="text-danger" id="adminEmployeesCount">0</h1>
+                </div>
+                <div class="chart-container mt-auto text-center">
+                    <canvas id="Admin_Chart" class="employee-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+        <div class="row gx-3 align-items-stretch">
+    <!-- Daily Sales Chart -->
+    <div class="col-lg-7 col-md-12 mb-3">
+    <div class="card h-100">
+        <div class="card-body d-flex flex-column">
+            <div class="card-title d-flex align-items-center justify-content-between mb-3">
+                <strong style="font-size: 20px;">Daily Sales</strong>
+                <button class="btn btn-secondary btn-sm">View Report</button>
+            </div>
+
+            <!-- Responsive chart container with height -->
+            <div id="sales-line-container" class="flex-grow-1">
+                <canvas id="salesDataChart" style="width: 100%; height: 100%;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Top Selling Products -->
+    <div id="topSellingProductsContainer" class="col-lg-5 col-md-12 mb-3">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <div class="card-title">
+                    <div style="font-size: 20px;">
+                        <strong>Total Selling Products</strong>
                     </div>
+                    <div class="d-flex justify-content-between mt-2" style="font-size: 14px; opacity: 0.6;">
+                        <span>Dishes</span>
+                        <span>Orders</span>
+                    </div>
+                </div>
+
+                <!-- Scrollable list with flexible height -->
+                <ul id="topSellingList" class="list-group list-group-flush flex-grow-1 overflow-auto mt-2">
+                    <!-- Dynamically populated list items -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+            <div class="row gx-3 align-items-stretch">
+    <!-- Total Inventory Expenses -->
+    <div class="col-lg-4 col-md-12 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="card-title">
+                    <strong style="font-size: 20px;">Total Inventory Expenses</strong>
+                </div>
+                <div id="statisticsChartContainer" class="mt-4" style="height: 300px;">
+                    <canvas id="inventoryExpensesGraph"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Orders -->
+    <div class="col-lg-4 col-md-6 mb-3">
+        <div class="card h-100 w-100">
+            <div class="card-body">
+                <div class="card-title">
+                    <strong style="font-size: 20px;">Total Orders</strong>
+                </div>
+                <div id="totalOrdersContainer" class="d-flex align-items-center justify-content-center" style="height: 250px;">
+                <canvas id="totalOrderChart" style="max-width: 100%; max-height: 100%;"></canvas>
+            </div>
+                <div id="totalSalesLabel" class="text-center mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget & Expenses Summary -->
+    <div class="col-lg-4 col-md-6 mb-3 d-flex flex-column gap-3">
+        <!-- Remaining Inventory Budget -->
+        <div class="card flex-fill">
+            <div class="card-body">
+                <div class="card-title d-flex justify-content-between align-items-start">
+                    <div>
+                        <div style="font-size: 18px;"><strong>Remaining Inventory Budget</strong></div>
+                        <span id="budget-percentage" style="opacity: 0.5;">+12%</span>
+                    </div>
+                    <span class="mdi mdi-invoice-list-outline" style="font-size: 28px;"></span>
+                </div>
+                <div style="font-size: 28px;">
+                    <strong id="budget-amount">₱8,420</strong>
+                </div>
+                <div class="progress mt-2" style="height: 2px;">
+                    <div id="budget-progress" class="progress-bar bg-success" style="width: 40%;"></div>
                 </div>
             </div>
         </div>
 
-
-        <div class="row align-items-stretch">
-            <div id="dataChartsContainer" class="col-7">
-                <div class="card" style="max-height: 100%;">
-                    <div class="card-body d-flex flex-column">
-                        <div class="card-title d-flex align-items-center justify-content-between">
-                            <div>
-                                <strong style="font-size: 20px;">Daily Sales</strong>
-                            </div>
-                            <div>
-                                <button class="btn btn-secondary">View Report</button>
-                            </div>
-                        </div>
-                        <div id="sales-line-container">
-                            <canvas id="salesDataChart"></canvas>
-                        </div>
+        <!-- Total Inventory Expenses Summary -->
+        <div class="card flex-fill">
+            <div class="card-body">
+                <div class="card-title d-flex justify-content-between align-items-start">
+                    <div>
+                        <div style="font-size: 18px;"><strong>Total Inventory Expenses</strong></div>
+                        <span id="expenses-percentage" style="opacity: 0.5;">-2.3%</span>
                     </div>
+                    <span class="mdi mdi-clipboard-check-outline" style="font-size: 28px;"></span>
+                </div>
+                <div style="font-size: 28px;">
+                    <strong id="expenses-amount">₱1,274</strong>
+                </div>
+                <div class="progress mt-2" style="height: 2px;">
+                    <div id="expenses-progress" class="progress-bar bg-warning" style="width: 25%;"></div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
-            <div id="topSellingProductsContainer" class="col-5">
-                <div class="card h-100">
-                    <div class="card-body overflow-y-auto">
-                        <div class="card-title">
-                            <div>
-                                <div>
-                                    <div style="font-size: 20px;">
-                                        <strong>Total Selling Products</strong>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <div>
-                                            <span style="opacity: 0.5; flex-grow:1;">Dishes</span>
-                                        </div>
-                                        <div>
-                                            <span style="opacity: 0.5;">Orders</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <ul id="topSellingList" class="list-group list-group-item-flush">
-                            <!-- List items will be inserted here -->
-                        </ul>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="row gx-0 justify-content-center align-item-center">
-                <div></div>
-                <div id="dataChartsContainer" class="col-7">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="card-title">
-                                <div>
-                                    <strong style="font-size: 20px;">Total Inventory Expenses</strong>
-                                </div>
-                            </div>
-                            <div id="statisticsChartContainer" style="margin-top: 5%;">
-                                <canvas id="inventoryExpensesGraph" width="20px" height="7px"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div id="dataChartsContainer" class="col-3">
-                    <div class="card h-100" style="width: 100%;">
-                        <div class="card-body">
-                            <div class="card-title">
-                                <div>
-                                    <strong style="font-size: 20px;">Total Orders</strong>
-                                </div>
-                            </div>
-                            <div id="totalOrdersContainer" class="flex-grow-1 d-flex align-items-center justify-content-center">
-                                <canvas id="totalOrderChart"></canvas>
-                            </div>
-                            <!-- Add this div below the chart to display Total Sales -->
-                            <div id="totalSalesLabel" class="text-center mt-3"></div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div id="dataChartsContainer" class="col-2 d-flex flex-column h-150 gap-3">
-                    <div class="row flex-grow-1">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="card-title">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <div>
-                                            <div style="font-size: 20px;">
-                                                <strong>Remaining Inventory Budget</strong>
-                                            </div>
-                                            <div>
-                                                <span id="budget-percentage" style="opacity: 0.5;"></span>
-                                            </div>
-                                        </div>
-                                        <div style="font-size: 30px;">
-                                            <span class="mdi mdi-invoice-list-outline"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="font-size: 30px;">
-                                    <strong id="budget-amount"></strong>
-                                </div>
-                                <div class="progress" role="progressbar" aria-label="Example 1px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 2px">
-                                    <div id="budget-progress" class="progress-bar" style="width: 25%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row flex-grow-1">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="card-title">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <div>
-                                            <div style="font-size: 20px;">
-                                                <strong>Total Inventory Expenses</strong>
-                                            </div>
-                                            <div>
-                                                <span id="expenses-percentage" style="opacity: 0.5;">-2.3%</span>
-                                            </div>
-                                        </div>
-                                        <div style="font-size: 30px;">
-                                            <span class="mdi mdi-clipboard-check-outline"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="font-size: 30px;">
-                                    <strong id="expenses-amount">1,274</strong>
-                                </div>
-                                <div class="progress" role="progressbar" aria-label="Example 1px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 2px">
-                                    <div id="expenses-progress" class="progress-bar" style="width: 25%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
 

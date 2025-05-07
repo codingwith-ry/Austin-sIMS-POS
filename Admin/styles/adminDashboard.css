@@ -11,6 +11,11 @@
   padding: 20px;
 }
 
+#inventoryExpensesGraph {
+  height: 300px;
+  width: 100%;
+}
+
 .nav-link,
 .nav-link:hover,
 .nav-link.active {
@@ -29,8 +34,6 @@
 #topSellingProductsContainer {
   padding-right: 5px;
   padding-left: 20px;
-  padding-top: 20px;
-  padding-bottom: 20px;
 }
 
 #sales-line-container,
@@ -56,6 +59,16 @@ canvas {
   max-height: 100%;
   padding: 10px;
   box-sizing: border-box;
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.employee-chart {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
 }
 
 #Admin_Chart {
