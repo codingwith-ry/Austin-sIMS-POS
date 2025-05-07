@@ -181,9 +181,28 @@ foreach ($itemData as $item) {
             </div>
 
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="InventoryLogs-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                    Tralalelo Tralala
+                <div class="tab-pane fade show" id="InventoryLogs-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                    <p class="form-label fw-bold" style="font-size: 20px;">Category</p>
+                    <div class="card">
+                        <div class="card-body">
+                            <table id="inventoryLogsTable">
+                                <theader>
+                                    <tr>
+                                        <th>Employee Name</th>
+                                        <th>Amount Added</th>
+                                        <th>Date and Time</th>
+                                        <th>Pre-Add Budget</th>
+                                        <th>Updated Budget</th>
+                                    </tr>
+                                </theader>
+                                <tbody>
+                                    <!---Dynamic Added Data from Javascript File -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="tab-pane fade show active" id="Records-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                     <div class="card">
                         <div class="card-body">
