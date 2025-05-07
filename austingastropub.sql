@@ -832,6 +832,20 @@ AUTO_INCREMENT=14
 ;
 
 
+CREATE TABLE `tbl_inventorylogs` (
+	`inventoryLogs_ID` INT(11) NOT NULL AUTO_INCREMENT,
+	`Employee_ID` VARCHAR(9) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	`Amount_Added` INT(11) NULL DEFAULT NULL,
+	`Date_Time` DATETIME NULL DEFAULT NULL,
+	`Previous_Sum` INT(11) NULL DEFAULT NULL,
+	`Stock_ID` INT(11) NULL DEFAULT NULL,
+	PRIMARY KEY (`inventoryLogs_ID`) USING BTREE,
+	INDEX `FK__employees` (`Employee_ID`) USING BTREE,
+	CONSTRAINT `FK__employees` FOREIGN KEY (`Employee_ID`) REFERENCES `employees` (`Employee_ID`) ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
 
 
 
