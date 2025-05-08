@@ -180,12 +180,48 @@ foreach ($itemData as $item) {
                 </ul>
             </div>
 
+            
+
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show" id="InventoryLogs-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                     <p class="form-label fw-bold" style="font-size: 20px;">Category</p>
                     <div class="card">
                         <div class="card-body">
-                            <table id="inventoryLogsTable">
+                        <table id="inventoryLogsTable" class="display nowrap table table-striped table-bordered" style="width:100%">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="form-label fw-bold" style="font-size: 20px;">Inventory Logs</h5>
+    <button class="btn btn-primary" id="addBudgetButton" style="font-size: 16px; font-weight: bold;">Add Budget</button>
+</div>
+
+<!-- Add Budget Modal -->
+<div class="modal fade" id="addBudgetModal" tabindex="-1" aria-labelledby="addBudgetModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addBudgetModalLabel">Add Budget</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="budgetForm">
+                    <div class="mb-3">
+                        <label for="budgetAmount" class="form-label">Amount to Add</label>
+                        <input type="number" class="form-control" id="budgetAmount" required min="1" />
+                        <div class="invalid-feedback">Please enter a valid positive number.</div>
+                    </div>
+                    <div id="budgetSummary" style="display: none;">
+                        <p>Current Budget: <strong>₱<span id="currentBudget"></span></strong></p>
+                        <p>Amount to Add: <strong>₱<span id="amountToAdd"></span></strong></p>
+                        <p>New Total Budget: <strong>₱<span id="newBudget"></span></strong></p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="budgetForm" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
                                 <theader>
                                     <tr>
                                         <th>Employee Name</th>
@@ -885,96 +921,99 @@ foreach ($itemData as $item) {
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('editItemDropdown').addEventListener('change', function() {
-                const itemId = this.value;
+document.addEventListener('DOMContentLoaded', function () {
+    let currentBudget = 0; // Initialize current budget
+    const budgetModal = new bootstrap.Modal(document.getElementById('addBudgetModal'));
 
-                // Fetch item details via AJAX
-                fetch('../IMS-POS/scripts/fetchItemDetails.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: `item_id=${itemId}`
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Populate the modal fields with item details
-                            document.getElementById('editItemName').value = data.item.Item_Name;
-                            document.getElementById('editItemCategory').value = data.item.Item_Category;
-                            document.getElementById('editItemUnit').value = data.item.Unit_ID;
-                            document.getElementById('editItemLowStock').value = data.item.Item_Lowstock; // Populate Low Stock
-                            document.getElementById('editItemImagePreview').src = data.item.Item_Image;
-                        } else {
-                            alert('Failed to fetch item details.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching item details:', error);
-                        alert('An error occurred while fetching item details.');
+    // Fetch the current budget from the backend
+    fetch('../IMS-POS/scripts/getStockBudget.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                currentBudget = parseFloat(data.remainingBudget);
+                document.getElementById('currentBudget').textContent = currentBudget.toLocaleString(); // Display the current budget
+            } else {
+                console.error('Failed to fetch budget:', data.message);
+            }
+        })
+        .catch(error => console.error('Error fetching budget:', error));
+
+    // Show the "Add Budget" modal
+    document.getElementById('addBudgetButton').addEventListener('click', function () {
+        document.getElementById('budgetAmount').value = '';
+        document.getElementById('budgetAmount').classList.remove('is-invalid');
+        document.getElementById('budgetSummary').style.display = 'none';
+        budgetModal.show();
+    });
+
+    // Update the budget summary dynamically
+    document.getElementById('budgetAmount').addEventListener('input', function () {
+        const amount = parseFloat(this.value);
+        if (!isNaN(amount) && amount > 0) {
+            this.classList.remove('is-invalid');
+            const newTotal = currentBudget + amount;
+            document.getElementById('currentBudget').textContent = currentBudget.toLocaleString();
+            document.getElementById('amountToAdd').textContent = amount.toLocaleString();
+            document.getElementById('newBudget').textContent = newTotal.toLocaleString();
+            document.getElementById('budgetSummary').style.display = 'block';
+        } else {
+            document.getElementById('budgetSummary').style.display = 'none';
+        }
+    });
+
+    // Submit the budget form
+    document.getElementById('budgetForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const amountStr = document.getElementById('budgetAmount').value;
+        const budgetToAdd = parseFloat(amountStr);
+
+        if (!amountStr || isNaN(budgetToAdd) || budgetToAdd <= 0) {
+            document.getElementById('budgetAmount').classList.add('is-invalid');
+            return;
+        } else {
+            document.getElementById('budgetAmount').classList.remove('is-invalid');
+        }
+
+        fetch('../IMS-POS/updateBudget.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `budget=${encodeURIComponent(budgetToAdd)}`,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    currentBudget = parseFloat(data.new_budget);
+                    budgetModal.hide();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Budget Updated!',
+                        text: `The new total budget is ₱${data.new_budget.toLocaleString()}`,
+                        confirmButtonColor: '#3085d6',
                     });
-            });
 
-            // Handle Save Changes button click
-            document.getElementById('saveEditItem').addEventListener('click', function() {
-                const formData = new FormData(document.getElementById('editItemForm'));
-
-                // Submit the form via AJAX
-                fetch('../IMS-POS/scripts/updateItemDetails.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Item updated successfully!');
-                            location.reload(); // Reload the page to reflect changes
-                        } else {
-                            alert('Failed to update item: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error updating item:', error);
-                        alert('An error occurred while updating the item.');
+                    // Update the displayed current budget
+                    document.getElementById('currentBudget').textContent = currentBudget.toLocaleString();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Update Failed',
+                        text: data.message,
                     });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while updating the budget.',
+                });
             });
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const itemDropdown = document.getElementById('itemDropdown');
-            const unitAcronymSpan = document.getElementById('unitAcronym');
-
-            itemDropdown.addEventListener('change', function() {
-                const itemName = this.value; // Use Item_Name instead of Item_ID
-
-                // Fetch UOM details via AJAX
-                fetch('../IMS-POS/scripts/fetchUnitOfMeasurement.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: `item_name=${encodeURIComponent(itemName)}` // Pass Item_Name
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Display the Unit_Acronym next to the Item Volume field
-                            unitAcronymSpan.textContent = data.unit.Unit_Acronym;
-                        } else {
-                            unitAcronymSpan.textContent = ''; // Clear the Unit_Acronym if not found
-                            alert(data.message || 'Failed to fetch Unit of Measurement.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching Unit of Measurement:', error);
-                        unitAcronymSpan.textContent = ''; // Clear the Unit_Acronym on error
-                        alert('An error occurred while fetching Unit of Measurement.');
-                    });
-            });
-        });
+    });
+});
     </script>
 </body>
 <?php include 'footer.php' ?>

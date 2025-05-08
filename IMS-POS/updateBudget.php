@@ -1,5 +1,4 @@
 <?php
-// filepath: d:\XAMPP3\htdocs\Austin-sIMS-POS\IMS-POS\updateBudget.php
 include '../Login/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
@@ -33,19 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
             $fetchBudgetStmt->execute();
             $totalStockBudget = $fetchBudgetStmt->fetch(PDO::FETCH_ASSOC)['Total_Stock_Budget'];
 
-            // Fetch the Total Expenses
-            $fetchExpensesQuery = "SELECT SUM(Record_ItemPrice) AS total_expenses FROM tbl_record";
-            $fetchExpensesStmt = $conn->prepare($fetchExpensesQuery);
-            $fetchExpensesStmt->execute();
-            $totalExpenses = $fetchExpensesStmt->fetch(PDO::FETCH_ASSOC)['total_expenses'];
-
-            // Calculate the adjusted stock budget
-            $adjustedStockBudget = $totalStockBudget - $totalExpenses;
-
-            // Format the adjusted budget with two decimal places
-            $formattedBudget = number_format((float) $adjustedStockBudget, 2);
-
-            echo json_encode(['success' => true, 'new_budget' => $formattedBudget]);
+            echo json_encode(['success' => true, 'new_budget' => $totalStockBudget]);
         } catch (PDOException $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
@@ -55,3 +42,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request.']);
 }
+?>
