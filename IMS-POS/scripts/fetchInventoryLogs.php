@@ -6,11 +6,11 @@ try {
     $query = "
         SELECT 
             il.inventoryLogs_ID,
-            e.Employee_Name,
-            il.Amount_Added,
-            il.Date_Time,
-            il.Previous_Sum,
-            il.Stock_ID
+            e.Employee_Name AS Employee_Name,
+            il.Previous_Sum AS Previous_Sum,
+            il.Amount_Added AS Amount_Added,
+            (il.Previous_Sum + il.Amount_Added) AS Updated_Budget,
+            il.Date_Time AS Date_Time
         FROM tbl_inventorylogs il
         LEFT JOIN employees e ON il.Employee_ID = e.Employee_ID
         ORDER BY il.Date_Time DESC

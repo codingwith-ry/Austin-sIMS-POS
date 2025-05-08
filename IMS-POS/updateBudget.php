@@ -2,7 +2,7 @@
 include '../Login/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
-    $budgetToAdd = (float) $_POST['budget']; // Allow decimals by casting to float
+    $budgetToAdd = (int) $_POST['budget']; // Cast to integer for safety
 
     if ($budgetToAdd > 0) {
         try {
@@ -16,13 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
                 // Update the existing row
                 $updateQuery = "UPDATE tbl_stocks SET Total_Stock_Budget = Total_Stock_Budget + :budget WHERE Stock_ID = 1";
                 $stmt = $conn->prepare($updateQuery);
-                $stmt->bindParam(':budget', $budgetToAdd);
+                $stmt->bindParam(':budget', $budgetToAdd, PDO::PARAM_INT);
                 $stmt->execute();
             } else {
                 // Insert a new row with Stock_ID = 1 and the budget
                 $insertQuery = "INSERT INTO tbl_stocks (Stock_ID, Total_Stock_Budget) VALUES (1, :budget)";
                 $stmt = $conn->prepare($insertQuery);
-                $stmt->bindParam(':budget', $budgetToAdd);
+                $stmt->bindParam(':budget', $budgetToAdd, PDO::PARAM_INT);
                 $stmt->execute();
             }
 
@@ -31,6 +31,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
             $fetchBudgetStmt = $conn->prepare($fetchBudgetQuery);
             $fetchBudgetStmt->execute();
             $totalStockBudget = $fetchBudgetStmt->fetch(PDO::FETCH_ASSOC)['Total_Stock_Budget'];
+
+            // Insert a log entry into tbl_inventorylogs
+            session_start();
+            $employeeID = $_SESSION['employeeID'] ?? null; // Assuming employeeID is stored in the session
+            $dateTime = date('Y-m-d H:i:s');
+            $previousSum = $totalStockBudget - $budgetToAdd; // Calculate the previous budget
+            $logQuery = "
+                INSERT INTO tbl_inventorylogs (Employee_ID, Amount_Added, Date_Time, Previous_Sum, Stock_ID)
+                VALUES (:employeeID, :amountAdded, :dateTime, :previousSum, 1)
+            ";
+            $logStmt = $conn->prepare($logQuery);
+            $logStmt->bindParam(':employeeID', $employeeID, PDO::PARAM_STR);
+            $logStmt->bindParam(':amountAdded', $budgetToAdd, PDO::PARAM_INT);
+            $logStmt->bindParam(':dateTime', $dateTime, PDO::PARAM_STR);
+            $logStmt->bindParam(':previousSum', $previousSum, PDO::PARAM_INT);
+            $logStmt->execute();
 
             echo json_encode(['success' => true, 'new_budget' => $totalStockBudget]);
         } catch (PDOException $e) {

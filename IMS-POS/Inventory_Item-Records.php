@@ -224,11 +224,11 @@ foreach ($itemData as $item) {
 </div>
                                 <theader>
                                     <tr>
-                                        <th>Employee Name</th>
-                                        <th>Amount Added</th>
+                                        <th>Employee</th>
+                                        <th>Previous Budget Amount</th>
+                                        <th>Amount Modification</th>
+                                        <th>Updated Budget Amount</th>
                                         <th>Date and Time</th>
-                                        <th>Pre-Add Budget</th>
-                                        <th>Updated Budget</th>
                                     </tr>
                                 </theader>
                                 <tbody>
@@ -996,6 +996,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Update the displayed current budget
                     document.getElementById('currentBudget').textContent = currentBudget.toLocaleString();
+                    location.reload(); 
                 } else {
                     Swal.fire({
                         icon: 'error',
