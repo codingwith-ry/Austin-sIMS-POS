@@ -48,6 +48,7 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IMS-POS | Stocks</title>
     <?php require_once('links.php'); ?>
+    <link href="styles/header-alignment.css" rel="stylesheet" />
 </head>
 <style>
     .child-row {
@@ -72,20 +73,16 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
 
 <body>
     <?php include 'verticalNav.php' ?>
-    <main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
+    <div class="mainContent" id="mainContent">
+    <main role="main" class="content">
         <div class="row">
-            <div class="col-md-10">
-                <h1>Stock List Overview</h1>
-            </div>
-            <div class="col-md-2">
-                <div>
-                    <label for="startDate">Select Date</label>
-                    <input type="date" id="startDate" name="startDate">
-                </div>
+            <div class="col-12">
+                <h2>Stock List Overview</h2>
+                <hr>
             </div>
         </div>
 
-        <div class="date-selector" style="margin-bottom: 20px;">
+        <div class="date-selector">
             <!-- Hidden radio buttons (used by backend and JavaScript) -->
             <div class="d-none">
                 <input type="radio" class="btn-check" name="btnradio" id="btnradio1" value="weekly" autocomplete="off" checked>
@@ -94,7 +91,7 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
             </div>
 
             <!-- Bootstrap Tab-like UI -->
-            <ul class="nav nav-underline mb-3" id="pills-tab" role="tablist">
+            <ul class="nav nav-underline" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" type="button" role="tab" onclick="
             document.getElementById('btnradio1').checked = true;
@@ -113,14 +110,16 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
             document.getElementById('btnradio3').dispatchEvent(new Event('change'));
         ">Yearly</button>
                 </li>
+                <li class="nav-item ms-auto" role="presentation">
+                    <div class="">
+                        <input type="date" class="form-control" id="dateInput">
+                    </div>
+                </div>
+                <br />
+                </li>
             </ul>
 
-
-
-        </div>
-
-
-        <div class="data-summary" style="margin-bottom: 20px;">
+            <div class="data-summary" style="margin-bottom: 20px;">
             <div class="row">
                 <div class="col">
                     <div class="card">
@@ -279,6 +278,11 @@ $adjustedStockBudget = $totalStockBudget - $totalExpenses;
             </div>
         </div>
     </main>
+
+        </div>
+        
+
+        
 
     <?php include 'footer.php' ?>
 
