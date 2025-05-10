@@ -24,8 +24,7 @@ $stmt->execute();
 $totalItems = $stmt->fetch(PDO::FETCH_ASSOC)['total_items'];
 
 // Query to calculate total expenses
-$expenseQuery = "SELECT SUM(Record_ItemPrice) AS total_expenses FROM tbl_record";
-$expenseStmt = $conn->prepare($expenseQuery);
+$expenseQuery = "SELECT SUM(Record_ItemPrice * Record_ItemQuantity) AS total_expenses FROM tbl_record";$expenseStmt = $conn->prepare($expenseQuery);
 $expenseStmt->execute();
 $totalExpenses = $expenseStmt->fetch(PDO::FETCH_ASSOC)['total_expenses'];
 
@@ -37,6 +36,30 @@ $budgetResult = $budgetStmt->fetch(PDO::FETCH_ASSOC);
 $totalStockBudget = $budgetResult ? $budgetResult['Total_Stock_Budget'] : 0;
 // Calculate the adjusted stock budget
 $adjustedStockBudget = $totalStockBudget - $totalExpenses;
+
+if ($totalExpenses > 0) {
+    $previousBudget = $totalStockBudget;
+    $newBudget = $adjustedStockBudget;
+
+    // Insert a log entry into tbl_inventorylogs
+    $logQuery = "
+        INSERT INTO tbl_inventorylogs (Employee_ID, Amount_Added, Date_Time, Previous_Sum, Stock_ID)
+        VALUES (:employeeID, :amountAdded, :dateTime, :previousSum, 1)
+    ";
+    $logStmt = $conn->prepare($logQuery);
+
+    // Assuming Employee_ID is stored in the session
+    $employeeID = $_SESSION['employeeID'] ?? null;
+    $dateTime = date('Y-m-d H:i:s');
+    $amountDeducted = $totalExpenses;
+
+    $logStmt->bindParam(':employeeID', $employeeID, PDO::PARAM_STR);
+    $logStmt->bindParam(':amountAdded', $amountDeducted, PDO::PARAM_INT);
+    $logStmt->bindParam(':dateTime', $dateTime, PDO::PARAM_STR);
+    $logStmt->bindParam(':previousSum', $previousBudget, PDO::PARAM_INT);
+
+    $logStmt->execute();
+}
 
 ?>
 

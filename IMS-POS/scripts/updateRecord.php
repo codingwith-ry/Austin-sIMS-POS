@@ -1,13 +1,12 @@
 <?php
 include '../../Login/database.php';
 
+session_start();
+
 date_default_timezone_set('Asia/Manila'); 
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     $recordId = $_POST['recordId'];
     $itemVolume = $_POST['itemVolume'];
     $itemQuantity = $_POST['itemQuantity'];
@@ -15,6 +14,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $itemExpirationDate = $_POST['itemExpirationDate'];
 
     try {
+        // Calculate the total cost of the new record
+        $totalCost = $itemQuantity * $itemPrice;
+
+        // Fetch the current Total_Stock_Budget
+        $fetchBudgetStmt = $conn->prepare("
+            SELECT Total_Stock_Budget
+            FROM tbl_stocks
+            WHERE Stock_ID = 1
+        ");
+        $fetchBudgetStmt->execute();
+        $currentBudget = $fetchBudgetStmt->fetch(PDO::FETCH_ASSOC)['Total_Stock_Budget'];
+
+        // Calculate the new budget after deduction
+        $newBudget = $currentBudget - $totalCost;
+
+        // Debugging: Log the budget changes
+        error_log("Current Budget: " . $currentBudget);
+        error_log("Total Cost: " . $totalCost);
+        error_log("New Budget: " . $newBudget);
+
+        // Update the Total_Stock_Budget in tbl_stocks
+        $updateBudgetStmt = $conn->prepare("
+            UPDATE tbl_stocks
+            SET Total_Stock_Budget = :newBudget
+            WHERE Stock_ID = 1
+        ");
+        $updateBudgetStmt->bindParam(':newBudget', $newBudget, PDO::PARAM_INT);
+        $updateBudgetStmt->execute();
+
         // Update tbl_record
         $stmt = $conn->prepare("
             UPDATE tbl_record
@@ -31,40 +59,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':itemExpirationDate', $itemExpirationDate);
         $stmt->execute();
 
-        // Insert a log entry into tbl_userlogs
-        if (isset($_SESSION['email']) && isset($_SESSION['userRole'])) {
-            $logEmail = $_SESSION['email'];
-            $logRole = $_SESSION['userRole'];
-            $logContent = "Edited record with Record ID: $recordId. Updated fields: Volume - $itemVolume, Quantity - $itemQuantity, Price - $itemPrice, Expiration Date - $itemExpirationDate.";
-            $logDate = date('Y-m-d H:i:s'); 
-
-            $logStmt = $conn->prepare("
-                INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
-                VALUES (:logEmail, :logRole, :logContent, :logDate)
-            ");
-            $logStmt->bindParam(':logEmail', $logEmail);
-            $logStmt->bindParam(':logRole', $logRole);
-            $logStmt->bindParam(':logContent', $logContent);
-            $logStmt->bindParam(':logDate', $logDate);
-            $logStmt->execute();
-        } else {
-            error_log("Session variables 'email' or 'userRole' are not set.");
-        }
-
         // Fetch the updated record
         $fetchStmt = $conn->prepare("
-        SELECT 
-            r.Record_ID,
-            r.Record_ItemVolume,
-            r.Record_ItemQuantity,
-            r.Record_ItemPrice,
-            r.Record_ItemExpirationDate,
-            u.Unit_Name
-        FROM tbl_record r
-        LEFT JOIN tbl_item i ON r.Item_ID = i.Item_ID
-        LEFT JOIN tbl_unitofmeasurments u ON i.Unit_ID = u.Unit_ID
-        WHERE r.Record_ID = :recordId
-    ");
+            SELECT 
+                r.Record_ID,
+                r.Record_ItemVolume,
+                r.Record_ItemQuantity,
+                r.Record_ItemPrice,
+                r.Record_ItemExpirationDate,
+                u.Unit_Name
+            FROM tbl_record r
+            LEFT JOIN tbl_item i ON r.Item_ID = i.Item_ID
+            LEFT JOIN tbl_unitofmeasurments u ON i.Unit_ID = u.Unit_ID
+            WHERE r.Record_ID = :recordId
+        ");
         $fetchStmt->bindParam(':recordId', $recordId);
         $fetchStmt->execute();
         $updatedRecord = $fetchStmt->fetch(PDO::FETCH_ASSOC);
@@ -72,6 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo json_encode(['success' => true, 'updatedData' => [$updatedRecord]]);
         
     } catch (PDOException $e) {
+        error_log("Error: " . $e->getMessage());
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
 }

@@ -1016,6 +1016,39 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const itemDropdown = document.getElementById('itemDropdown');
+    const unitAcronymSpan = document.getElementById('unitAcronym');
+
+    itemDropdown.addEventListener('change', function () {
+        const selectedItemName = this.value;
+
+        // Fetch the unit acronym for the selected item
+        fetch('../IMS-POS/scripts/fetchUnitOfMeasurement.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `item_name=${encodeURIComponent(selectedItemName)}`,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the unit acronym display
+                    unitAcronymSpan.textContent = data.unit.Unit_Acronym;
+                } else {
+                    unitAcronymSpan.textContent = '';
+                    console.error('Failed to fetch unit of measurement:', data.message);
+                }
+            })
+            .catch(error => {
+                unitAcronymSpan.textContent = '';
+                console.error('Error fetching unit of measurement:', error);
+            });
+    });
+});
+    </script>
 </body>
 <?php include 'footer.php' ?>
 
