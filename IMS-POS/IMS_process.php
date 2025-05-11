@@ -41,6 +41,8 @@ if (isset($_POST['add_record'])) {
     $expirationDate = filter_input(INPUT_POST, 'expiration_date', FILTER_SANITIZE_STRING);
     $itemSupplier = filter_input(INPUT_POST, 'item_supplier', FILTER_SANITIZE_STRING);
     $employeeAssigned = filter_input(INPUT_POST, 'employee_assigned', FILTER_SANITIZE_NUMBER_INT);
+    $totalPrice = $itemQuantity * $itemPrice;
+
 
     try {
         // Fetch the Item_ID based on the item_Name
@@ -62,10 +64,10 @@ if (isset($_POST['add_record'])) {
         // Insert into tbl_record
         $stmt = $conn->prepare("INSERT INTO tbl_record (Record_ID, Item_ID, Record_ItemVolume, 
         Record_ItemQuantity, Record_ItemPrice, Record_ItemExpirationDate,
-        Record_ItemPurchaseDate, Record_ItemSupplier, Record_EmployeeAssigned) 
+        Record_ItemPurchaseDate, Record_ItemSupplier, Record_EmployeeAssigned, Record_TotalPrice) 
         VALUES (:recordID, :itemID, :itemVolume, :itemQuantity, 
         :itemPrice, :expirationDate, :purchaseDate, :itemSupplier,
-        :employeeAssigned)");
+        :employeeAssigned, :totalPrice)");
 
         $stmt->bindParam(':recordID', $recordID);
         $stmt->bindParam(':itemID', $itemID);
@@ -76,11 +78,30 @@ if (isset($_POST['add_record'])) {
         $stmt->bindParam(':purchaseDate', $purchaseDate);
         $stmt->bindParam(':itemSupplier', $itemSupplier);
         $stmt->bindParam(':employeeAssigned', $employeeAssigned);
-
+        $stmt->bindParam(':totalPrice', $totalPrice);
 
 
         if ($stmt->execute()) {
-            echo "<script>alert('Record added successfully!');</script>";
+            echo "<script>alert('Record added successfully!');</script>"
+            ;
+            // Insert a log entry into tbl_inventorylogs
+            $amountAdded = -$totalPrice; // Make totalPrice negative as it's an expense
+            $dateTime = date('Y-m-d H:i:s'); // Current date and time
+            $previousSum = 0; // Assuming no previous sum is tracked for now
+            $stockID = 1; // Assuming Stock_ID is 1 (adjust as needed)
+
+            $logStmt = $conn->prepare("
+                INSERT INTO tbl_inventorylogs (Employee_ID, Amount_Added, Date_Time, Previous_Sum, Stock_ID)
+                VALUES (:employeeID, :amountAdded, :dateTime, :previousSum, :stockID)
+            ");
+            $logStmt->bindParam(':employeeID', $employeeAssigned);
+            $logStmt->bindParam(':amountAdded', $amountAdded);
+            $logStmt->bindParam(':dateTime', $dateTime);
+            $logStmt->bindParam(':previousSum', $previousSum);
+            $logStmt->bindParam(':stockID', $stockID);
+            $logStmt->execute();
+
+            
             // Insert a log entry into tbl_userlogs
             $logEmail = $_SESSION['email']; // Use the session variable for the email
             $logRole = $_SESSION['userRole']; // Use the session variable for the user's role
