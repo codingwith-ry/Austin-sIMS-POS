@@ -767,6 +767,7 @@ CREATE TABLE `tbl_record` (
 	`Record_ItemPurchaseDate` DATE NULL DEFAULT NULL,
 	`Record_ItemSupplier` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	`Record_EmployeeAssigned` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+	`Record_TotalPrice` int(11) NULL DEFAULT NULL,
 	PRIMARY KEY (`Record_ID`) USING BTREE,
 	INDEX `FK__tbl_item` (`Item_ID`) USING BTREE,
 	INDEX `FK__employees` (`Record_EmployeeAssigned`) USING BTREE
