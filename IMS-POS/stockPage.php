@@ -24,7 +24,8 @@ $stmt->execute();
 $totalItems = $stmt->fetch(PDO::FETCH_ASSOC)['total_items'];
 
 // Query to calculate total expenses
-$expenseQuery = "SELECT SUM(Record_ItemPrice * Record_ItemQuantity) AS total_expenses FROM tbl_record";$expenseStmt = $conn->prepare($expenseQuery);
+$expenseQuery = "SELECT SUM(Record_TotalPrice) AS total_expenses FROM tbl_record";
+$expenseStmt = $conn->prepare($expenseQuery);
 $expenseStmt->execute();
 $totalExpenses = $expenseStmt->fetch(PDO::FETCH_ASSOC)['total_expenses'];
 
