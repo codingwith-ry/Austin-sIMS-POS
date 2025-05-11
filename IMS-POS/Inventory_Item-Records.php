@@ -436,10 +436,10 @@ foreach ($itemData as $item) {
                                                 <div class="mb-3">
                                                     <label for="editItemUnit" class="form-label">Unit of Measurement</label>
                                                     <select class="form-select" id="editItemUnit" name="unit_id" required>
-                                                        <option value="" disabled selected>Select a unit</option>
+                                                        <option value="" disabled>Select a unit</option>
                                                         <?php
                                                         // Fetch units from tbl_unitofmeasurments
-                                                        $unitsQuery = "SELECT Unit_ID, Unit_Name, Unit_Acronym FROM tbl_unitofmeasurments";
+                                                        $unitsQuery = "SELECT Unit_ID, Unit_Name, Unit_Acronym FROM tbl_unitofmeasurments ORDER BY Unit_ID ASC";
                                                         $units = $pdo->query($unitsQuery)->fetchAll(PDO::FETCH_ASSOC);
 
                                                         foreach ($units as $unit) {
@@ -1048,6 +1048,106 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 });
+    </script>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const itemDropdown = document.getElementById('editItemDropdown');
+    const itemNameField = document.getElementById('editItemName');
+    const itemCategoryDropdown = document.getElementById('editItemCategory');
+    const itemUnitDropdown = document.getElementById('editItemUnit');
+    const itemLowStockField = document.getElementById('editItemLowStock');
+    const itemImagePreview = document.getElementById('editItemImagePreview');
+
+    itemDropdown.addEventListener('change', function () {
+        const selectedItemId = this.value;
+
+        // Fetch the item details
+        fetch('../IMS-POS/scripts/fetchItemDetails.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `item_id=${encodeURIComponent(selectedItemId)}`,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const item = data.item;
+
+                    // Populate the fields with the fetched data
+                    itemNameField.value = item.Item_Name;
+                    itemLowStockField.value = item.Item_Lowstock;
+                    itemImagePreview.src = item.Item_Image;
+
+                    // Update the category dropdown
+                    Array.from(itemCategoryDropdown.options).forEach(option => {
+                        if (option.value === item.Item_Category) {
+                            option.selected = true;
+                        } else {
+                            option.selected = false;
+                        }
+                    });
+
+                    // Update the unit of measurement dropdown
+                    Array.from(itemUnitDropdown.options).forEach(option => {
+                        if (option.value === item.Unit_ID) {
+                            option.selected = true;
+                        } else {
+                            option.selected = false;
+                        }
+                    });
+                } else {
+                    console.error('Failed to fetch item details:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching item details:', error);
+            });
+    });
+});
+    </script>
+    <script>    
+        document.addEventListener('DOMContentLoaded', function () {
+            const saveEditItemButton = document.getElementById('saveEditItem');
+
+            saveEditItemButton.addEventListener('click', function () {
+                const formData = new FormData(document.getElementById('editItemForm'));
+
+                // Send the data via AJAX
+                fetch('../IMS-POS/scripts/updateItemDetails.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Item updated successfully!',
+                            }).then(() => {
+                                // Reload the page or close the modal
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message || 'Failed to update the item.',
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while updating the item.',
+                        });
+                    });
+            });
+        });
     </script>
 </body>
 <?php include 'footer.php' ?>
