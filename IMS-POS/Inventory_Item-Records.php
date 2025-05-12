@@ -1016,39 +1016,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-    const itemDropdown = document.getElementById('itemDropdown');
-    const unitAcronymSpan = document.getElementById('unitAcronym');
 
-    itemDropdown.addEventListener('change', function () {
-        const selectedItemName = this.value;
-
-        // Fetch the unit acronym for the selected item
-        fetch('../IMS-POS/scripts/fetchUnitOfMeasurement.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `item_name=${encodeURIComponent(selectedItemName)}`,
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update the unit acronym display
-                    unitAcronymSpan.textContent = data.unit.Unit_Acronym;
-                } else {
-                    unitAcronymSpan.textContent = '';
-                    console.error('Failed to fetch unit of measurement:', data.message);
-                }
-            })
-            .catch(error => {
-                unitAcronymSpan.textContent = '';
-                console.error('Error fetching unit of measurement:', error);
-            });
-    });
-});
-    </script>
 
     <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -1150,29 +1118,61 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const categoryDropdown = document.getElementById('categoryDropdown');
-            const itemDropdown = document.getElementById('itemDropdown');
+document.addEventListener('DOMContentLoaded', function () {
+    const categoryDropdown = document.getElementById('categoryDropdown');
+    const itemDropdown = document.getElementById('itemDropdown');
+    const unitAcronymSpan = document.getElementById('unitAcronym'); // Ensure this element exists in your HTML
 
-            // Event listener for category selection
-            categoryDropdown.addEventListener('change', function () {
-                const selectedCategoryID = this.value;
+    // Event listener for category selection
+    categoryDropdown.addEventListener('change', function () {
+        const selectedCategoryID = this.value;
 
-                // Fetch items based on the selected category
-                fetch(`../IMS-POS/scripts/fetchItemsByCategory.php?categoryID=${selectedCategoryID}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Clear the item dropdown
-                        itemDropdown.innerHTML = '<option selected disabled>Select Name</option>';
+        // Fetch items based on the selected category
+        fetch(`../IMS-POS/scripts/fetchItemsByCategory.php?categoryID=${selectedCategoryID}`)
+            .then(response => response.json())
+            .then(data => {
+                // Clear the item dropdown
+                itemDropdown.innerHTML = '<option selected disabled>Select Name</option>';
 
-                        // Populate the item dropdown with the filtered items
-                        data.forEach(item => {
-                            itemDropdown.innerHTML += `<option value="${item.Item_ID}">${item.Item_Name}</option>`;
-                        });
-                    })
-                    .catch(error => console.error('Error fetching items:', error));
+                // Populate the item dropdown with the filtered items
+                data.forEach(item => {
+                    itemDropdown.innerHTML += `<option value="${item.Item_ID}">${item.Item_Name}</option>`;
+                });
+
+                // Clear the unit acronym when the category changes
+                unitAcronymSpan.textContent = '';
+            })
+            .catch(error => console.error('Error fetching items:', error));
+    });
+
+    // Event listener for item selection
+    itemDropdown.addEventListener('change', function () {
+        const selectedItemID = this.value;
+
+        // Fetch the unit acronym for the selected item
+        fetch('../IMS-POS/scripts/fetchUnitOfMeasurement.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `item_id=${encodeURIComponent(selectedItemID)}`,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the unit acronym display
+                    unitAcronymSpan.textContent = data.unit.Unit_Acronym;
+                } else {
+                    unitAcronymSpan.textContent = '';
+                    console.error('Failed to fetch unit of measurement:', data.message);
+                }
+            })
+            .catch(error => {
+                unitAcronymSpan.textContent = '';
+                console.error('Error fetching unit of measurement:', error);
             });
-        });
+    });
+});
 </script>
 </body>
 <?php include 'footer.php' ?>
