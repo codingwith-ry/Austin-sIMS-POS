@@ -12,13 +12,41 @@ if (session_status() === PHP_SESSION_NONE) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $recordIds = $_POST['recordIds']; // Array of record IDs to delete
 
-    // Debugging: Log received record IDs
-    error_log("Received recordIds: " . print_r($recordIds, true));
-
     if (!empty($recordIds) && is_array($recordIds)) {
         try {
             // Prepare placeholders for the IN clause
             $placeholders = implode(',', array_fill(0, count($recordIds), '?'));
+
+            // Fetch the total price of the records to be deleted
+            $fetchPricesStmt = $conn->prepare("SELECT SUM(Record_TotalPrice) AS totalPrice FROM tbl_record WHERE Record_ID IN ($placeholders)");
+            $fetchPricesStmt->execute($recordIds);
+            $totalPriceToDelete = $fetchPricesStmt->fetch(PDO::FETCH_ASSOC)['totalPrice'] ?? 0;
+
+            // Fetch the current Total_Stock_Budget, Total_Expenses, and Total_Calculated_Budget from tbl_stocks
+            $stockID = 1; // Assuming Stock_ID is 1 (adjust as needed)
+            $stockQuery = $conn->prepare("SELECT Total_Stock_Budget, Total_Expenses, Total_Calculated_Budget FROM tbl_stocks WHERE Stock_ID = :stockID");
+            $stockQuery->bindParam(':stockID', $stockID);
+            $stockQuery->execute();
+            $stockResult = $stockQuery->fetch(PDO::FETCH_ASSOC);
+
+            $totalStockBudget = $stockResult['Total_Stock_Budget'] ?? 0;
+            $currentTotalExpenses = $stockResult['Total_Expenses'] ?? 0;
+            $previousCalculatedBudget = $stockResult['Total_Calculated_Budget'] ?? 0;
+
+            // Calculate the new Total_Expenses and Total_Calculated_Budget
+            $newTotalExpenses = $currentTotalExpenses - $totalPriceToDelete;
+            $newCalculatedBudget = $totalStockBudget - $newTotalExpenses;
+
+            // Update the Total_Expenses and Total_Calculated_Budget in tbl_stocks
+            $updateStockStmt = $conn->prepare("
+                UPDATE tbl_stocks 
+                SET Total_Expenses = :newTotalExpenses, Total_Calculated_Budget = :newCalculatedBudget 
+                WHERE Stock_ID = :stockID
+            ");
+            $updateStockStmt->bindParam(':newTotalExpenses', $newTotalExpenses);
+            $updateStockStmt->bindParam(':newCalculatedBudget', $newCalculatedBudget);
+            $updateStockStmt->bindParam(':stockID', $stockID);
+            $updateStockStmt->execute();
 
             // Delete related rows in tbl_inventory_changes
             $deleteChangesStmt = $conn->prepare("DELETE FROM tbl_inventory_changes WHERE Record_ID IN ($placeholders)");
@@ -27,6 +55,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Delete the records in tbl_record
             $deleteRecordStmt = $conn->prepare("DELETE FROM tbl_record WHERE Record_ID IN ($placeholders)");
             $deleteRecordStmt->execute($recordIds);
+
+            // Insert an entry into tbl_inventorylogs
+            $amountAdded = $totalPriceToDelete; 
+            $dateTime = date('Y-m-d H:i:s'); // Current date and time
+
+            $inventoryLogStmt = $conn->prepare("
+                INSERT INTO tbl_inventorylogs (Employee_ID, Amount_Added, Date_Time, Previous_Sum, Stock_ID, Updated_Sum)
+                VALUES (:employeeID, :amountAdded, :dateTime, :previousSum, :stockID, :updatedSum)
+            ");
+            $inventoryLogStmt->bindParam(':employeeID', $_SESSION['employeeID']); // Assuming Employee_ID is stored in the session
+            $inventoryLogStmt->bindParam(':amountAdded', $amountAdded);
+            $inventoryLogStmt->bindParam(':dateTime', $dateTime);
+            $inventoryLogStmt->bindParam(':previousSum', $previousCalculatedBudget); // Previous Total_Calculated_Budget
+            $inventoryLogStmt->bindParam(':stockID', $stockID);
+            $inventoryLogStmt->bindParam(':updatedSum', $newCalculatedBudget); // New Total_Calculated_Budget
+            $inventoryLogStmt->execute();
 
             // Log the deletion in tbl_userlogs
             if (isset($_SESSION['email']) && isset($_SESSION['userRole'])) {
