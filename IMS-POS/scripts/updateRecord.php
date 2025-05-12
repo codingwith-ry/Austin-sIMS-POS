@@ -44,6 +44,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $updateStmt->bindParam(':totalPrice', $newTotalPrice);
         $updateStmt->execute();
 
+        // Update the record in tbl_record_duplicate
+        $updateDuplicateStmt = $conn->prepare("
+            UPDATE tbl_record_duplicate
+            SET 
+                Record_ItemVolume = :itemVolume,
+                Record_ItemQuantity = :itemQuantity,
+                Record_ItemPrice = :itemPrice,
+                Record_ItemExpirationDate = :itemExpirationDate,
+                Record_TotalPrice = :totalPrice
+            WHERE RecordDuplicate_ID = :recordId
+        ");
+
+        $updateDuplicateStmt->bindParam(':recordId', $recordId);
+        $updateDuplicateStmt->bindParam(':itemVolume', $itemVolume);
+        $updateDuplicateStmt->bindParam(':itemQuantity', $itemQuantity);
+        $updateDuplicateStmt->bindParam(':itemPrice', $itemPrice);
+        $updateDuplicateStmt->bindParam(':itemExpirationDate', $itemExpirationDate);
+        $updateDuplicateStmt->bindParam(':totalPrice', $newTotalPrice);
+        $updateDuplicateStmt->execute();
+
+        
+
         // Fetch the updated record
         $fetchStmt = $conn->prepare("
             SELECT 
