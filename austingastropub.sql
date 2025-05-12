@@ -760,14 +760,14 @@ INSERT INTO `tbl_itemcategories` (`Category_ID`, `Category_Name`, `Category_Icon
 CREATE TABLE `tbl_record` (
 	`Record_ID` INT(11) NOT NULL,
 	`Item_ID` INT(11) NULL DEFAULT NULL,
-	`Record_ItemVolume` INT(11) NULL DEFAULT NULL,
+  	`Record_ItemVolume` decimal(11,2) DEFAULT NULL,
 	`Record_ItemQuantity` INT(11) NULL DEFAULT NULL,
-	`Record_ItemPrice` INT(11) NULL DEFAULT NULL,
+	`Record_ItemPrice` decimal(11,2) DEFAULT NULL,
 	`Record_ItemExpirationDate` DATE NULL DEFAULT NULL,
 	`Record_ItemPurchaseDate` DATE NULL DEFAULT NULL,
 	`Record_ItemSupplier` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
 	`Record_EmployeeAssigned` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-	`Record_TotalPrice` int(11) NULL DEFAULT NULL,
+  	`Record_TotalPrice` decimal(11,2) DEFAULT NULL,
 	PRIMARY KEY (`Record_ID`) USING BTREE,
 	INDEX `FK__tbl_item` (`Item_ID`) USING BTREE,
 	INDEX `FK__employees` (`Record_EmployeeAssigned`) USING BTREE
@@ -777,8 +777,10 @@ ENGINE=InnoDB
 ;
 
 CREATE TABLE `tbl_stocks` (
-	`Stock_ID` INT(32) NOT NULL,
-	`Total_Stock_Budget` INT(32) NOT NULL
+  `Stock_ID` int(32) NOT NULL,
+  `Total_Stock_Budget` decimal(32,2) NOT NULL,
+  `Total_Expenses` decimal(32,2) NOT NULL,
+  `Total_Calculated_Budget` decimal(32,2) NOT NULL
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
@@ -836,10 +838,11 @@ AUTO_INCREMENT=14
 CREATE TABLE `tbl_inventorylogs` (
 	`inventoryLogs_ID` INT(11) NOT NULL AUTO_INCREMENT,
 	`Employee_ID` VARCHAR(9) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-	`Amount_Added` INT(11) NULL DEFAULT NULL,
+  	`Amount_Added` decimal(11,2) DEFAULT NULL,
 	`Date_Time` DATETIME NULL DEFAULT NULL,
-	`Previous_Sum` INT(11) NULL DEFAULT NULL,
+	`Previous_Sum` decimal(11,2) DEFAULT NULL,
 	`Stock_ID` INT(11) NULL DEFAULT NULL,
+  	`Updated_Sum` decimal(11,2) DEFAULT NULL,
 	PRIMARY KEY (`inventoryLogs_ID`) USING BTREE,
 	INDEX `FK__employees` (`Employee_ID`) USING BTREE,
 	CONSTRAINT `FK__employees` FOREIGN KEY (`Employee_ID`) REFERENCES `employees` (`Employee_ID`) ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -847,6 +850,26 @@ CREATE TABLE `tbl_inventorylogs` (
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
+
+CREATE TABLE `tbl_record_duplicate` (
+  `RecordDuplicate_ID` int(11) NOT NULL,
+  `Item_ID` int(11) DEFAULT NULL,
+  `Record_ItemVolumes` decimal(11,2) DEFAULT NULL,
+  `Record_ItemQuantity` int(11) DEFAULT NULL,
+  `Record_ItemPrice` decimal(11,2) DEFAULT NULL,
+  `Record_ItemExpirationDate` date DEFAULT NULL,
+  `Record_ItemPurchaseDate` date DEFAULT NULL,
+  `Record_ItemSupplier` varchar(255) DEFAULT NULL,
+  `Record_EmployeeAssigned` varchar(50) DEFAULT NULL,
+  `Record_TotalPrice` decimal(11,2) DEFAULT NULL
+) 
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+ALTER TABLE `tbl_record_duplicate`
+  ADD PRIMARY KEY (`RecordDuplicate_ID`);
+COMMIT;
 
 
 

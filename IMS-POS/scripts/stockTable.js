@@ -1,19 +1,16 @@
 $(document).ready(function () {
-  // Initialize the DataTable
   const table = $("#stockTable").DataTable({
     ajax: {
-      url: "fetchRecentStockPurchases.php", // Path to your PHP script
-      dataSrc: "data", // Data will be inside the "data" key of the JSON response
+      url: "fetchRecentStockPurchases.php",
+      dataSrc: "data",
       data: function (d) {
-        // Get the selected date from the input (if available), otherwise default to today
         const selectedDate =
           $("#startDate").val() || new Date().toISOString().split("T")[0];
+        const selectedPeriod =
+          $('input[name="btnradio"]:checked').val() || "weekly";
 
-        // Get the selected period (weekly, monthly, or yearly)
-        const selectedPeriod = $('input[name="btnradio"]:checked').val();
-
-        d.startDate = selectedDate; // Send the startDate as a parameter to the backend
-        d.period = selectedPeriod; // Send the selected period (weekly, monthly, yearly)
+        d.startDate = selectedDate;
+        d.period = selectedPeriod;
       },
     },
     columns: [
@@ -27,52 +24,48 @@ $(document).ready(function () {
           );
         },
       },
-      { data: "Item_Name" }, // Item Name
-      { data: "Category_Name" }, // Category Name
-      { data: "Record_ItemQuantity" }, // Quantity
-      { data: "Record_ItemVolume" }, // Volume
+      { data: "Item_Name" },
+      { data: "Category_Name" },
+      { data: "Total_Quantity" },
+      { data: "Total_Volume" },
     ],
+
     columnDefs: [
       {
-        targets: 0, // Target the checkbox column
-        orderable: false, // Disable sorting for this column
+        targets: 0,
+        orderable: false,
       },
     ],
-    order: [[1, "asc"]], // Default sorting by the Item Name column (index 1)
+    order: [[1, "asc"]],
+    initComplete: function () {
+      updateLabel(); // Set initial label after first load
+    },
   });
 
-  // Add event listener for opening and closing child rows
-  $("#stockTable tbody").on("click", "tr", function () {
-    var tr = $(this);
-    var row = table.row(tr);
+  function updateLabel() {
+    const period = $('input[name="btnradio"]:checked').val() || "weekly";
+    const periodLabels = {
+      weekly: "Weekly Stock Expenses",
+      monthly: "Monthly Stock Expenses",
+      yearly: "Yearly Stock Expenses",
+      daily: "Daily Stock Expenses",
+    };
+    $("#stockTableLabel").text(periodLabels[period] || "Stock Expenses");
+  }
 
-    // Toggle the child row (expand/collapse)
-    if (row.child.isShown()) {
-      row.child.hide();
-      tr.removeClass("shown");
-    } else {
-      var rowData = row.data();
-
-      // Build the content for the child row (image and employee assigned)
-      var childRowContent = `
-                    <div class="child-row">
-                        <div class="image">
-                            <img src="${rowData.Item_Image}" alt="Item Image" width="100">
-                        </div>
-                        <div class="employee">
-                            <p><strong>Assigned Employee:</strong> ${rowData.Record_EmployeeAssigned}</p>
-                        </div>
-                    </div>
-                `;
-
-      // Show the child row
-      row.child(childRowContent).show();
-      tr.addClass("shown");
-    }
-  });
-
-  // Event listener for radio buttons (Weekly, Monthly, Yearly)
+  // Update and reload on filter change
   $('input[name="btnradio"]').on("change", function () {
-    table.ajax.reload(); // Reload the table data when the radio button changes
+    updateLabel();
+    table.ajax.reload();
   });
+
+  $("#startDate").on("change", function () {
+    // Optional: If you want date input to imply a "daily" view
+    $('input[name="btnradio"]').prop("checked", false); // uncheck all
+    updateLabel();
+    table.ajax.reload();
+  });
+
+  // Optional: trigger load once at start
+  updateLabel();
 });

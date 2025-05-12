@@ -7,6 +7,10 @@ $period = isset($_GET['period']) ? $_GET['period'] : 'weekly'; // Default to 'we
 
 // Calculate the date range based on the selected period
 switch ($period) {
+    case 'daily':
+        $startDate = date('Y-m-d', strtotime($startDate));
+        $endDate = $startDate; // Same day
+        break;
     case 'weekly':
         // Calculate the start of the week (last Monday)
         $startDate = date('Y-m-d', strtotime('last Monday', strtotime($startDate)));
@@ -38,9 +42,9 @@ SELECT
     i.Item_Category, 
     ic.Category_Name, 
     COALESCE(um.Unit_Acronym, '') as Unit_Acronym, 
-    r.Record_ItemQuantity, 
-    r.Record_ItemVolume,
-    e.Employee_Name AS Record_EmployeeAssigned
+    SUM(r.Record_ItemQuantity) AS Total_Quantity,
+    SUM(r.Record_ItemVolume) AS Total_Volume,
+    GROUP_CONCAT(DISTINCT e.Employee_Name SEPARATOR ', ') AS Employees
 FROM tbl_item i
 JOIN tbl_itemcategories ic ON i.Item_Category = ic.Category_ID
 JOIN tbl_record r ON i.Item_ID = r.Item_ID
@@ -50,6 +54,7 @@ WHERE r.Record_ItemPurchaseDate BETWEEN :startDate AND :endDate
 GROUP BY i.Item_ID
 ORDER BY i.Item_Name ASC
 ";
+
 
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);

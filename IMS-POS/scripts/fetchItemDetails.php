@@ -7,9 +7,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($itemId) {
         $stmt = $conn->prepare("
             SELECT 
-                i.Item_ID, i.Item_Name, i.Item_Image, 
-                i.Item_Category, c.Category_Name, 
-                i.Unit_ID, u.Unit_Name, u.Unit_Acronym,
+                i.Item_ID, 
+                i.Item_Name, 
+                i.Item_Image, 
+                i.Item_Category, 
+                c.Category_Name, 
+                i.Unit_ID, 
+                u.Unit_Name, 
+                u.Unit_Acronym,
                 i.Item_Lowstock
             FROM tbl_item i
             JOIN tbl_itemcategories c ON i.Item_Category = c.Category_ID

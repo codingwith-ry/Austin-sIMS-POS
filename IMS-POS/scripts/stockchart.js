@@ -6,24 +6,37 @@ if (ctxElem) {
 
 if (ctx != null) {
   let chart = new Chart(ctx, {
-    type: "bar",
+    type: "line",
     data: {
       labels: [],
       datasets: [
         {
           label: "Stock Expenses",
           data: [],
-          backgroundColor: "rgba(54, 162, 235, 0.5)",
           borderColor: "rgba(54, 162, 235, 1)",
-          borderWidth: 1,
+          backgroundColor: "rgba(54, 162, 235, 0.1)",
+          fill: true,
+          tension: 0.4, // adds curve to the line
+          pointBackgroundColor: "rgba(54, 162, 235, 1)",
+          pointBorderColor: "#fff",
+          pointHoverBackgroundColor: "#fff",
+          pointHoverBorderColor: "rgba(54, 162, 235, 1)",
         },
       ],
     },
     options: {
       responsive: true,
       scales: {
+        x: {
+          grid: {
+            display: false,
+          },
+        },
         y: {
           beginAtZero: true,
+          grid: {
+            display: false,
+          },
         },
       },
     },
@@ -62,11 +75,18 @@ if (ctx != null) {
     }
   }
 
+  const startDateInput = document.getElementById("startDate");
+  const today = new Date();
+  const todayStr = today.toISOString().split("T")[0];
+  startDateInput.value = todayStr;
+  startDateInput.max = todayStr;
+
   // Button group listeners
   document.getElementById("btnradio1").addEventListener("change", () => {
-    document.getElementById("startDate").value = ""; // reset input
-    updateChart("weekly");
+    startDateInput.value = todayStr; // reset to today
+    updateChart("weekly", todayStr);
   });
+
   document
     .getElementById("btnradio2")
     .addEventListener("change", () => updateChart("monthly"));
@@ -74,16 +94,15 @@ if (ctx != null) {
     .getElementById("btnradio3")
     .addEventListener("change", () => updateChart("yearly"));
 
-  // 🎯 New: Input field listener
-  document.getElementById("startDate").addEventListener("change", (e) => {
+  // 🎯 Input field listener
+  startDateInput.addEventListener("change", (e) => {
     const selectedDate = e.target.value;
     if (selectedDate) {
-      // Force switch to "weekly" view with selected date
       document.getElementById("btnradio1").checked = true;
       updateChart("weekly", selectedDate);
     }
   });
 
-  // Load default chart
-  updateChart("weekly");
+  // 🟩 Load chart with today's date by default
+  updateChart("weekly", todayStr);
 }

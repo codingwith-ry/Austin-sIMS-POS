@@ -2,18 +2,18 @@
 include '../Login/database.php';
 
 try {
-    // If user provided a date, use it; otherwise, get today's date
-    $startDate = isset($_GET['startDate']) && !empty($_GET['startDate'])
+    // Use current date or user-provided date
+    $endDate = isset($_GET['startDate']) && !empty($_GET['startDate'])
         ? $_GET['startDate']
         : date('Y-m-d');
 
-    // Get the start and end of the week from the provided date
-    $startDateObj = new DateTime($startDate);
-    $startDateObj->setISODate($startDateObj->format('Y'), $startDateObj->format('W'));
-    $startOfWeek = $startDateObj->format('Y-m-d');
-    $endOfWeek = (clone $startDateObj)->modify('+6 days')->format('Y-m-d');
+    // Calculate 6 days before to cover last 7 days (including end date)
+    $endDateObj = new DateTime($endDate);
+    $startDateObj = (clone $endDateObj)->modify('-6 days');
 
-    // Fetch expenses grouped by purchase date within the week range
+    $startOfWeek = $startDateObj->format('Y-m-d');
+    $endOfWeek = $endDateObj->format('Y-m-d');
+
     $query = "
         SELECT 
             DATE(Record_ItemPurchaseDate) AS purchase_date,
@@ -30,22 +30,29 @@ try {
     $stmt->execute();
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Initialize expenses for the week (Sunday to Saturday)
-    $daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    $expenses = array_fill(0, 7, 0);
+    // Create date labels for last 7 days ending on $endDate
+    $labels = [];
+    $expenses = [];
 
-    // Fill in the expenses based on what day they occurred
-    foreach ($results as $row) {
-        $dayIndex = date('w', strtotime($row['purchase_date'])); // Sunday = 0
-        $expenses[$dayIndex] = (float) $row['total_expenses'];
+    $period = new DatePeriod($startDateObj, new DateInterval('P1D'), (clone $endDateObj)->modify('+1 day'));
+    foreach ($period as $date) {
+        $formatted = $date->format('Y-m-d');
+        $labels[] = $date->format('D'); // Mon, Tue, etc.
+        $expenses[$formatted] = 0; // Default 0 for each date
     }
 
-    // Return as JSON
+    foreach ($results as $row) {
+        $dateKey = $row['purchase_date'];
+        if (isset($expenses[$dateKey])) {
+            $expenses[$dateKey] = (float) $row['total_expenses'];
+        }
+    }
+
     echo json_encode([
         'success' => true,
-        'labels' => $daysOfWeek,
-        'expenses' => $expenses,
-        'totalExpenses' => array_sum($expenses)
+        'labels' => $labels,
+        'expenses' => array_values($expenses),
+        'totalExpenses' => array_sum($expenses),
     ]);
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);

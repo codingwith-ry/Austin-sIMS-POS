@@ -111,7 +111,11 @@ if (customPrintBtn) {
 
 function format(groupItems) {
   let content = "";
+  let totalAmount = 0;
+
   groupItems.forEach((d) => {
+    totalAmount += parseFloat(d.Record_TotalPrice); // sum up total prices
+
     content += `
       <div class="row" style="align-items: center; margin-bottom: 5px;">
         <div class="col-auto" style="display: flex; align-items: center;">
@@ -140,11 +144,29 @@ function format(groupItems) {
           <div style="font-weight: bold;">Price/unit</div>
           <div>${d.Record_ItemPrice}</div>
         </div>
+        <div class="col" style="text-align: center;">
+          <div style="font-weight: bold;">Total Price</div>
+          <div>${d.Record_TotalPrice}</div>
+        </div>
       </div>
     `;
   });
+
+  // Add a final row to show the total amount
+  content += `
+    <div class="row" style="margin-top: 10px; border-top: 2px solid #ccc; padding-top: 5px;">
+      <div class="col" style="text-align: right; font-weight: bold;" colspan="6">
+        Grand Total:
+      </div>
+      <div class="col" style="text-align: center; font-weight: bold;">
+        ₱${totalAmount.toFixed(2)}
+      </div>
+    </div>
+  `;
+
   return content;
 }
+
 // ✅ Group data by purchase date
 const groupedData = {};
 if (window.inventoryData) {
@@ -168,20 +190,10 @@ if (window.inventoryData) {
     };
   });
 
-  let itemRecords = new DataTable("#itemRecords", {
+  var itemRecords = new DataTable("#itemRecords", {
     responsive: true,
     data: tableData,
     columns: [
-      {
-        data: null,
-        orderable: false,
-        className: `dt-checkbox-column`,
-        render: function (data, type, row, meta) {
-          return `<div class="form-check">
-                  <input class="form-check-input row-checkbox" type="checkbox" data-record-ids="${row.Record_IDs}">
-                </div>`;
-        },
-      },
       { data: "groupId", title: "Group ID" },
       { data: "Record_ItemPurchaseDate", title: "Purchase Date" },
       {
@@ -542,4 +554,37 @@ if (window.inventoryData) {
   });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("scripts/mostExpensiveItems.php")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        const list = document.getElementById("topSellingList");
+        list.innerHTML = "";
 
+        data.records.forEach((item) => {
+          const totalPrice = Number(item.totalPrice).toLocaleString();
+
+          const listItem = `
+            <li class="d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center gap-2">
+                <img src="${item.Item_Image}" alt="${item.Item_Name}" width="40" height="40" class="rounded" />
+                <div class="ms-2 me-auto">
+                  <div style="font-size: 16px; font-weight:bold">${item.Item_Name}</div>
+                </div>
+              </div>
+              <div class="text-end">
+                <div style="font-weight: bold;">${item.totalQuantity}</div>
+                <div style="font-size: 14px; color: #555;">₱${totalPrice}</div>
+              </div>
+            </li>
+            <hr />
+          `;
+          list.innerHTML += listItem;
+        });
+      } else {
+        console.error("Failed to load records:", data.message);
+      }
+    })
+    .catch((err) => console.error("Fetch error:", err));
+});

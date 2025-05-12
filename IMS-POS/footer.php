@@ -30,7 +30,8 @@
 <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
 <script src="scripts/filter.js"></script>
 <script src="scripts/inventoryLogs.js"></script>
-
+<script src="scripts/displayStockTrend.js"></script>
+<script src="scripts/categoriesDisplay.js"></script>
 
 
 
