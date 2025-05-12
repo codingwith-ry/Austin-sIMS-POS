@@ -228,46 +228,46 @@ $inventoryRecords = $pdo->query($fetchInventoryQuery)->fetchAll(PDO::FETCH_ASSOC
 
 $fetchItemDataQuery = "
     SELECT 
-        i.Item_ID,
-        i.Item_Name, 
-        i.Item_Image, 
-        i.Item_Category, 
-        ic_cat.Category_Name, 
-        um.Unit_Acronym, 
-        IFNULL(r.Record_ItemQuantity, 0) AS Record_ItemQuantity,
-        IFNULL(r.Record_ItemVolume, 0) AS Record_ItemVolume,
-        r.Record_ItemExpirationDate,
-        i.Item_Lowstock,
-        IFNULL(SUM(ic.Change_Quantity), 0) AS Total_Change, 
-        IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Decrease 
-    FROM tbl_item i
-    JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
-    LEFT JOIN tbl_record r ON i.Item_ID = r.Item_ID
-    LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
-    LEFT JOIN tbl_inventory_changes ic ON r.Record_ID = ic.Record_ID
-    GROUP BY i.Item_ID, r.Record_ItemVolume, ic_cat.Category_Name, um.Unit_Acronym, i.Item_Name, i.Item_Image, r.Record_ItemExpirationDate
-    ORDER BY r.Record_ItemExpirationDate DESC
+    i.Item_ID,
+    i.Item_Name, 
+    i.Item_Image, 
+    i.Item_Category, 
+    ic_cat.Category_Name, 
+    um.Unit_Acronym, 
+    IFNULL(SUM(r.Record_ItemQuantity), 0) - IFNULL(SUM(CASE WHEN ic.Change_Type = 'decrease' THEN ic.Change_Quantity ELSE 0 END), 0) AS Total_Quantity,
+    IFNULL(r.Record_ItemVolume, 0) AS Record_ItemVolume,
+    i.Item_Lowstock
+FROM tbl_item i
+JOIN tbl_itemcategories ic_cat ON i.Item_Category = ic_cat.Category_ID
+LEFT JOIN tbl_record_duplicate r ON i.Item_ID = r.Item_ID
+LEFT JOIN tbl_unitofmeasurments um ON i.Unit_ID = um.Unit_ID
+LEFT JOIN tbl_inventory_changes ic ON r.RecordDuplicate_ID = ic.Record_ID
+GROUP BY i.Item_ID, r.Record_ItemVolume
+ORDER BY i.Item_ID, r.Record_ItemVolume;
+
 ";
 
 
 $itemData = $pdo->query($fetchItemDataQuery)->fetchAll(PDO::FETCH_ASSOC);
 
 
-if (isset($_GET['item_id'])) {
+if (isset($_GET['item_id']) && isset($_GET['volume'])) {
     $item_id = $_GET['item_id'];
+    $volume = $_GET['volume'];
 
-    // Fetch the records of the clicked item
+    // Fetch the records that match both item ID and volume
     $query = "
         SELECT i.Item_Name, r.Record_ItemQuantity, r.Record_ItemPurchaseDate, 
-           r.Record_ItemExpirationDate, e.Employee_Name, r.Record_ID
-    FROM tbl_record r
-    JOIN tbl_item i ON i.Item_ID = r.Item_ID
-    LEFT JOIN employees e ON r.Record_EmployeeAssigned = e.Employee_ID
-    WHERE i.Item_ID = :item_id
+               r.Record_ItemExpirationDate, e.Employee_Name, r.RecordDuplicate_ID
+        FROM tbl_record_duplicate r
+        JOIN tbl_item i ON i.Item_ID = r.Item_ID
+        LEFT JOIN employees e ON r.Record_EmployeeAssigned = e.Employee_ID
+        WHERE i.Item_ID = :item_id AND r.Record_ItemVolume = :volume
     ";
 
     $stmt = $pdo->prepare($query);
-    $stmt->execute(['item_id' => $item_id]);
+    $stmt->execute(['item_id' => $item_id, 'volume' => $volume]);
     $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 ?>
