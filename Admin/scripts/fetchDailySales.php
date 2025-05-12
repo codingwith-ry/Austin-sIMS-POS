@@ -19,7 +19,8 @@ $response = [
         'Cash' => 0,
         'GCash' => 0,
         'PayMaya' => 0
-    ]
+    ],
+    'menuSales7days' => []
 ];
 
 try {
@@ -113,6 +114,26 @@ try {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $response['paymentBreakdown'][$method] = $row['total'] ?? 0;
     }
+
+     // Fetch menu sales for the last 7 days
+     $query = "
+     SELECT 
+         DATE(o.orderDate) AS date,
+         menu.menuName AS menu,
+         SUM(oi.productQuantity) AS quantity,
+         SUM(oi.productTotal) AS totalSales
+        FROM tbl_orderitems oi
+        JOIN tbl_orders o ON oi.salesOrderNumber = o.salesOrderNumber
+        JOIN tbl_menu m ON oi.productID = m.productID
+        JOIN tbl_menuclass menu on m.menuID = menu.menuID
+        WHERE DATE(o.orderDate) BETWEEN DATE_SUB(:lastDate, INTERVAL 6 DAY) AND :currentDate
+        GROUP BY DATE(o.orderDate), menu.menuName
+        ORDER BY DATE(o.orderDate) ASC, totalSales DESC
+    ";
+    $stmt = $conn->prepare($query);
+    $stmt->execute(['lastDate' => $date, 'currentDate' => $date]);
+    $response["menuSales7days"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
     // Return the response as JSON
     echo json_encode($response);
