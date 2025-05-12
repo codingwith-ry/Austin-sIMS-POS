@@ -774,19 +774,19 @@ foreach ($itemData as $item) {
                             </div>
                         </div>
 
-                        <div class="form-group" style="display:flex">
-                            <span class="col-sm-4 control-label">Item Name</span>
-                            <div class="col-sm-8">
-                                <select class="form-select" name="item_Name" id="itemDropdown">
-                                    <option selected disabled>Select Name</option>
-                                    <?php
-                                    foreach ($items as $item) {
-                                        echo '<option value="' . htmlspecialchars($item['Item_Name']) . '">' . htmlspecialchars($item['Item_Name']) . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
+                    <div class="form-group" style="display:flex">
+                        <span class="col-sm-4 control-label">Item Name</span>
+                        <div class="col-sm-8">
+                            <select class="form-select" name="item_Name" id="itemDropdown">
+                                <option selected disabled>Select Name</option>
+                                <?php
+                                foreach ($items as $item) {
+                                    echo '<option value="' . htmlspecialchars($item['Item_Name']) . '">' . htmlspecialchars($item['Item_Name']) . '</option>';
+                                }
+                                ?>
+                            </select>
                         </div>
+                    </div>
 
 
 
@@ -1158,7 +1158,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Populate the item dropdown with the filtered items
                 data.forEach(item => {
-                    itemDropdown.innerHTML += `<option value="${item.Item_ID}">${item.Item_Name}</option>`;
+                    itemDropdown.innerHTML += `<option value="${item.Item_Name}" data-item-id="${item.Item_ID}">${item.Item_Name}</option>`;
                 });
 
                 // Clear the unit acronym when the category changes
@@ -1169,7 +1169,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Event listener for item selection
     itemDropdown.addEventListener('change', function () {
-        const selectedItemID = this.value;
+        const selectedItemName = this.value;
+        const selectedItemID = this.options[this.selectedIndex].getAttribute('data-item-id'); // Get the item ID from the data attribute
 
         // Fetch the unit acronym for the selected item
         fetch('../IMS-POS/scripts/fetchUnitOfMeasurement.php', {
