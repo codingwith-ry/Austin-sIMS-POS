@@ -780,7 +780,7 @@ CREATE TABLE `tbl_stocks` (
   `Stock_ID` int(32) NOT NULL,
   `Total_Stock_Budget` int(32) NOT NULL,
   `Total_Expenses` int(32) NOT NULL,
-  `Total_Calculated_Budget` int(11) NOT NULL,
+  `Total_Calculated_Budget` int(11) NOT NULL
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
@@ -850,6 +850,26 @@ CREATE TABLE `tbl_inventorylogs` (
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
+
+CREATE TABLE `tbl_record_duplicate` (
+  `RecordDuplicate_ID` int(11) NOT NULL,
+  `Item_ID` int(11) DEFAULT NULL,
+  `Record_ItemVolume` int(11) DEFAULT NULL,
+  `Record_ItemQuantity` int(11) DEFAULT NULL,
+  `Record_ItemPrice` int(11) DEFAULT NULL,
+  `Record_ItemExpirationDate` date DEFAULT NULL,
+  `Record_ItemPurchaseDate` date DEFAULT NULL,
+  `Record_ItemSupplier` varchar(255) DEFAULT NULL,
+  `Record_EmployeeAssigned` varchar(50) DEFAULT NULL,
+  `Record_TotalPrice` int(11) DEFAULT NULL
+) 
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+ALTER TABLE `tbl_record_duplicate`
+  ADD PRIMARY KEY (`RecordDuplicate_ID`);
+COMMIT;
 
 
 

@@ -56,6 +56,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $deleteRecordStmt = $conn->prepare("DELETE FROM tbl_record WHERE Record_ID IN ($placeholders)");
             $deleteRecordStmt->execute($recordIds);
 
+            // Delete the records in tbl_record_duplicate
+            $deleteDuplicateRecordStmt = $conn->prepare("DELETE FROM tbl_record_duplicate WHERE RecordDuplicate_ID IN ($placeholders)");
+            $deleteDuplicateRecordStmt->execute($recordIds);
+
             // Insert an entry into tbl_inventorylogs
             $amountAdded = $totalPriceToDelete; 
             $dateTime = date('Y-m-d H:i:s'); // Current date and time

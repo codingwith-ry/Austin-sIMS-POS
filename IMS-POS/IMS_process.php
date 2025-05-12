@@ -79,7 +79,23 @@ if (isset($_POST['add_record'])) {
         $stmt->bindParam(':itemSupplier', $itemSupplier);
         $stmt->bindParam(':employeeAssigned', $employeeAssigned);
         $stmt->bindParam(':totalPrice', $totalPrice);
-
+        
+        // Insert into tbl_record_duplicate
+        $duplicateStmt = $conn->prepare("
+            INSERT INTO tbl_record_duplicate (RecordDuplicate_ID, Item_ID, Record_ItemVolume, Record_ItemQuantity, Record_ItemPrice, Record_ItemExpirationDate, Record_ItemPurchaseDate, Record_ItemSupplier, Record_EmployeeAssigned, Record_TotalPrice) 
+            VALUES (:recordDuplicateID, :itemID, :itemVolume, :itemQuantity, :itemPrice, :expirationDate, :purchaseDate, :itemSupplier, :employeeAssigned, :totalPrice)
+        ");
+        $duplicateStmt->bindParam(':recordDuplicateID', $recordID);
+        $duplicateStmt->bindParam(':itemID', $itemID);
+        $duplicateStmt->bindParam(':itemVolume', $itemVolume);
+        $duplicateStmt->bindParam(':itemQuantity', $itemQuantity);
+        $duplicateStmt->bindParam(':itemPrice', $itemPrice);
+        $duplicateStmt->bindParam(':expirationDate', $expirationDate);
+        $duplicateStmt->bindParam(':purchaseDate', $purchaseDate);
+        $duplicateStmt->bindParam(':itemSupplier', $itemSupplier);
+        $duplicateStmt->bindParam(':employeeAssigned', $employeeAssigned);
+        $duplicateStmt->bindParam(':totalPrice', $totalPrice);
+        $duplicateStmt->execute();
 
         if ($stmt->execute()) {
             echo "<script>alert('Record added successfully!');</script>";
