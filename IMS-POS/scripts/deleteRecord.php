@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Fetch the total price of the records to be deleted
             $fetchPricesStmt = $conn->prepare("SELECT SUM(Record_TotalPrice) AS totalPrice FROM tbl_record WHERE Record_ID IN ($placeholders)");
             $fetchPricesStmt->execute($recordIds);
-            $totalPriceToDelete = $fetchPricesStmt->fetch(PDO::FETCH_ASSOC)['totalPrice'] ?? 0;
+            $totalPriceToDelete = number_format($fetchPricesStmt->fetch(PDO::FETCH_ASSOC)['totalPrice'] ?? 0, 2, '.', '');
 
             // Fetch the current Total_Stock_Budget, Total_Expenses, and Total_Calculated_Budget from tbl_stocks
             $stockID = 1; // Assuming Stock_ID is 1 (adjust as needed)
@@ -29,13 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stockQuery->execute();
             $stockResult = $stockQuery->fetch(PDO::FETCH_ASSOC);
 
-            $totalStockBudget = $stockResult['Total_Stock_Budget'] ?? 0;
-            $currentTotalExpenses = $stockResult['Total_Expenses'] ?? 0;
-            $previousCalculatedBudget = $stockResult['Total_Calculated_Budget'] ?? 0;
+            $totalStockBudget = number_format($stockResult['Total_Stock_Budget'] ?? 0, 2, '.', '');
+            $currentTotalExpenses = number_format($stockResult['Total_Expenses'] ?? 0, 2, '.', '');
+            $previousCalculatedBudget = number_format($stockResult['Total_Calculated_Budget'] ?? 0, 2, '.', '');
 
             // Calculate the new Total_Expenses and Total_Calculated_Budget
-            $newTotalExpenses = $currentTotalExpenses - $totalPriceToDelete;
-            $newCalculatedBudget = $totalStockBudget - $newTotalExpenses;
+            $newTotalExpenses = number_format($currentTotalExpenses - $totalPriceToDelete, 2, '.', '');
+            $newCalculatedBudget = number_format($totalStockBudget - $newTotalExpenses, 2, '.', '');
 
             // Update the Total_Expenses and Total_Calculated_Budget in tbl_stocks
             $updateStockStmt = $conn->prepare("
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $deleteDuplicateRecordStmt->execute($recordIds);
 
             // Insert an entry into tbl_inventorylogs
-            $amountAdded = $totalPriceToDelete; 
+            $amountAdded = number_format($totalPriceToDelete, 2, '.', ''); // Positive because it's a deletion
             $dateTime = date('Y-m-d H:i:s'); // Current date and time
 
             $inventoryLogStmt = $conn->prepare("

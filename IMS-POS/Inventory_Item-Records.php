@@ -205,7 +205,14 @@ foreach ($itemData as $item) {
                                                 <form id="budgetForm">
                                                     <div class="mb-3">
                                                         <label for="budgetAmount" class="form-label">Amount to Add</label>
-                                                        <input type="number" class="form-control" id="budgetAmount" required min="1" />
+                                                        <input 
+                                                            type="text" 
+                                                            class="form-control" 
+                                                            id="budgetAmount" 
+                                                            placeholder="0.00" 
+                                                            required 
+                                                            oninput="formatToTwoDecimalPlaces(this)" 
+                                                        />
                                                         <div class="invalid-feedback">Please enter a valid positive number.</div>
                                                     </div>
                                                     <div id="budgetSummary" style="display: none;">
@@ -784,23 +791,49 @@ foreach ($itemData as $item) {
 
 
 
-                        <div class="form-group" style="display:flex">
-                            <span class="col-sm-4 control-label">Item Price</span>
-                            <div class="col-sm-8">
-                                <input class="form-control" id="focusedInput" type="text" placeholder="0.00" name="item_price">
-                            </div>
-                        </div>
-                        <div class="form-group" style="display:flex">
-                            <span class="col-sm-4 control-label">Item Volume</span>
-                            <div class="col-sm-8" style="display: flex; align-items: center;">
-                                <input class="form-control" id="itemVolume" type="text" placeholder="0.00" name="item_volume" style="flex: 1;">
-                                <span id="unitAcronym" style="margin-left: 10px; font-weight: bold;"></span>
-                            </div>
-                        </div>
+
+
+<div class="form-group" style="display:flex">
+    <span class="col-sm-4 control-label">Item Price</span>
+    <div class="col-sm-8">
+        <input 
+            class="form-control" 
+            id="itemPrice" 
+            type="text" 
+            placeholder="0.00" 
+            name="item_price" 
+            oninput="formatToTwoDecimalPlaces(this)" 
+            required>
+    </div>
+</div>
+
+<div class="form-group" style="display:flex">
+    <span class="col-sm-4 control-label">Item Volume</span>
+    <div class="col-sm-8" style="display: flex; align-items: center;">
+        <input 
+            class="form-control" 
+            id="itemVolume" 
+            type="text" 
+            placeholder="0.00" 
+            name="item_volume" 
+            oninput="formatToTwoDecimalPlaces(this)" 
+            required>
+        <span id="unitAcronym" style="margin-left: 10px; font-weight: bold;"></span>
+    </div>
+</div>
+
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Item Quantity</span>
                             <div class="col-sm-8">
-                                <input class="form-control" id="focusedInput" type="number" placeholder="Number of Items" name="item_quantity">
+                                <input 
+                                    class="form-control" 
+                                    id="itemQuantity" 
+                                    type="text" 
+                                    placeholder="Number of Items" 
+                                    name="item_quantity" 
+                                    pattern="\d*" 
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+                                    required>
                             </div>
                         </div>
                         <div class="form-group" style="display:flex">
@@ -844,6 +877,7 @@ foreach ($itemData as $item) {
         </div>
     </div>
 
+
     <div class="modal fade" id="editRecordModal" tabindex="-1" aria-labelledby="editRecordModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -854,27 +888,61 @@ foreach ($itemData as $item) {
                 <div class="modal-body">
                     <form id="editRecordForm">
                         <input type="hidden" id="recordId" name="recordId">
+
+                        <!-- Item Volume -->
                         <div class="mb-3">
                             <label for="itemVolume" class="form-label">Item Volume</label>
-                            <input type="text" class="form-control" id="itemVolume" name="itemVolume">
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="itemVolume" 
+                                name="itemVolume" 
+                                placeholder="0.00" 
+                                oninput="formatToTwoDecimalPlaces(this)" 
+                                required>
                         </div>
+
+                        <!-- Item Quantity -->
                         <div class="mb-3">
                             <label for="itemQuantity" class="form-label">Item Quantity</label>
-                            <input type="number" class="form-control" id="itemQuantity" name="itemQuantity">
+                            <input 
+                                type="number" 
+                                class="form-control" 
+                                id="itemQuantity" 
+                                name="itemQuantity" 
+                                placeholder="Enter Quantity" 
+                                required>
                         </div>
+
+                        <!-- Item Price -->
                         <div class="mb-3">
                             <label for="itemPrice" class="form-label">Item Price</label>
-                            <input type="number" class="form-control" id="itemPrice" name="itemPrice">
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="itemPrice" 
+                                name="itemPrice" 
+                                placeholder="0.00" 
+                                oninput="formatToTwoDecimalPlaces(this)" 
+                                required>
                         </div>
+
+                        <!-- Expiration Date -->
                         <div class="mb-3">
                             <label for="itemExpirationDate" class="form-label">Expiration Date</label>
-                            <input type="date" class="form-control" id="itemExpirationDate" name="itemExpirationDate">
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                id="itemExpirationDate" 
+                                name="itemExpirationDate" 
+                                required>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="saveEditRecord">Save Changes</button>
                         </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="saveEditRecord">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -1266,6 +1334,27 @@ foreach ($itemData as $item) {
             });
         });
     </script>
+    <script>
+        function formatToTwoDecimalPlaces(input) {
+            // Remove any non-numeric characters except for the dot
+            input.value = input.value.replace(/[^0-9.]/g, '');
+
+            // Automatically add ".00" if only a single number is entered
+            if (/^\d$/.test(input.value)) {
+                input.value = input.value + '.00';
+            }
+
+            // Ensure only two decimal places are allowed
+            if (/^\d+\.\d{3,}$/.test(input.value)) {
+                input.value = input.value.slice(0, input.value.indexOf('.') + 3);
+            }
+
+            // If the user deletes the decimal part, reformat to ".00"
+            if (/^\d+\.$/.test(input.value)) {
+                input.value = input.value + '00';
+            }
+        }
+</script>
 </body>
 <?php include 'footer.php' ?>
 

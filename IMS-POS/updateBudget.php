@@ -1,13 +1,13 @@
 <?php
+// filepath: c:\xampp\htdocs\Austin-sIMS-POS\IMS-POS\updateBudget.php
 include '../Login/database.php';
 
 session_start();
 
 date_default_timezone_set('Asia/Manila'); 
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
-    $budgetToAdd = (int) $_POST['budget']; // Cast to integer for safety
+    $budgetToAdd = number_format((float)$_POST['budget'], 2, '.', ''); // Format as decimal(11,2)
 
     if ($budgetToAdd > 0) {
         try {
@@ -24,13 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
                 $fetchStockStmt->execute();
                 $stockResult = $fetchStockStmt->fetch(PDO::FETCH_ASSOC);
 
-                $currentBudget = $stockResult['Total_Stock_Budget'] ?? 0;
-                $currentExpenses = $stockResult['Total_Expenses'] ?? 0;
-                $previousCalculatedBudget = $stockResult['Total_Calculated_Budget'] ?? 0;
+                $currentBudget = number_format($stockResult['Total_Stock_Budget'] ?? 0, 2, '.', '');
+                $currentExpenses = number_format($stockResult['Total_Expenses'] ?? 0, 2, '.', '');
+                $previousCalculatedBudget = number_format($stockResult['Total_Calculated_Budget'] ?? 0, 2, '.', '');
 
                 // Update the Total_Stock_Budget
-                $newBudget = $currentBudget + $budgetToAdd;
-                $newCalculatedBudget = $newBudget - $currentExpenses;
+                $newBudget = number_format($currentBudget + $budgetToAdd, 2, '.', '');
+                $newCalculatedBudget = number_format($newBudget - $currentExpenses, 2, '.', '');
 
                 $updateQuery = "
                     UPDATE tbl_stocks 
@@ -38,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
                     WHERE Stock_ID = 1
                 ";
                 $updateStmt = $conn->prepare($updateQuery);
-                $updateStmt->bindParam(':newBudget', $newBudget, PDO::PARAM_INT);
-                $updateStmt->bindParam(':newCalculatedBudget', $newCalculatedBudget, PDO::PARAM_INT);
+                $updateStmt->bindParam(':newBudget', $newBudget, PDO::PARAM_STR);
+                $updateStmt->bindParam(':newCalculatedBudget', $newCalculatedBudget, PDO::PARAM_STR);
                 $updateStmt->execute();
             } else {
                 // Insert a new row with Stock_ID = 1 and the budget
@@ -49,8 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
                     VALUES (1, :budget, 0, :calculatedBudget)
                 ";
                 $insertStmt = $conn->prepare($insertQuery);
-                $insertStmt->bindParam(':budget', $budgetToAdd, PDO::PARAM_INT);
-                $insertStmt->bindParam(':calculatedBudget', $newCalculatedBudget, PDO::PARAM_INT);
+                $insertStmt->bindParam(':budget', $budgetToAdd, PDO::PARAM_STR);
+                $insertStmt->bindParam(':calculatedBudget', $newCalculatedBudget, PDO::PARAM_STR);
                 $insertStmt->execute();
 
                 $currentBudget = 0; // No previous budget
@@ -58,7 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
             }
 
             // Insert a log entry into tbl_inventorylogs
-
             $employeeID = $_SESSION['employeeID'] ?? null; // Assuming employeeID is stored in the session
             $dateTime = date('Y-m-d H:i:s');
             $previousSum = $previousCalculatedBudget; // Previous Total_Calculated_Budget
@@ -70,10 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['budget'])) {
             ";
             $logStmt = $conn->prepare($logQuery);
             $logStmt->bindParam(':employeeID', $employeeID, PDO::PARAM_STR);
-            $logStmt->bindParam(':amountAdded', $budgetToAdd, PDO::PARAM_INT);
+            $logStmt->bindParam(':amountAdded', $budgetToAdd, PDO::PARAM_STR);
             $logStmt->bindParam(':dateTime', $dateTime, PDO::PARAM_STR);
-            $logStmt->bindParam(':previousSum', $previousSum, PDO::PARAM_INT);
-            $logStmt->bindParam(':updatedSum', $updatedSum, PDO::PARAM_INT);
+            $logStmt->bindParam(':previousSum', $previousSum, PDO::PARAM_STR);
+            $logStmt->bindParam(':updatedSum', $updatedSum, PDO::PARAM_STR);
             $logStmt->execute();
 
             echo json_encode(['success' => true, 'new_budget' => $newBudget]);

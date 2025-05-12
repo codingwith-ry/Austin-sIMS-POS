@@ -9,16 +9,16 @@ date_default_timezone_set('Asia/Manila');
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $recordId = $_POST['recordId'];
-    $itemVolume = $_POST['itemVolume'];
-    $itemQuantity = $_POST['itemQuantity'];
-    $itemPrice = $_POST['itemPrice'];
+    $itemVolume = number_format((float)$_POST['itemVolume'], 2, '.', ''); // Format as decimal(11,2)
+    $itemQuantity = filter_input(INPUT_POST, 'itemQuantity', FILTER_SANITIZE_NUMBER_INT);
+    $itemPrice = number_format((float)$_POST['itemPrice'], 2, '.', ''); // Format as decimal(11,2)
     $itemExpirationDate = $_POST['itemExpirationDate']; // Fetch expiration date from input
 
     try {
         // Calculate the total price
-        $newTotalPrice = $itemQuantity * $itemPrice;
+        $newTotalPrice = number_format($itemQuantity * $itemPrice, 2, '.', ''); // Format as decimal(11,2)
 
-           // Fetch the old total price for this record
+        // Fetch the old total price for this record
         $fetchOldPriceStmt = $conn->prepare("SELECT Record_TotalPrice FROM tbl_record WHERE Record_ID = :recordId");
         $fetchOldPriceStmt->bindParam(':recordId', $recordId);
         $fetchOldPriceStmt->execute();
@@ -64,28 +64,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $updateDuplicateStmt->bindParam(':totalPrice', $newTotalPrice);
         $updateDuplicateStmt->execute();
 
-        
-
-        // Fetch the updated record
-        $fetchStmt = $conn->prepare("
-            SELECT 
-                r.Record_ID,
-                r.Record_ItemVolume,
-                r.Record_ItemQuantity,
-                r.Record_ItemPrice,
-                r.Record_ItemExpirationDate,
-                r.Record_TotalPrice,
-                u.Unit_Name
-            FROM tbl_record r
-            LEFT JOIN tbl_item i ON r.Item_ID = i.Item_ID
-            LEFT JOIN tbl_unitofmeasurments u ON i.Unit_ID = u.Unit_ID
-            WHERE r.Record_ID = :recordId
-        ");
-
-        $fetchStmt->bindParam(':recordId', $recordId);
-        $fetchStmt->execute();
-        $updatedRecord = $fetchStmt->fetch(PDO::FETCH_ASSOC);
-
         // Fetch the current Total_Stock_Budget, Total_Expenses, and Total_Calculated_Budget from tbl_stocks
         $stockID = 1; // Assuming Stock_ID is 1 (adjust as needed)
         $stockQuery = $conn->prepare("SELECT Total_Stock_Budget, Total_Expenses, Total_Calculated_Budget FROM tbl_stocks WHERE Stock_ID = :stockID");
@@ -93,13 +71,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stockQuery->execute();
         $stockResult = $stockQuery->fetch(PDO::FETCH_ASSOC);
 
-        $totalStockBudget = $stockResult['Total_Stock_Budget'] ?? 0;
-        $currentTotalExpenses = $stockResult['Total_Expenses'] ?? 0;
-        $previousCalculatedBudget = $stockResult['Total_Calculated_Budget'] ?? 0;
+        $totalStockBudget = number_format($stockResult['Total_Stock_Budget'] ?? 0, 2, '.', '');
+        $currentTotalExpenses = number_format($stockResult['Total_Expenses'] ?? 0, 2, '.', '');
+        $previousCalculatedBudget = number_format($stockResult['Total_Calculated_Budget'] ?? 0, 2, '.', '');
 
         // Calculate the new Total_Expenses and Total_Calculated_Budget
-        $newTotalExpenses = $currentTotalExpenses - $oldTotalPrice + $newTotalPrice;
-        $newCalculatedBudget = $totalStockBudget - $newTotalExpenses;
+        $newTotalExpenses = number_format($currentTotalExpenses - $oldTotalPrice + $newTotalPrice, 2, '.', '');
+        $newCalculatedBudget = number_format($totalStockBudget - $newTotalExpenses, 2, '.', '');
 
         // Update the Total_Expenses and Total_Calculated_Budget in tbl_stocks
         $updateStockStmt = $conn->prepare("
@@ -113,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $updateStockStmt->execute();
 
         // Insert an entry into tbl_inventorylogs
-        $amountAdded = $newTotalPrice - $oldTotalPrice; // Difference between new and old total price
+        $amountAdded = -1 * number_format($newTotalPrice - $oldTotalPrice, 2, '.', ''); // Difference between new and old total price
         $dateTime = date('Y-m-d H:i:s'); // Current date and time
 
         $inventoryLogStmt = $conn->prepare("
@@ -127,8 +105,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $inventoryLogStmt->bindParam(':stockID', $stockID);
         $inventoryLogStmt->bindParam(':updatedSum', $newCalculatedBudget); // New Total_Calculated_Budget
         $inventoryLogStmt->execute();
-
-
 
         // Log the update in tbl_userlogs
         $logEmail = $_SESSION['email'] ?? 'unknown'; // Use the session variable for the email
@@ -146,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $userLogStmt->bindParam(':logDate', $logDate);
         $userLogStmt->execute();
 
-        echo json_encode(['success' => true, 'record' => $updatedRecord]);
+        echo json_encode(['success' => true]);
         
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
