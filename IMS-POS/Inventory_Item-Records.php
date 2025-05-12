@@ -174,7 +174,7 @@ foreach ($itemData as $item) {
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#InventoryLogs-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">
-                            Inventory Logs
+                            Budget Logs
                         </button>
                     </li>
                 </ul>
@@ -205,14 +205,13 @@ foreach ($itemData as $item) {
                                                 <form id="budgetForm">
                                                     <div class="mb-3">
                                                         <label for="budgetAmount" class="form-label">Amount to Add</label>
-                                                        <input 
-                                                            type="text" 
-                                                            class="form-control" 
-                                                            id="budgetAmount" 
-                                                            placeholder="0.00" 
-                                                            required 
-                                                            oninput="formatToTwoDecimalPlaces(this)" 
-                                                        />
+                                                        <input
+                                                            type="text"
+                                                            class="form-control"
+                                                            id="budgetAmount"
+                                                            placeholder="0.00"
+                                                            required
+                                                            oninput="formatToTwoDecimalPlaces(this)" />
                                                         <div class="invalid-feedback">Please enter a valid positive number.</div>
                                                     </div>
                                                     <div id="budgetSummary" style="display: none;">
@@ -601,144 +600,73 @@ foreach ($itemData as $item) {
                                 <div class="products-wrapper">
                                     <div class="row" id="product-list">
                                         <strong style="font-size: 25px">Inventory Items</strong>
-
                                         <?php
-                                        $groupedItems = [];
-
                                         foreach ($itemData as $row) {
-                                            $itemKey = $row['Item_Name'] . '_' . $row['Record_ItemVolume'];
-
-                                            if (!isset($groupedItems[$itemKey])) {
-                                                // First time adding this item+volume combo
-                                                $groupedItems[$itemKey] = $row;
-                                            } else {
-                                                // Sum the quantities
-                                                $groupedItems[$itemKey]['Record_ItemQuantity'] += $row['Record_ItemQuantity'];
-                                            }
-
-                                            // Adjust quantity based on the total decrease
-                                            $groupedItems[$itemKey]['Record_ItemQuantity'] -= $row['Total_Decrease'];
-                                        }
-
-                                        // Loop through and display each item
-                                        // Loop through and display each item
-                                        foreach ($groupedItems as $row) {
                                             $itemID = htmlspecialchars($row['Item_ID']);
                                             $itemName = htmlspecialchars($row['Item_Name']);
-                                            $itemQty = htmlspecialchars($row['Record_ItemQuantity']);
+                                            $itemQty = htmlspecialchars($row['Total_Quantity']); // from SQL alias
                                             $volume = htmlspecialchars($row['Record_ItemVolume']);
                                             $lowStockThreshold = htmlspecialchars($row['Item_Lowstock']);
                                             $uniqueKey = $itemID . '_' . $volume;
+
                                             $modalID = "decreaseModal_" . $uniqueKey;
 
-                                            // Check for expired items
+                                            // Check for expired items (optional: remove this if expiration date is not available anymore)
                                             $currentDate = date('Y-m-d');
-                                            $expirationDate = $row['Record_ItemExpirationDate'];
+                                            $expirationDate = $row['Record_ItemExpirationDate'] ?? null;
                                             $isExpired = ($expirationDate && $expirationDate <= $currentDate);
 
-                                            // Define border class and image style based on stock and expiration
-                                            // Define styles
+                                            // Define visual styles
                                             $cardBorderClass = '';
                                             $imageStyle = 'object-fit: contain;';
                                             $outOfStockOverlay = '';
                                             $expiredOverlay = '';
                                             $tooltipAttr = '';
 
-                                            // Priority: out-of-stock > expired > low stock
                                             if ($itemQty == 0) {
                                                 // Out of stock
                                                 $cardBorderClass = 'border border-danger';
                                                 $imageStyle = 'filter: grayscale(100%) brightness(60%);';
                                                 $outOfStockOverlay = '
-                                                    <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
-                                                        Out of Stock
-                                                    </div>';
+            <div class="position-absolute top-50 start-50 translate-middle bg-danger text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
+                Out of Stock
+            </div>';
                                             } elseif ($isExpired) {
                                                 // Expired
                                                 $cardBorderClass = 'border border-secondary';
                                                 $expiredOverlay = '
-                                                    <div class="position-absolute top-50 start-50 translate-middle bg-secondary text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
-                                                        Expired
-                                                    </div>';
+            <div class="position-absolute top-50 start-50 translate-middle bg-secondary text-white px-2 py-1 rounded shadow" style="z-index: 10; font-size: 14px;">
+                Expired
+            </div>';
                                                 $imageStyle = 'filter: grayscale(100%) brightness(50%);';
-                                            } elseif ($itemQty <= $row['Item_Lowstock']) {
+                                            } elseif ($itemQty <= $lowStockThreshold) {
                                                 // Low stock
                                                 $cardBorderClass = 'border border-warning';
                                                 $tooltipAttr = 'data-bs-toggle="tooltip" data-bs-title="Quantity of this item is below the low stock threshold"';
                                             }
 
                                             echo '
-                                                <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0 product-item" 
-                                                    data-name="' . htmlspecialchars($row['Item_Name']) . '" 
-                                                    data-category="' . htmlspecialchars($row['Category_Name']) . '" 
-                                                    data-category-id="' . htmlspecialchars($row['Item_Category']) . '">
-                                                    <div class="card flex-shrink-0 ' . $cardBorderClass . '" style="height: 430px; padding: 15px; position: relative;" ' . $tooltipAttr . '>
-                                                        <a href="IMS_DisplayItemsTable.php?item_id=' . $itemID . '" class="text-decoration-none text-dark" style="display: block; position: relative;">
-                                                            ' . $outOfStockOverlay . '
-                                                            ' . $expiredOverlay . '
-                                                            <img src="' . htmlspecialchars($row['Item_Image']) . '" class="card-img-top rounded mb-2" alt="' . $itemName . '" style="height: 150px; width: 100%; ' . $imageStyle . '">
-                                                        </a>
-                                                        <div class="card-body d-flex flex-column justify-content-between" style="height: calc(100% - 150px);">
-                                                            <div>
-                                                                <span style="font-weight: bold; opacity: 0.5; font-size:10px;">' . htmlspecialchars($row['Category_Name']) . '</span><br />
-                                                                <span style="font-size: 20px; font-weight:bold;">' . $itemName . '</span><br />
-                                                                <span style="font-weight: bold; font-size:15px;">' . $itemQty . ' pcs</span><br />
-                                                                <span style="opacity: 0.5; font-size:15px;">' . $volume . ' (' . htmlspecialchars($row['Unit_Acronym']) . ')</span>
-                                                            </div>
-                                                            <button class="btn btn-warning mt-3 w-100" data-bs-toggle="modal" data-bs-target="#' . $modalID . '">
-                                                                Decrease Quantity
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>';
+        <div class="col-xl-3 col-lg-4 col-md-6 mb-3 flex-shrink-0 product-item" 
+            data-name="' . $itemName . '" 
+            data-category="' . htmlspecialchars($row['Category_Name']) . '" 
+            data-category-id="' . htmlspecialchars($row['Item_Category']) . '">
+            <div class="card flex-shrink-0 ' . $cardBorderClass . '" style="height: 330px; padding: 15px; position: relative;" ' . $tooltipAttr . '>
+                <a href="IMS_DisplayItemsTable.php?item_id=' . $itemID . '&volume=' . urlencode($volume) . '" class="text-decoration-none text-dark" style="display: block; position: relative;">
+                    ' . $outOfStockOverlay . $expiredOverlay . '
+                    <img src="' . htmlspecialchars($row['Item_Image']) . '" class="card-img-top rounded mb-2" alt="' . $itemName . '" style="height: 150px; width: 100%; ' . $imageStyle . '">
+                </a>
 
-                                            // Modal (keep using unique modal ID using volume)
-                                            echo '
-                                                <div class="modal fade" id="' . $modalID . '" tabindex="-1" aria-labelledby="' . $modalID . 'Label" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <form method="post" action="decreaseItemQuantity.php">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header bg-warning">
-                                                                    <h5 class="modal-title" id="' . $modalID . 'Label">Decrease Quantity</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <p><strong>' . $itemName . '</strong></p>
-                                                                    <p>Available Quantity: <strong>' . $itemQty . ' pcs</strong></p>
-                                                                     <p>Low Stock Threshold: <strong>' . $lowStockThreshold . ' pcs</strong></p> <!-- Display Low Stock Threshold -->
-                                                                    <div class="mb-3">
-                                                                        <label for="slider_' . $itemID . '" class="form-label">Select amount to decrease:</label>
-                                                                        <input type="range" class="form-range" min="0" max="' . $itemQty . '" value="1" id="slider_' . $uniqueKey . '" name="decrease_amount" oninput="updatePreview_' . $uniqueKey . '()">
-                                                                        <div>Decreasing by: <strong id="decreasePreview_' . $uniqueKey . '">1</strong> pcs</div>
-                                                                        <div>Quantity after decrease: <strong id="afterQty_' . $uniqueKey . '">' . ($itemQty - 1) . '</strong> pcs</div>
-                                                                    </div>
-                                                                    <input type="hidden" name="item_id" value="' . $itemID . '">
-                                                                    <input type="hidden" name="volume" value="' . $volume . '">
-                                                                    <input type="hidden" name="item_name" value="' . $itemName . '">
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                    <button type="submit" name="confirm_decrease" class="btn btn-danger">Confirm Decrease</button>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>';
-
-                                            // Slider JS
-                                            echo '
-                                                <script>
-                                                function updatePreview_' . $uniqueKey . '() {
-                                                    const slider = document.getElementById("slider_' . $uniqueKey . '");
-                                                    const preview = document.getElementById("decreasePreview_' . $uniqueKey . '");
-                                                    const afterQty = document.getElementById("afterQty_' . $uniqueKey . '");
-                                                    const decreaseVal = parseInt(slider.value);
-                                                    preview.textContent = decreaseVal;
-                                                    afterQty.textContent = ' . $itemQty . ' - decreaseVal;
-                                                }
-                                                </script>';
+                <div class="card-body d-flex flex-column justify-content-between" style="height: calc(100% - 150px);">
+                    <div>
+                        <span style="font-weight: bold; opacity: 0.5; font-size:10px;">' . htmlspecialchars($row['Category_Name']) . '</span><br />
+                        <span style="font-size: 20px; font-weight:bold;">' . $itemName . '</span><br />
+                        <span style="font-weight: bold; font-size:15px;">' . $itemQty . ' pcs</span><br />
+                        <span style="opacity: 0.5; font-size:15px;">' . $volume . ' (' . htmlspecialchars($row['Unit_Acronym']) . ')</span>
+                    </div>
+                </div>
+            </div>
+        </div>';
                                         }
-
                                         ?>
 
 
@@ -793,46 +721,46 @@ foreach ($itemData as $item) {
 
 
 
-<div class="form-group" style="display:flex">
-    <span class="col-sm-4 control-label">Item Price</span>
-    <div class="col-sm-8">
-        <input 
-            class="form-control" 
-            id="itemPrice" 
-            type="text" 
-            placeholder="0.00" 
-            name="item_price" 
-            oninput="formatToTwoDecimalPlaces(this)" 
-            required>
-    </div>
-</div>
+                        <div class="form-group" style="display:flex">
+                            <span class="col-sm-4 control-label">Item Price</span>
+                            <div class="col-sm-8">
+                                <input
+                                    class="form-control"
+                                    id="itemPrice"
+                                    type="text"
+                                    placeholder="0.00"
+                                    name="item_price"
+                                    oninput="formatToTwoDecimalPlaces(this)"
+                                    required>
+                            </div>
+                        </div>
 
-<div class="form-group" style="display:flex">
-    <span class="col-sm-4 control-label">Item Volume</span>
-    <div class="col-sm-8" style="display: flex; align-items: center;">
-        <input 
-            class="form-control" 
-            id="itemVolume" 
-            type="text" 
-            placeholder="0.00" 
-            name="item_volume" 
-            oninput="formatToTwoDecimalPlaces(this)" 
-            required>
-        <span id="unitAcronym" style="margin-left: 10px; font-weight: bold;"></span>
-    </div>
-</div>
+                        <div class="form-group" style="display:flex">
+                            <span class="col-sm-4 control-label">Item Volume</span>
+                            <div class="col-sm-8" style="display: flex; align-items: center;">
+                                <input
+                                    class="form-control"
+                                    id="itemVolume"
+                                    type="text"
+                                    placeholder="0.00"
+                                    name="item_volume"
+                                    oninput="formatToTwoDecimalPlaces(this)"
+                                    required>
+                                <span id="unitAcronym" style="margin-left: 10px; font-weight: bold;"></span>
+                            </div>
+                        </div>
 
                         <div class="form-group" style="display:flex">
                             <span class="col-sm-4 control-label">Item Quantity</span>
                             <div class="col-sm-8">
-                                <input 
-                                    class="form-control" 
-                                    id="itemQuantity" 
-                                    type="text" 
-                                    placeholder="Number of Items" 
-                                    name="item_quantity" 
-                                    pattern="\d*" 
-                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+                                <input
+                                    class="form-control"
+                                    id="itemQuantity"
+                                    type="text"
+                                    placeholder="Number of Items"
+                                    name="item_quantity"
+                                    pattern="\d*"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                     required>
                             </div>
                         </div>
@@ -892,49 +820,49 @@ foreach ($itemData as $item) {
                         <!-- Item Volume -->
                         <div class="mb-3">
                             <label for="itemVolume" class="form-label">Item Volume</label>
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                id="itemVolume" 
-                                name="itemVolume" 
-                                placeholder="0.00" 
-                                oninput="formatToTwoDecimalPlaces(this)" 
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="itemVolume"
+                                name="itemVolume"
+                                placeholder="0.00"
+                                oninput="formatToTwoDecimalPlaces(this)"
                                 required>
                         </div>
 
                         <!-- Item Quantity -->
                         <div class="mb-3">
                             <label for="itemQuantity" class="form-label">Item Quantity</label>
-                            <input 
-                                type="number" 
-                                class="form-control" 
-                                id="itemQuantity" 
-                                name="itemQuantity" 
-                                placeholder="Enter Quantity" 
+                            <input
+                                type="number"
+                                class="form-control"
+                                id="itemQuantity"
+                                name="itemQuantity"
+                                placeholder="Enter Quantity"
                                 required>
                         </div>
 
                         <!-- Item Price -->
                         <div class="mb-3">
                             <label for="itemPrice" class="form-label">Item Price</label>
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                id="itemPrice" 
-                                name="itemPrice" 
-                                placeholder="0.00" 
-                                oninput="formatToTwoDecimalPlaces(this)" 
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="itemPrice"
+                                name="itemPrice"
+                                placeholder="0.00"
+                                oninput="formatToTwoDecimalPlaces(this)"
                                 required>
                         </div>
 
                         <!-- Expiration Date -->
                         <div class="mb-3">
                             <label for="itemExpirationDate" class="form-label">Expiration Date</label>
-                            <input 
-                                type="date" 
-                                class="form-control" 
-                                id="itemExpirationDate" 
-                                name="itemExpirationDate" 
+                            <input
+                                type="date"
+                                class="form-control"
+                                id="itemExpirationDate"
+                                name="itemExpirationDate"
                                 required>
                         </div>
 
@@ -1354,7 +1282,7 @@ foreach ($itemData as $item) {
                 input.value = input.value + '00';
             }
         }
-</script>
+    </script>
 </body>
 <?php include 'footer.php' ?>
 
