@@ -168,7 +168,7 @@ if (window.inventoryData) {
     };
   });
 
-  let itemRecords = new DataTable("#itemRecords", {
+  var itemRecords = new DataTable("#itemRecords", {
     responsive: true,
     data: tableData,
     columns: [

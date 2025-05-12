@@ -270,6 +270,7 @@ if ($totalExpenses > 0) {
                                 </div>
                                 <div class="card-body" style="position: relative; width: 100%;">
                                     <!-- Chart container with fixed height for responsiveness -->
+
                                     <canvas id="categoryChart"></canvas>
                                 </div>
                             </div>

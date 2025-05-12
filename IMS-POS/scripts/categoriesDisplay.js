@@ -5,12 +5,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Fetch data with no period or startDate filter
   function fetchData() {
-    fetch("scripts/categoriesFetch.php")
+    const period = document.querySelector(
+      'input[name="btnradio"]:checked'
+    ).value;
+    const startDate =
+      startDateInput.value || new Date().toISOString().split("T")[0]; // Default to today if empty
+
+    const url = `scripts/categoriesFetch.php?period=${period}&startDate=${startDate}`;
+
+    fetch(url)
       .then((response) => response.json())
       .then((data) => {
         if (data.categories && data.totals) {
           updateChart(data.categories, data.totals);
-          updateDateDisplay(""); // Clear the date display
+          updateDateDisplay(); // optional
         } else {
           console.error("Invalid data format", data);
         }
