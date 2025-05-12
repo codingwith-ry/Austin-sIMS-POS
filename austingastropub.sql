@@ -777,8 +777,10 @@ ENGINE=InnoDB
 ;
 
 CREATE TABLE `tbl_stocks` (
-	`Stock_ID` INT(32) NOT NULL,
-	`Total_Stock_Budget` INT(32) NOT NULL
+  `Stock_ID` int(32) NOT NULL,
+  `Total_Stock_Budget` int(32) NOT NULL,
+  `Total_Expenses` int(32) NOT NULL,
+  `Total_Calculated_Budget` int(11) NOT NULL,
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
@@ -840,6 +842,7 @@ CREATE TABLE `tbl_inventorylogs` (
 	`Date_Time` DATETIME NULL DEFAULT NULL,
 	`Previous_Sum` INT(11) NULL DEFAULT NULL,
 	`Stock_ID` INT(11) NULL DEFAULT NULL,
+ 	`Updated_Sum` int(11) DEFAULT NULL,
 	PRIMARY KEY (`inventoryLogs_ID`) USING BTREE,
 	INDEX `FK__employees` (`Employee_ID`) USING BTREE,
 	CONSTRAINT `FK__employees` FOREIGN KEY (`Employee_ID`) REFERENCES `employees` (`Employee_ID`) ON UPDATE NO ACTION ON DELETE NO ACTION
