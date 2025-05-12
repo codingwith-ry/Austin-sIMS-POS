@@ -542,4 +542,37 @@ if (window.inventoryData) {
   });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("scripts/mostExpensiveItems.php")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        const list = document.getElementById("topSellingList");
+        list.innerHTML = "";
 
+        data.records.forEach((item) => {
+          const totalPrice = Number(item.totalPrice).toLocaleString();
+
+          const listItem = `
+            <li class="d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center gap-2">
+                <img src="${item.Item_Image}" alt="${item.Item_Name}" width="40" height="40" class="rounded" />
+                <div class="ms-2 me-auto">
+                  <div style="font-size: 16px; font-weight:bold">${item.Item_Name}</div>
+                </div>
+              </div>
+              <div class="text-end">
+                <div style="font-weight: bold;">${item.totalQuantity}</div>
+                <div style="font-size: 14px; color: #555;">₱${totalPrice}</div>
+              </div>
+            </li>
+            <hr />
+          `;
+          list.innerHTML += listItem;
+        });
+      } else {
+        console.error("Failed to load records:", data.message);
+      }
+    })
+    .catch((err) => console.error("Fetch error:", err));
+});
