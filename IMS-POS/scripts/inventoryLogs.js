@@ -12,6 +12,7 @@ $(document).ready(function () {
             { data: "Updated_Budget", title: "Updated Budget Amount" }, // Updated Budget
             { data: "Date_Time", title: "Date and Time" }, // Date and Time
         ],
+        order: [[4, "desc"]], // Order by the 5th column (Date_Time) in descending order
         responsive: true, // Makes the table responsive
         paging: true, // Enables pagination
         searching: true, // Enables search functionality

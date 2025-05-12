@@ -82,24 +82,51 @@ if (isset($_POST['add_record'])) {
 
 
         if ($stmt->execute()) {
-            echo "<script>alert('Record added successfully!');</script>"
-            ;
-            // Insert a log entry into tbl_inventorylogs
-            $amountAdded = -$totalPrice; // Make totalPrice negative as it's an expense
-            $dateTime = date('Y-m-d H:i:s'); // Current date and time
-            $previousSum = 0; // Assuming no previous sum is tracked for now
-            $stockID = 1; // Assuming Stock_ID is 1 (adjust as needed)
+            echo "<script>alert('Record added successfully!');</script>";
 
-            $logStmt = $conn->prepare("
-                INSERT INTO tbl_inventorylogs (Employee_ID, Amount_Added, Date_Time, Previous_Sum, Stock_ID)
-                VALUES (:employeeID, :amountAdded, :dateTime, :previousSum, :stockID)
+            // Fetch the current Total_Stock_Budget, Total_Expenses, and Total_Calculated_Budget from tbl_stocks
+            $stockID = 1; // Assuming Stock_ID is 1 (adjust as needed)
+            $stockQuery = $conn->prepare("SELECT Total_Stock_Budget, Total_Expenses, Total_Calculated_Budget FROM tbl_stocks WHERE Stock_ID = :stockID");
+            $stockQuery->bindParam(':stockID', $stockID);
+            $stockQuery->execute();
+            $stockResult = $stockQuery->fetch(PDO::FETCH_ASSOC);
+
+            $totalStockBudget = $stockResult['Total_Stock_Budget'] ?? 0;
+            $currentTotalExpenses = $stockResult['Total_Expenses'] ?? 0;
+            $previousCalculatedBudget = $stockResult['Total_Calculated_Budget'] ?? 0; // Fetch the previous Total_Calculated_Budget
+
+            // Add the calculated $totalPrice to the current Total_Expenses
+            $newTotalExpenses = $currentTotalExpenses + $totalPrice;
+
+            // Calculate the new Total_Calculated_Budget
+            $newCalculatedBudget = $totalStockBudget - $newTotalExpenses;
+
+            // Update the Total_Expenses and Total_Calculated_Budget in tbl_stocks
+            $updateStockStmt = $conn->prepare("
+                UPDATE tbl_stocks 
+                SET Total_Expenses = :newTotalExpenses, Total_Calculated_Budget = :newCalculatedBudget 
+                WHERE Stock_ID = :stockID
             ");
-            $logStmt->bindParam(':employeeID', $employeeAssigned);
-            $logStmt->bindParam(':amountAdded', $amountAdded);
-            $logStmt->bindParam(':dateTime', $dateTime);
-            $logStmt->bindParam(':previousSum', $previousSum);
-            $logStmt->bindParam(':stockID', $stockID);
-            $logStmt->execute();
+            $updateStockStmt->bindParam(':newTotalExpenses', $newTotalExpenses);
+            $updateStockStmt->bindParam(':newCalculatedBudget', $newCalculatedBudget);
+            $updateStockStmt->bindParam(':stockID', $stockID);
+            $updateStockStmt->execute();
+
+            // Insert an entry into tbl_inventorylogs
+            $amountAdded = -$totalPrice; // Negative because it's an expense
+            $dateTime = date('Y-m-d H:i:s'); // Current date and time
+
+            $inventoryLogStmt = $conn->prepare("
+                INSERT INTO tbl_inventorylogs (Employee_ID, Amount_Added, Date_Time, Previous_Sum, Stock_ID, Updated_Sum)
+                VALUES (:employeeID, :amountAdded, :dateTime, :previousSum, :stockID, :updatedSum)
+            ");
+            $inventoryLogStmt->bindParam(':employeeID', $employeeAssigned); // Assuming Employee_ID is the assigned employee
+            $inventoryLogStmt->bindParam(':amountAdded', $amountAdded);
+            $inventoryLogStmt->bindParam(':dateTime', $dateTime);
+            $inventoryLogStmt->bindParam(':previousSum', $previousCalculatedBudget); // Previous Total_Calculated_Budget
+            $inventoryLogStmt->bindParam(':stockID', $stockID);
+            $inventoryLogStmt->bindParam(':updatedSum', $newCalculatedBudget); // New Total_Calculated_Budget
+            $inventoryLogStmt->execute();
 
             
             // Insert a log entry into tbl_userlogs
