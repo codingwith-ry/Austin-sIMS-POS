@@ -1,5 +1,4 @@
 <?php
-// filepath: c:\xampp\htdocs\Austin-sIMS-POS\IMS-POS\scripts\fetchItemDetails.php
 include '../../Login/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

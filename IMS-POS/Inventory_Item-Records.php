@@ -396,9 +396,27 @@ foreach ($itemData as $item) {
                                         </div>
                                         <div class="modal-body">
                                             <form id="editItemForm">
-                                                <!-- Dropdown to select an item -->
+
+                                                <!-- Dropdown to search for a category to edit-->
                                                 <div class="mb-3">
-                                                    <label for="editItemDropdown" class="form-label">Select Item</label>
+                                                    <label for="editItemCategory" class="form-label">Filter By Category</label>
+                                                    <select class="form-select" id="searchItemCategory" name="item_category" required>
+                                                        <option value="" disabled selected>Select a category</option>
+                                                        <?php
+                                                        // Fetch categories from tbl_itemcategories
+                                                        $categoriesQuery = "SELECT Category_ID, Category_Name FROM tbl_itemcategories";
+                                                        $categories = $pdo->query($categoriesQuery)->fetchAll(PDO::FETCH_ASSOC);
+
+                                                        foreach ($categories as $category) {
+                                                            echo '<option value="' . htmlspecialchars($category['Category_ID']) . '">' . htmlspecialchars($category['Category_Name']) . '</option>';
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
+
+                                                <!-- Dropdown to search for an item to edit-->
+                                                <div class="mb-3">
+                                                    <label for="editItemDropdown" class="form-label">Select Item to Edit</label>
                                                     <select class="form-select" id="editItemDropdown" name="item_id" required>
                                                         <option value="" disabled selected>Select an item</option>
                                                         <?php
@@ -413,13 +431,11 @@ foreach ($itemData as $item) {
                                                     </select>
                                                 </div>
 
-                                                <!-- Fields to edit item details -->
+                                                <hr />
+
+                                                <!-- Dropdownto edit item category -->
                                                 <div class="mb-3">
-                                                    <label for="editItemName" class="form-label">Item Name</label>
-                                                    <input type="text" class="form-control" id="editItemName" name="item_name" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="editItemCategory" class="form-label">Category</label>
+                                                    <label for="editItemCategory" class="form-label">Edit Category</label>
                                                     <select class="form-select" id="editItemCategory" name="item_category" required>
                                                         <option value="" disabled selected>Select a category</option>
                                                         <?php
@@ -432,6 +448,12 @@ foreach ($itemData as $item) {
                                                         }
                                                         ?>
                                                     </select>
+                                                </div>
+
+                                                <!-- Fields to edit item details -->
+                                                <div class="mb-3">
+                                                    <label for="editItemName" class="form-label">Item Name</label>
+                                                    <input type="text" class="form-control" id="editItemName" name="item_name" required>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="editItemUnit" class="form-label">Unit of Measurement</label>
@@ -1170,6 +1192,81 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => {
                 unitAcronymSpan.textContent = '';
                 console.error('Error fetching unit of measurement:', error);
+            });
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchItemCategory = document.getElementById('searchItemCategory');
+    const editItemDropdown = document.getElementById('editItemDropdown');
+
+    // Event listener for category selection
+    searchItemCategory.addEventListener('change', function () {
+        const selectedCategoryID = this.value;
+
+        // Fetch items based on the selected category
+        fetch(`../IMS-POS/scripts/fetchItemsByCategory.php?categoryID=${selectedCategoryID}`)
+            .then(response => response.json())
+            .then(data => {
+                // Clear the edit item dropdown
+                editItemDropdown.innerHTML = '<option value="" disabled selected>Select an item</option>';
+
+                // Populate the edit item dropdown with the filtered items
+                data.forEach(item => {
+                    editItemDropdown.innerHTML += `<option value="${item.Item_ID}">${item.Item_Name}</option>`;
+                });
+            })
+            .catch(error => console.error('Error fetching items:', error));
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const editItemDropdown = document.getElementById('editItemDropdown');
+    const editItemCategory = document.getElementById('editItemCategory');
+    const editItemUnit = document.getElementById('editItemUnit');
+
+    // Event listener for item selection
+    editItemDropdown.addEventListener('change', function () {
+        const selectedItemID = this.value;
+
+        // Fetch item details based on the selected item
+        fetch('../IMS-POS/scripts/fetchItemDetails.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `item_id=${encodeURIComponent(selectedItemID)}`,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const item = data.item;
+
+                    // Populate the editItemCategory dropdown
+                    Array.from(editItemCategory.options).forEach(option => {
+                        if (option.value === item.Item_Category.toString()) {
+                            option.selected = true;
+                        } else {
+                            option.selected = false;
+                        }
+                    });
+
+                    // Update the unit of measurement dropdown
+                    Array.from(editItemUnit.options).forEach(option => {
+                        if (option.value === item.Unit_ID.toString()) {
+                            option.selected = true;
+                        } else {
+                            option.selected = false;
+                        }
+                    });
+                } else {
+                    console.error('Failed to fetch item details:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching item details:', error);
             });
     });
 });
