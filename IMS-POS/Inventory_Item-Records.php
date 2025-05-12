@@ -1149,6 +1149,31 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const categoryDropdown = document.getElementById('categoryDropdown');
+            const itemDropdown = document.getElementById('itemDropdown');
+
+            // Event listener for category selection
+            categoryDropdown.addEventListener('change', function () {
+                const selectedCategoryID = this.value;
+
+                // Fetch items based on the selected category
+                fetch(`../IMS-POS/scripts/fetchItemsByCategory.php?categoryID=${selectedCategoryID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear the item dropdown
+                        itemDropdown.innerHTML = '<option selected disabled>Select Name</option>';
+
+                        // Populate the item dropdown with the filtered items
+                        data.forEach(item => {
+                            itemDropdown.innerHTML += `<option value="${item.Item_ID}">${item.Item_Name}</option>`;
+                        });
+                    })
+                    .catch(error => console.error('Error fetching items:', error));
+            });
+        });
+</script>
 </body>
 <?php include 'footer.php' ?>
 
