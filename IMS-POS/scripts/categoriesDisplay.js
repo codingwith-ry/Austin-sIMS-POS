@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
     window.polarChart = new Chart(chartCanvas, {
-      type: "polarArea",
+      type: "bar",
       data: {
         labels: categories,
         datasets: [
@@ -57,7 +57,6 @@ document.addEventListener("DOMContentLoaded", function () {
             label: "Purchase Totals by Category",
             data: totals,
             backgroundColor: translucentBlues,
-            borderColor: "#fff",
             borderWidth: 1,
           },
         ],
@@ -65,14 +64,22 @@ document.addEventListener("DOMContentLoaded", function () {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function (value) {
+                return `₱${value.toLocaleString()}`;
+              },
+            },
+          },
+        },
         plugins: {
-          legend: { position: "top" },
+          legend: { display: false },
           tooltip: {
             callbacks: {
               label: function (tooltipItem) {
-                return `${
-                  tooltipItem.label
-                }: ₱${tooltipItem.raw.toLocaleString()}`;
+                return `₱${tooltipItem.raw.toLocaleString()}`;
               },
             },
           },

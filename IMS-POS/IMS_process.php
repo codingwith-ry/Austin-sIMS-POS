@@ -79,7 +79,7 @@ if (isset($_POST['add_record'])) {
         $stmt->bindParam(':itemSupplier', $itemSupplier);
         $stmt->bindParam(':employeeAssigned', $employeeAssigned);
         $stmt->bindParam(':totalPrice', $totalPrice);
-        
+
         // Insert into tbl_record_duplicate
         $duplicateStmt = $conn->prepare("
             INSERT INTO tbl_record_duplicate (RecordDuplicate_ID, Item_ID, Record_ItemVolume, Record_ItemQuantity, Record_ItemPrice, Record_ItemExpirationDate, Record_ItemPurchaseDate, Record_ItemSupplier, Record_EmployeeAssigned, Record_TotalPrice) 
@@ -144,7 +144,7 @@ if (isset($_POST['add_record'])) {
             $inventoryLogStmt->bindParam(':updatedSum', $newCalculatedBudget); // New Total_Calculated_Budget
             $inventoryLogStmt->execute();
 
-            
+
             // Insert a log entry into tbl_userlogs
             $logEmail = $_SESSION['email']; // Use the session variable for the email
             $logRole = $_SESSION['userRole']; // Use the session variable for the user's role
@@ -214,7 +214,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $fetchInventoryQuery = "
-    SELECT r.Record_ID, r.Record_ItemPurchaseDate, r.Record_EmployeeAssigned, r.Record_ItemVolume,
+    SELECT r.Record_ID, r.Record_ItemPurchaseDate, r.Record_EmployeeAssigned, r.Record_ItemVolume, r.Record_TotalPrice,
            i.Item_Name, i.Item_Image, ic_cat.Category_Name, u.Unit_Name, 
            r.Record_ItemQuantity, r.Record_ItemExpirationDate, r.Record_ItemPrice,
            e.Employee_Name
