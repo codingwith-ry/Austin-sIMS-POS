@@ -628,10 +628,7 @@ function updateOrderBar(){
         let itemHTML = `
             <div class="card mb-3 mt-3 flex-shrink-0">
                 <div class="row g-0">
-                    <div class="col-6 flex-shrink-0" id="foodCol" style="justify-content: center; display: flex;">
-                        <img src="${item.productImage}" id="imgFood" class="img-fluid rounded-start rounded-end">
-                    </div>
-                    <div class="col-6" id="foodCol" style="padding-left: 5px;">
+                    <div class="col-12" id="foodCol" style="padding-left: 5px;">
                         <div class="row">
                             <div class="col-8" style="padding-right: 0px;">
                                 <span id="foodName">
@@ -641,8 +638,8 @@ function updateOrderBar(){
                                     ${item.productVariationName ? `(${item.productVariationName})` : ''}
                                 </span>
                             </div>
-                            <div class="col-4" style="justify-content: right; padding-left: 0px;">
-                                <button id="editItemButton" type="button" class="btn btn-link editItemButton" data-bs-toggle="modal" data-bs-target="#editItemModal" data-item-index="${index}">
+                            <div class="col-4" style="display: flex; justify-content: right; padding-left: 0px;">
+                                <button id="editItemButton" type="button" class="btn btn-link editItemButton me-auto" data-bs-toggle="modal" data-bs-target="#editItemModal" data-item-index="${index}">
                                     <i class="fi fi-rr-pencil"></i>
                                 </button>
                             </div>

@@ -198,6 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    
     if(amountPaidElem) {
         formatPriceInput(amountPaidElem);
     }

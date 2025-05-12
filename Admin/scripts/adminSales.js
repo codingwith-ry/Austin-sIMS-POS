@@ -280,18 +280,28 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
     $('#productSalesTable').DataTable({
         ajax: 'scripts/fetchProductSales.php', // Replace with your server-side script URL
         columns: [
-            { data: 'product' },       // Product Name
-            { data: 'price' },         // Price
-            { data: 'quantity' },      // Quantity
-            { data: 'total_sales' },   // Total Sales
-            { data: 'total_revenue' }  // Total Revenue
+          { data: 'product' },       // Product Name
+          { 
+              data: 'price',         // Price
+              render: function (data, type, row) {
+                  return '₱' + parseFloat(data).toLocaleString(); // Add peso symbol and format as currency
+              }
+          },
+          { data: 'quantity' },      // Quantity
+          { 
+              data: 'total_sales',   // Total Sales
+              render: function (data, type, row) {
+                  return '₱' + parseFloat(data).toLocaleString(); // Add peso symbol and format as currency
+              }
+          }
         ],
         responsive: true, // Makes the table responsive
         paging: true,     // Enables pagination
         searching: true,  // Enables search functionality
         ordering: true,   // Enables column sorting
         lengthChange: true, // Allows changing the number of rows displayed
-        pageLength: 10,   // Default number of rows per page
+        pageLength: 5,   // Default number of rows per page
+        lengthMenu: [5, 10, 25, 50, 100], // Dropdown options for page length
         language: {
             emptyTable: "No data available in table",
             search: "Search:",
@@ -305,4 +315,68 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
             }
         }
     });
-});
+
+    function fetchDailySalesData() {
+      $.ajax({
+          url: 'scripts/fetchDailySales.php', // Path to your PHP script
+          method: 'GET',
+          dataType: 'json',
+          success: function (response) {
+              // Update Total Sales
+              $('#totalSales').text('₱' + response.totalSales.toLocaleString());
+
+              // Update Discounts
+              $('#discounts').text('₱' + response.discounts.toLocaleString());
+
+              // Update Net Sales
+              $('#netSales').text('₱' + response.netSales.toLocaleString());
+
+              // Update Refunds
+              $('#refunds').text('₱' + response.refunds.toLocaleString());
+
+              // Update Total Transactions
+              $('#totalTransactions').text(response.totalTransactions);
+
+              // Update Average Transaction Value
+              $('#averageTransactionValue').text('₱' + parseFloat(response.averageTransactionValue).toLocaleString());
+
+              // Update Total Products Sold
+              $('#totalProductsSold').text(response.totalProductsSold);
+
+              // Update Actual Cash Amount
+              $('#actualCashAmount').text('₱' + parseFloat(response.actualCashAmount).toLocaleString());
+
+              $('#totalPayments').text('₱' + response.totalSales.toLocaleString());
+
+              // Update Cash Last 7 Days (if applicable)
+              let cashLast7Days = response.cashlast7days;
+              let cashLast7DaysHtml = '';
+              cashLast7Days.forEach(day => {
+                  cashLast7DaysHtml += `
+                      <tr>
+                          <td>${day.date}</td>
+                          <td>₱${parseFloat(day.expectedCashAmount).toLocaleString()}</td>
+                          <td>₱${parseFloat(day.actualCashAmount).toLocaleString()}</td>
+                      </tr>
+                  `;
+              });
+              $('#cashLast7DaysTable tbody').html(cashLast7DaysHtml);
+
+              // Update Payment Breakdown
+              $('#paymentCash').text('₱' + parseFloat(response.paymentBreakdown.Cash).toLocaleString());
+              $('#paymentGCash').text('₱' + parseFloat(response.paymentBreakdown.GCash).toLocaleString());
+              $('#paymentPayMaya').text('₱' + parseFloat(response.paymentBreakdown.PayMaya).toLocaleString());
+          },
+          error: function (xhr, status, error) {
+              console.error('Error fetching daily sales data:', error);
+              alert('Failed to fetch daily sales data. Please try again.');
+          }
+      });
+  }
+
+  // Fetch data on page load
+  fetchDailySalesData();
+
+  // Optionally, refresh data every 1 minute
+  setInterval(fetchDailySalesData, 60000); // 60000ms = 1 minute
+  });
