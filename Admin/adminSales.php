@@ -120,9 +120,9 @@
                             <div class="card h-100">
                                 <div class="card-body d-flex flex-column justify-content-between">
                                     <div><strong>Total Sales(Gross Revenue)</strong>
-                                        <h1>₱10,418.00</h1>
+                                        <h1 id="totalSales"></h1>
+                                        
                                     </div>
-                                    <div><span style="opacity: 0.5;">+4.56%</span></div>
                                 </div>
                             </div>
                     </div>
@@ -130,9 +130,8 @@
                             <div class="card h-100">
                                 <div class="card-body d-flex flex-column justify-content-between">
                                     <div><strong>Discounts</strong>
-                                        <h1>₱7,059.00</h1>
+                                        <h1 id="discounts"></h1>
                                     </div>
-                                    <div><span style="opacity: 0.5;">-2.6%</span></div>
                                 </div>
                             </div>
                     </div>
@@ -140,9 +139,8 @@
                             <div class="card h-100">
                                 <div class="card-body d-flex flex-column justify-content-between">
                                     <div><strong>Net Sales</strong>
-                                        <h1>₱7,059.00</h1>
+                                        <h1 id="netSales"></h1>
                                     </div>
-                                    <div><span style="opacity: 0.5;">-2.6%</span></div>
                                 </div>
                             </div>
                     </div>
@@ -150,7 +148,7 @@
                             <div class="card h-100">
                                 <div class="card-body d-flex flex-column justify-content-between">
                                     <div><strong>Refunds/Cancellations</strong>
-                                        <h1>9,102</h1>
+                                        <h1 id="refunds"></h1>
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +157,12 @@
                             <div class="card h-100">
                                 <div class="card-body d-flex flex-column justify-content-between">
                                     <div><strong>Actual Cash Amount</strong>
-                                        <h1>9,102</h1>
+                                        <h1 id="actualCashAmount"></h1>
+                                        <div class="input-group " id="actualInput">
+                                            <span class="input-group-text">₱</span>
+                                            <input type="text" class="form-control" placeholder="0.00" aria-label="Recipient’s username" aria-describedby="button-addon2">
+                                            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Save</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +171,7 @@
                             <div class="card h-100">
                                 <div class="card-body d-flex flex-column justify-content-between">
                                     <div><strong>Total Transactions(Orders)</strong>
-                                        <h1>9,102</h1>
+                                        <h1 id="totalTransactions"></h1>
                                     </div>
                                 </div>
                             </div>
@@ -177,7 +180,7 @@
                             <div class="card h-100">
                                 <div class="card-body d-flex flex-column justify-content-between">
                                     <div><strong>Average Transaction Value</strong>
-                                        <h1>9,102</h1>
+                                        <h1 id="averageTransactionValue"></h1>
                                     </div>
                                 </div>
                             </div>
@@ -187,7 +190,7 @@
                             <div class="card h-100">
                                 <div class="card-body d-flex flex-column justify-content-between">
                                     <div><strong>Total Products Sold</strong>
-                                        <h1>9,576</h1>
+                                        <h1 id="totalProductsSold"></h1>
                                     </div>
                                 </div>
                             </div>
@@ -198,8 +201,8 @@
                         <div class="col-8 h-40">
                             <div class="card h-100"> <!-- Added h-100 here -->
                                 <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">Daily Sales</h5>
-                                    <h2 class="fw-bold">2,584</h2>
+                                    <h3 class="card-title fw-bold">Daily Sales</h3>
+                                    <span class="text-secondary ">for the past 7 days</span>
                                     <div class="chart-container">
                                         <canvas id="cashLineChart"></canvas>
                                     </div>
@@ -211,7 +214,7 @@
                                 <div class="card h-100">
                                     <div class="card-body d-flex flex-column justify-content-between">
                                         <div><strong>Total Payments</strong>
-                                            <h1>9,102</h1>
+                                            <h1 id="totalPayments">9,102</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -225,17 +228,20 @@
                 
                 <div class="row">
                     <div class="col-12 border rounded p-4">
-                        <h3 class="fw-bold">Product Sales</h3>
+                        <div class="d-flex justify-content-between">
+                            <h3 class="fw-bold">Product Sales</h3>
+                            <h6 class="text-secondary mt-2">as of 05-03-2025</h6>
+                        </div>
                         <hr>
                         <div class="table-responsive">
                                 <table id="productSalesTable" class="table table-bordered">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Product</th>
-                                            <th>Price</th>
-                                            <th>Quantity</th>
-                                            <th>Total Sales</th>
-                                            <th>Total Revenue</th>
+                                            <th class="justify-content-between">Menu & Category</th>
+                                            <th class="justify-content-between">Product</th>
+                                            <th class="justify-content-between">Price</th>
+                                            <th class="justify-content-between">Quantity</th>
+                                            <th class="justify-content-between">Total Sales</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -295,9 +301,10 @@
 
     </main>
 </body>
-<script src="scripts/adminSales.js"></script>
 <?php
-include "cdnScripts.php";
+require_once "cdnScripts.php";
 ?>
+<script src="scripts/adminSales.js"></script>
+
 
 </html>

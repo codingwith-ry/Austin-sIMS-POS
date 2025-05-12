@@ -181,7 +181,7 @@ $active = "menu";
                     }
                     echo '</ul></div>';
                     echo'
-                        <br />
+                        <hr />
                         <div id="pills-tabContent" class="tab-content products">
                     ';
                     $ifShow = "show active";

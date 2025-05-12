@@ -5,7 +5,7 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
       labels: ['Cash', 'GCash', 'PayMaya'],
       datasets: [{
         label: 'Payments',
-        data: [300, 50, 100],
+        data: [],
         backgroundColor: ['#ff6384', '#36a2eb', '#ffce56'],
         borderWidth: 1
       }]
@@ -26,65 +26,65 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
 
 
   const dailySales = document.getElementById('cashLineChart').getContext('2d');
-  const cashLineChart = new Chart(dailySales, {
-    type: 'line',
-    data: {
-      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      datasets: [
-        {
-          label: 'Expected Cash Amount',
-          data: [1000, 1500, 1200, 10000, 1600],
-          borderColor: 'rgba(54, 162, 235, 1)',
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          tension: 0.4,
+    const cashLineChart = new Chart(dailySales, {
+        type: 'line',
+        data: {
+            labels: [], // Placeholder for dates
+            datasets: [
+                {
+                    label: 'Expected Cash Amount',
+                    data: [], // Placeholder for expected cash amounts
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    tension: 0.4,
+                },
+                {
+                    label: 'Actual Cash Amount',
+                    data: [], // Placeholder for actual cash amounts
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    tension: 0.4,
+                }
+            ]
         },
-        {
-          label: 'Actual Cash Amount',
-          data: [950, 0, 0, 1700, 1650],
-          borderColor: 'rgba(255, 99, 132, 1)',
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          tension: 0.4,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Expected vs. Actual Cash Amount Over Time'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                legend: {
+                    position: 'top',
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Cash Amount (₱)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                }
+            }
         }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        title: {
-          display: true,
-          text: 'Expected vs. Actual Cash Amount Over Time'
-        },
-        tooltip: {
-          mode: 'index',
-          intersect: false,
-        },
-        legend: {
-          position: 'top',
-        }
-      },
-      interaction: {
-        mode: 'nearest',
-        axis: 'x',
-        intersect: false
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Cash Amount (₱)'
-          }
-        },
-        x: {
-          title: {
-            display: true,
-            text: 'Date'
-          }
-        }
-      }
-    }
-  });
+    });
 
   const menuSales = document.getElementById('menuSalesChart').getContext('2d');
   const menuSalesChart = new Chart(menuSales, {
@@ -277,21 +277,46 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
 
   $(document).ready(function () {
     // Initialize DataTable
+    fetchDailySalesData();
+
+
     $('#productSalesTable').DataTable({
         ajax: 'scripts/fetchProductSales.php', // Replace with your server-side script URL
         columns: [
-            { data: 'product' },       // Product Name
-            { data: 'price' },         // Price
-            { data: 'quantity' },      // Quantity
-            { data: 'total_sales' },   // Total Sales
-            { data: 'total_revenue' }  // Total Revenue
+          {
+            data: null,
+            render: function(data, type, row)
+            {
+              return `
+                <span class="badge text-bg-primary rounded-pill w-72 fs-6 mb-1 p-3">${row.menuName}</span>
+                <span class="badge text-bg-success rounded-pill w-72 fs-6 p-3">${row.categoryName}</span>
+              `;
+            }
+          },
+          {
+            data: 'product'
+           },       
+          { 
+              data: 'price',         // Price
+              render: function (data, type, row) {
+                  return '₱' + parseFloat(data).toLocaleString(); // Add peso symbol and format as currency
+              }
+          },
+          { data: 'quantity' },      // Quantity
+          { 
+              data: 'total_sales',   // Total Sales
+              render: function (data, type, row) {
+                  return '₱' + parseFloat(data).toLocaleString(); // Add peso symbol and format as currency
+              }
+          }
         ],
         responsive: true, // Makes the table responsive
         paging: true,     // Enables pagination
         searching: true,  // Enables search functionality
         ordering: true,   // Enables column sorting
         lengthChange: true, // Allows changing the number of rows displayed
-        pageLength: 10,   // Default number of rows per page
+        pageLength: 5,   // Default number of rows per page
+        lengthMenu: [5, 10, 25, 50, 100], // Dropdown options for page length
         language: {
             emptyTable: "No data available in table",
             search: "Search:",
@@ -305,4 +330,87 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
             }
         }
     });
-});
+
+    function fetchDailySalesData() {
+      $.ajax({
+          url: 'scripts/fetchDailySales.php', // Path to your PHP script
+          method: 'GET',
+          dataType: 'json',
+          success: function (response) {
+
+
+              // Update Total Sales
+              $('#totalSales').text('₱' + response.totalSales.toLocaleString());
+
+              // Update Discounts
+              $('#discounts').text('₱' + response.discounts.toLocaleString());
+
+              // Update Net Sales
+              $('#netSales').text('₱' + response.netSales.toLocaleString());
+
+              // Update Refunds
+              $('#refunds').text('₱' + response.refunds.toLocaleString());
+
+              // Update Total Transactions
+              $('#totalTransactions').text(response.totalTransactions);
+
+              // Update Average Transaction Value
+              $('#averageTransactionValue').text('₱' + parseFloat(response.averageTransactionValue).toLocaleString());
+
+              // Update Total Products Sold
+              $('#totalProductsSold').text(response.totalProductsSold);
+
+              // Update Actual Cash Amount
+              $('#actualCashAmount').text('₱' + parseFloat(response.actualCashAmount).toLocaleString());
+
+              let actualCashAmount = document.getElementById("actualCashAmount").innerText;
+              console.log(actualCashAmount);
+              let actualInput = document.getElementById("actualInput");
+              if(actualCashAmount === "₱0"){
+                actualInput.style.removeProperty("display");
+              }else{
+                console.log("here");
+                actualInput.style.display = "none";
+              }
+
+              $('#totalPayments').text('₱' + response.totalSales.toLocaleString());
+
+              // Update Cash Last 7 Days (if applicable)
+              let cashLast7Days = response.cashlast7days;
+              let dates = [];
+              let expectedCash = [];
+              let actualCash = [];
+
+              cashLast7Days.forEach(day => {
+                  dates.push(day.date);
+                  expectedCash.push(day.expectedCashAmount);
+                  actualCash.push(day.actualCashAmount ? day.actualCashAmount: 0.00);
+              });
+
+              // Update the Cash Line Chart
+              cashLineChart.data.labels = dates;
+              cashLineChart.data.datasets[0].data = expectedCash; // Update Expected Cash Amount
+              cashLineChart.data.datasets[1].data = actualCash;   // Update Actual Cash Amount
+              cashLineChart.update(); // Redraw the chart
+            
+              // Update Payment Breakdown
+              myDoughnutChart.data.datasets[0].data = [
+                parseFloat(response.paymentBreakdown.Cash),
+                parseFloat(response.paymentBreakdown.GCash),
+                parseFloat(response.paymentBreakdown.PayMaya)
+              ];
+              myDoughnutChart.update();
+          },
+          error: function (xhr, status, error) {
+              console.error('Error fetching daily sales data:', error);
+              alert('Failed to fetch daily sales data. Please try again.');
+          }
+      });
+  }
+
+  // Fetch data on page load
+  
+
+  // Optionally, refresh data every 1 minute
+  setInterval(fetchDailySalesData, 60000); // 60000ms = 1 minute
+  });
