@@ -780,7 +780,7 @@ CREATE TABLE `tbl_stocks` (
   `Stock_ID` int(32) NOT NULL,
   `Total_Stock_Budget` int(32) NOT NULL,
   `Total_Expenses` int(32) NOT NULL,
-  `Total_Calculated_Budget` int(11) NOT NULL,
+  `Total_Calculated_Budget` int(11) NOT NULL
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=InnoDB
