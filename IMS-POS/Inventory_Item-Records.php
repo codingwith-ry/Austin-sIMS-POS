@@ -44,9 +44,50 @@ ORDER BY i.Item_Name ASC;
 
 $itemData = $pdo->query($fetchItemDataQuery)->fetchAll(PDO::FETCH_ASSOC);
 
+$lowStockQuery = "
+    SELECT 
+        i.Item_Name,
+        i.Item_Image,
+        r.Record_ItemVolume,
+        SUM(r.Record_ItemQuantity) AS Total_Quantity,
+        i.Item_Lowstock
+    FROM tbl_record_duplicate r
+    JOIN tbl_item i ON r.Item_ID = i.Item_ID
+    GROUP BY i.Item_ID, r.Record_ItemVolume
+    HAVING Total_Quantity <= i.Item_Lowstock
+";
+
+$outOfStockQuery = "
+    SELECT 
+        i.Item_ID,
+        i.Item_Name,
+        i.Item_Image,
+        SUM(r.Record_ItemQuantity) AS Total_Quantity
+    FROM tbl_record_duplicate r
+    JOIN tbl_item i ON r.Item_ID = i.Item_ID
+    GROUP BY i.Item_ID
+    HAVING SUM(r.Record_ItemQuantity) = 0
+";
+
+$lowStockItems = [];
+$lowStockItems = $pdo->query($lowStockQuery)->fetchAll(PDO::FETCH_ASSOC);
+$outOfStockItems = [];
+$outOfStockItems = $pdo->query($outOfStockQuery)->fetchAll(PDO::FETCH_ASSOC);
+
+if (empty($outOfStockItems)) {
+    error_log("Out of stock query returned no results.");
+} else {
+    error_log("Out of stock query returned results: " . print_r($outOfStockItems, true));
+}
+
+if (empty($lowStockItems)) {
+    error_log("Low stock query returned no results.");
+} else {
+    error_log("Low stock query returned results: " . print_r($lowStockItems, true));
+}
+
 // Arrays to hold out-of-stock, low stock, and expired items
 $outOfStockItems = [];
-$lowStockItems = [];
 $expiredItems = [];
 
 // Process each item
@@ -85,75 +126,59 @@ foreach ($itemData as $item) {
 
 <body>
     <?php include 'verticalNav.php' ?>
-    <main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
-        <?php if (!empty($outOfStockItems) || !empty($lowStockItems) || !empty($expiredItems)): ?>
-            <div class="modal fade" id="lowStockModal" tabindex="-1" aria-labelledby="lowStockModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header" style="background-color: rgb(50, 50, 50); color: white;">
-                            <h5 class="modal-title" id="lowStockModalLabel">Stock Alerts</h5>
-                        </div>
-                        <div class="modal-body">
-                            <?php if (!empty($expiredItems)): ?>
-                                <h5 class="text-danger">Expired Items</h5>
-                                <ul class="list-group mb-3" id="expiredItemsList">
-                                    <?php foreach ($expiredItems as $item): ?>
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <img src="<?php echo htmlspecialchars($item['Item_Image']); ?>" alt="Item Image" style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
-                                            <div class="flex-grow-1">
-                                                <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong><br>
-                                                <span class="text-danger">Expired on <?php echo date('F d, Y', strtotime($item['Record_ItemExpirationDate'])); ?></span>
-                                            </div>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            <?php endif; ?>
 
-                            <?php if (!empty($outOfStockItems)): ?>
-                                <h5 class="text-danger">Out of Stock</h5>
-                                <ul class="list-group mb-3" id="outOfStockItemsList">
-                                    <?php foreach ($outOfStockItems as $item): ?>
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <img src="<?php echo htmlspecialchars($item['Item_Image']); ?>" alt="Item Image" style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
-                                            <div class="flex-grow-1">
-                                                <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong><br>
-                                                <span>
-                                                    <?php echo htmlspecialchars($item['Total_Quantity']); ?> pcs
-                                                    (<?php echo htmlspecialchars($item['Record_ItemVolume']) . ' ' . htmlspecialchars($item['Unit_Acronym']); ?>)
-                                                </span>
-                                            </div>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            <?php endif; ?>
+<?php if (!empty($outOfStockItems) || !empty($lowStockItems)): ?>
+    <div class="modal fade" id="lowStockModal" tabindex="-1" aria-labelledby="lowStockModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" id="lowStockModalLabel">Stock Alerts</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <?php if (!empty($outOfStockItems)): ?>
+                        <h5 class="text-danger">Out of Stock</h5>
+                        <ul class="list-group mb-3">
+                            <?php foreach ($outOfStockItems as $item): ?>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <img src="<?php echo htmlspecialchars($item['Item_Image']); ?>" alt="Item Image" style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
+                                    <div>
+                                        <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong><br>
+                                        <span>Total Quantity: 0 pcs</span>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
 
-                            <?php if (!empty($lowStockItems)): ?>
-                                <h5 class="text-warning">Low Stock</h5>
-                                <ul class="list-group" id="lowStockItemsList">
-                                    <?php foreach ($lowStockItems as $item): ?>
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <img src="<?php echo htmlspecialchars($item['Item_Image']); ?>" alt="Item Image" style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
-                                            <div class="flex-grow-1">
-                                                <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong><br>
-                                                <span>
-                                                    <?php echo htmlspecialchars($item['Total_Quantity']); ?> pcs (Low Stock Threshold: <?php echo htmlspecialchars($item['Item_Lowstock']); ?> pcs)
-                                                </span>
-                                            </div>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            <?php endif; ?>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn" style="background-color: rgb(50, 50, 50); color: white;" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
+                    <?php if (!empty($lowStockItems)): ?>
+                        <h5 class="text-warning">Low Stock</h5>
+                        <ul class="list-group">
+                            <?php foreach ($lowStockItems as $item): ?>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <img src="<?php echo htmlspecialchars($item['Item_Image']); ?>" alt="Item Image" style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px;">
+                                    <div>
+                                        <strong><?php echo htmlspecialchars($item['Item_Name']); ?></strong><br>
+                                        <span>Volume: <?php echo htmlspecialchars($item['Record_ItemVolume']); ?></span><br>
+                                        <span>Total Quantity: <?php echo htmlspecialchars($item['Total_Quantity']); ?> pcs</span><br>
+                                        <span>Low Stock Threshold: <?php echo htmlspecialchars($item['Item_Lowstock']); ?> pcs</span>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
-        <?php endif; ?>
+        </div>
+    </div>
+<?php else: ?>
+    <?php error_log("No stock alerts to display."); ?>
+<?php endif; ?>
 
-
-
+    <main id="mainContent" style="padding-left: 12px; padding-right: 12px ;">
         <div class="title">
             <div class="row">
                 <div>
@@ -923,16 +948,6 @@ foreach ($itemData as $item) {
         });
     </script>
     <script>
-        // Automatically show the modal if there are low-stock or out-of-stock items
-        document.addEventListener('DOMContentLoaded', function() {
-            <?php if (!empty($outOfStockItems) || !empty($lowStockItems)): ?>
-                var lowStockModal = new bootstrap.Modal(document.getElementById('lowStockModal'));
-                lowStockModal.show();
-            <?php endif; ?>
-        });
-    </script>
-
-    <script>
         document.addEventListener('DOMContentLoaded', function() {
             let currentBudget = 0; // Initialize current budget
             const budgetModal = new bootstrap.Modal(document.getElementById('addBudgetModal'));
@@ -1196,6 +1211,9 @@ foreach ($itemData as $item) {
             searchItemCategory.addEventListener('change', function() {
                 const selectedCategoryID = this.value;
 
+                // Reset all fields
+                resetEditItemFields();  
+
                 // Fetch items based on the selected category
                 fetch(`../IMS-POS/scripts/fetchItemsByCategory.php?categoryID=${selectedCategoryID}`)
                     .then(response => response.json())
@@ -1279,10 +1297,47 @@ foreach ($itemData as $item) {
 
             // If the user deletes the decimal part, reformat to ".00"
             if (/^\d+\.$/.test(input.value)) {
-                input.value = input.value + '00';
+                input.value = input.value + '00';f
             }
         }
+
+        function resetEditItemFields() {
+            // Reset the item dropdown
+            const editItemDropdown = document.getElementById('editItemDropdown');
+            editItemDropdown.innerHTML = '<option value="" disabled selected>Select an item</option>';
+
+            // Reset the item name field
+            const itemNameField = document.getElementById('editItemName');
+            if (itemNameField) itemNameField.value = '';
+
+            // Reset the category dropdown
+            const editItemCategory = document.getElementById('editItemCategory');
+            if (editItemCategory) editItemCategory.selectedIndex = 0;
+
+            // Reset the unit dropdown
+            const editItemUnit = document.getElementById('editItemUnit');
+            if (editItemUnit) editItemUnit.selectedIndex = 0;
+
+            // Reset the low stock field
+            const itemLowStockField = document.getElementById('editItemLowStock');
+            if (itemLowStockField) itemLowStockField.value = '';
+
+            // Reset the image preview
+            const itemImagePreview = document.getElementById('editItemImagePreview');
+            if (itemImagePreview) itemImagePreview.src = '';
+        }
     </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const lowStockModal = document.getElementById('lowStockModal');
+        if (lowStockModal) {
+            const modalInstance = new bootstrap.Modal(lowStockModal);
+            modalInstance.show();
+        } else {
+            console.error("Low stock modal not found in the DOM.");
+        }
+    });
+</script>
 </body>
 <?php include 'footer.php' ?>
 

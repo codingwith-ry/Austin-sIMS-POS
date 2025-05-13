@@ -854,7 +854,7 @@ ENGINE=InnoDB
 CREATE TABLE `tbl_record_duplicate` (
   `RecordDuplicate_ID` int(11) NOT NULL,
   `Item_ID` int(11) DEFAULT NULL,
-  `Record_ItemVolumes` decimal(11,2) DEFAULT NULL,
+  `Record_ItemVolume` decimal(11,2) DEFAULT NULL,
   `Record_ItemQuantity` int(11) DEFAULT NULL,
   `Record_ItemPrice` decimal(11,2) DEFAULT NULL,
   `Record_ItemExpirationDate` date DEFAULT NULL,
