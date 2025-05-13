@@ -265,8 +265,8 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
             render: function(data, type, row)
             {
               return `
-                <span class="badge text-bg-primary rounded-pill w-72 fs-6 mb-1 p-3">${row.menuName}</span>
-                <span class="badge text-bg-success rounded-pill w-72 fs-6 p-3">${row.categoryName}</span>
+                  <span class="badge text-bg-primary rounded-pill fs-6 mb-1 p-3" style="width: fit-content;">${row.menuName}</span>
+                  <span class="badge text-bg-success rounded-pill fs-6 p-3" style="width: fit-content;">${row.categoryName}</span>
               `;
             }
           },
@@ -360,8 +360,8 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
 
               cashLast7Days.forEach(day => {
                   dates.push(day.date);
-                  expectedCash.push('₱'+day.expectedCashAmount);
-                  actualCash.push(day.actualCashAmount ? '₱'+day.actualCashAmount: 0.00);
+                  expectedCash.push(day.expectedCashAmount);
+                  actualCash.push(day.actualCashAmount ? day.actualCashAmount: 0.00);
               });
 
               // Update the Cash Line Chart
