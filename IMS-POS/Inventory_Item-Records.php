@@ -1211,6 +1211,9 @@ foreach ($itemData as $item) {
             searchItemCategory.addEventListener('change', function() {
                 const selectedCategoryID = this.value;
 
+                // Reset all fields
+                resetEditItemFields();  
+
                 // Fetch items based on the selected category
                 fetch(`../IMS-POS/scripts/fetchItemsByCategory.php?categoryID=${selectedCategoryID}`)
                     .then(response => response.json())
@@ -1296,6 +1299,32 @@ foreach ($itemData as $item) {
             if (/^\d+\.$/.test(input.value)) {
                 input.value = input.value + '00';f
             }
+        }
+
+        function resetEditItemFields() {
+            // Reset the item dropdown
+            const editItemDropdown = document.getElementById('editItemDropdown');
+            editItemDropdown.innerHTML = '<option value="" disabled selected>Select an item</option>';
+
+            // Reset the item name field
+            const itemNameField = document.getElementById('editItemName');
+            if (itemNameField) itemNameField.value = '';
+
+            // Reset the category dropdown
+            const editItemCategory = document.getElementById('editItemCategory');
+            if (editItemCategory) editItemCategory.selectedIndex = 0;
+
+            // Reset the unit dropdown
+            const editItemUnit = document.getElementById('editItemUnit');
+            if (editItemUnit) editItemUnit.selectedIndex = 0;
+
+            // Reset the low stock field
+            const itemLowStockField = document.getElementById('editItemLowStock');
+            if (itemLowStockField) itemLowStockField.value = '';
+
+            // Reset the image preview
+            const itemImagePreview = document.getElementById('editItemImagePreview');
+            if (itemImagePreview) itemImagePreview.src = '';
         }
     </script>
 <script>
