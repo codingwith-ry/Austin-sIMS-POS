@@ -237,11 +237,11 @@
                                 <table id="productSalesTable" class="table table-bordered">
                                     <thead class="table-light">
                                         <tr>
-                                            <th class="justify-content-between">Menu & Category</th>
-                                            <th class="justify-content-between">Product</th>
-                                            <th class="justify-content-between">Price</th>
-                                            <th class="justify-content-between">Quantity</th>
-                                            <th class="justify-content-between">Total Sales</th>
+                                            <th>Menu & Category</th>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total Sales</th>
                                         </tr>
                                     </thead>
                                     <tbody>
