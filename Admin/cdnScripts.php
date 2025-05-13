@@ -9,5 +9,5 @@
 <script src="https://cdn.datatables.net/buttons/3.2.0/js/dataTables.buttons.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!--<script src="scripts/adminDash.js"></script>
-<script src="scripts/salesData.js"></script>-->
+<script src="scripts/adminDash.js"></script>
+<script src="scripts/salesData.js"></script>

@@ -90,63 +90,40 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
   const menuSalesChart = new Chart(menuSales, {
     type: 'line',
     data: {
-      labels: ['May 1', 'May 2', 'May 3', 'May 4', 'May 5'], // Dates or time periods
-      datasets: [
-        {
-          label: 'Coffee Menu Sales',
-          data: [1200, 1350, 1100, 1500, 1400],
-          borderColor: 'rgba(75, 192, 192, 1)',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          tension: 0.4
-        },
-        {
-          label: 'Gastro Pub Menu Sales',
-          data: [2000, 2100, 1900, 2200, 2050],
-          borderColor: 'rgba(255, 159, 64, 1)',
-          backgroundColor: 'rgba(255, 159, 64, 0.2)',
-          tension: 0.4
-        },
-        {
-          label: 'Party Tray Menu Sales',
-          data: [3000, 2800, 3200, 3100, 3300],
-          borderColor: 'rgba(153, 102, 255, 1)',
-          backgroundColor: 'rgba(153, 102, 255, 0.2)',
-          tension: 0.4
-        }
-      ]
+      labels: [], // to be filled by update function
+      datasets: [] // to be filled by update function
     },
     options: {
       responsive: true,
       plugins: {
         title: {
           display: true,
-          text: 'Sales Comparison by Menu Category'
+          text: 'Menu Sales (Last 7 Days)'
         },
         legend: {
-          position: 'top'
+          display: true,
+          position: 'bottom'
         }
       },
-      interaction: {
-        mode: 'index',
-        intersect: false
-      },
       scales: {
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Sales (₱)'
-          }
-        },
         x: {
           title: {
             display: true,
             text: 'Date'
           }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Total Sales'
+          },
+          beginAtZero: true
         }
       }
     }
   });
+
+
 
   const coffeeMenu = document.getElementById('coffeeMenuChart').getContext('2d');
   const coffeeMenuChart = new Chart(coffeeMenu, {
@@ -288,8 +265,8 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
             render: function(data, type, row)
             {
               return `
-                <span class="badge text-bg-primary rounded-pill w-72 fs-6 mb-1 p-3">${row.menuName}</span>
-                <span class="badge text-bg-success rounded-pill w-72 fs-6 p-3">${row.categoryName}</span>
+                  <span class="badge text-bg-primary rounded-pill fs-6 mb-1 p-3" style="width: fit-content;">${row.menuName}</span>
+                  <span class="badge text-bg-success rounded-pill fs-6 p-3" style="width: fit-content;">${row.categoryName}</span>
               `;
             }
           },
@@ -400,6 +377,35 @@ const ctx = document.getElementById('transactionTypes').getContext('2d');
                 parseFloat(response.paymentBreakdown.PayMaya)
               ];
               myDoughnutChart.update();
+
+              updateMenuSalesChart(response.menuSales7days);
+              function updateMenuSalesChart(menuSalesData) {
+                const dates = [...new Set(menuSalesData.map(item => item.date))].sort();
+
+                const menuItems = [...new Set(menuSalesData.map(item => item.menu))];
+
+                // Create a dataset for each menu item
+                const datasets = menuItems.map(menu => {
+                  const data = dates.map(date => {
+                    const found = menuSalesData.find(item => item.menu === menu && item.date === date);
+                    return found ? parseFloat(found.totalSales) : 0;
+                  });
+
+                  return {
+                    label: menu,
+                    data,
+                    fill: false,
+                    tension: 0.1,
+                    borderWidth: 2,
+                  };
+                });
+
+                // Update chart
+                menuSalesChart.data.labels = dates;
+                menuSalesChart.data.datasets = datasets;
+                menuSalesChart.update();
+              }
+
           },
           error: function (xhr, status, error) {
               console.error('Error fetching daily sales data:', error);

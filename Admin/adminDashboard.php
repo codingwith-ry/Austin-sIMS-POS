@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['userRole']) || $_SESSION['userRole'] !== 'administrator') {
-    header("Location: /Austin-sIMS-POS/Login/index.php");
+    header("Location: /Austin-sIMS-POS/index.php");
     exit();
 }
 
@@ -285,21 +285,8 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
         <hr>
 
-        <div class="row align-items-center mb-3">
-            <!-- Search Input -->
-            <div class="col-md-6">
-                <form role="search">
-                    <div class="input-group">
-                        <span class="input-group-text" id="basic-addon1">
-                            <span class="material-symbols-outlined">search</span>
-                        </span>
-                        <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
-                    </div>
-                </form>
-            </div>
-
             <!-- Date Selector Tabs -->
-            <div class="col-md-6 d-flex justify-content-end">
+            <div class="col-md-6 d-flex justify-content-start" style="margin-bottom: 20px;">
                 <div class="date-selector">
                     <ul class="nav nav-underline">
                         <li class="nav-item">
@@ -314,7 +301,6 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </ul>
                 </div>
             </div>
-        </div>
 
         <div class="row px-3">
     <!-- Employee Role Cards -->

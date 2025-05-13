@@ -628,9 +628,11 @@ function updateOrderBar(){
         let itemHTML = `
             <div class="card mb-3 mt-3 flex-shrink-0">
                 <div class="row g-0">
-                    <div class="col-12" id="foodCol" style="padding-left: 5px;">
-                        <div class="row">
+                    <div class="col-12 p-3" id="foodCol" style="padding: 10px;">
+                        <div class="row ">
                             <div class="col-8" style="padding-right: 0px;">
+                                <span class="badge text-bg-primary rounded-pill w-72 fs-7 mb-1 p-2">${item.menuName}</span>
+                                <br />
                                 <span id="foodName">
                                     ${item.productName}
                                 </span>
@@ -639,12 +641,16 @@ function updateOrderBar(){
                                 </span>
                             </div>
                             <div class="col-4" style="display: flex; justify-content: right; padding-left: 0px;">
-                                <button id="editItemButton" type="button" class="btn btn-link editItemButton me-auto" data-bs-toggle="modal" data-bs-target="#editItemModal" data-item-index="${index}">
-                                    <i class="fi fi-rr-pencil"></i>
+                                <button id="editItemButton" type="button" class="btn btn-link editItemButton text-decoration-none pt-0" data-bs-toggle="modal" data-bs-target="#editItemModal" data-item-index="${index}">
+                                    <i class="fi fi-rr-pencil" style="font-size: 14px;"></i>
                                 </button>
                             </div>
                         </div>
                         <br>
+                        <span id="foodQuantity">
+                            ${'x'+item.productQuantity}
+                        </span>
+                        <br />
                         <span id="foodAddon">
                             ${item.productAddons.map(addon => `+${addon.addonName}`).join('<br>')}
                         </span>
