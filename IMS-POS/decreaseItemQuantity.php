@@ -26,7 +26,7 @@ if (isset($_POST['confirm_decrease'])) {
             $logEmail = $_SESSION['email'];
             $logRole = $_SESSION['userRole'];
             $logContent = "Decreased quantity of Item Name: $itemName by $amountToDecrease (Volume: $volume).";
-            $logDate = date('Y-m-d');
+            $logDate = date('Y-m-d H:i:s');
 
             $logStmt = $conn->prepare("
                 INSERT INTO tbl_userlogs (logEmail, logRole, logContent, logDate) 
