@@ -1,9 +1,13 @@
 <?php
 include '../Login/database.php';
 
+
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+date_default_timezone_set('Asia/Manila');
 
 if (isset($_POST['confirm_decrease'])) {
     $recordID = $_POST['record_id']; // specific record

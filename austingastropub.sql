@@ -819,6 +819,11 @@ COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
 
+ALTER TABLE `tbl_userlogs`
+MODIFY `logID` INT(11) NOT NULL AUTO_INCREMENT,
+ADD PRIMARY KEY (`logID`);
+COMMIT;
+
 CREATE TABLE `tbl_inventory_changes` (
 	`Change_ID` INT(11) NOT NULL AUTO_INCREMENT,
 	`Record_ID` INT(11) NOT NULL,
