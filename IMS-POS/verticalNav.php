@@ -70,7 +70,7 @@ else{
             </ul>
         </div>
         <div class="offcanvas-footer border-top p-3">
-            <a href="#" class="d-flex align-items-center text-danger text-decoration-none" data-bs-toggle="modal" data-bs-target="#logoutModal">
+            <a href="" class="d-flex align-items-center text-danger text-decoration-none" data-bs-toggle="modal" data-bs-target="#logoutModal">
                 <i class="bi bi-box-arrow-left"></i>
                 <span class="ms-2">Logout</span>
             </a>
@@ -90,7 +90,7 @@ else{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a href="/Austin-sIMS-POS/Login/logout.php" class="btn btn-danger">Logout</a>
+                    <a href="/Austin-sIMS-POS/index.php" class="btn btn-danger">Logout</a>
                 </div>
             </div>
         </div>

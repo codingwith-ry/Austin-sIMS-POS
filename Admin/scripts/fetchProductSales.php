@@ -2,19 +2,24 @@
 require_once '../../Login/database.php'; // Include your database connection file
 
 try {
+    $orderDate = isset($_GET['date']) ? $_GET['date'] : null;
     // Query to fetch product sales data
     $query = "
         SELECT 
             p.productName AS product,
             cat.categoryName as categoryName, 
             menu.menuName as menuName,
+            ord.salesOrderNumber AS  salesOrderNumber,
             p.productPrice AS price, 
             SUM(oi.productQuantity) AS quantity, 
-            SUM(oi.productTotal) AS total_sales 
+            SUM(oi.productTotal) AS total_sales,
+				ord.orderDate AS  orderDate
         FROM tbl_orderitems oi
         JOIN tbl_menu p ON oi.productID = p.productID
         JOIN tbl_categories cat ON p.categoryID = cat.categoryID
         JOIN tbl_menuclass menu ON p.menuID = menu.menuID
+        JOIN tbl_orders ord ON oi.salesOrderNumber = ord.salesOrderNumber
+        WHERE ord.orderDate = $orderDate
         GROUP BY p.productName, p.productPrice, cat.categoryName, menu.menuName
         ORDER BY total_sales DESC
     ";

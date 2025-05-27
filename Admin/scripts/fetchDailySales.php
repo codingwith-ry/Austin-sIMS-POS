@@ -2,7 +2,7 @@
 require_once '../../Login/database.php'; // Include your database connection file
 
 // Get the date from the request (default to today's date if not provided)
-$date = "2025-05-03";
+$date = isset($_GET['date']) ? $_GET['date'] : null;
 
 // Initialize an array to store the results
 $response = [

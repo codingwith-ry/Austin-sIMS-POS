@@ -22,9 +22,23 @@
             border-radius: 12px;
             overflow: hidden;
         }
+
+        table.dataTable thead th {
+            position: relative;
+            padding-right: 24px !important; /* Add more space on the right */
+        }
+
+        table.dataTable thead .sorting:after,
+        table.dataTable thead .sorting_asc:after,
+        table.dataTable thead .sorting_desc:after {
+            right: 8px !important; /* Move the arrow further right */
+            left: auto !important;
+        }
     </style>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -109,7 +123,7 @@
                 </ul>
             </div>
             <div class="">
-                <input type="date" class="form-control" id="dateInput">
+                <input type="date" class="form-control" id="datePicker">
             </div>
         </div>
         <br />
@@ -236,11 +250,11 @@
                         <div class="table-responsive">
                                 <table id="productSalesTable" class="table table-bordered">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>Menu & Category</th>
-                                            <th>Product</th>
-                                            <th>Price</th>
-                                            <th>Quantity</th>
+                                        <tr class="">
+                                            <th>Menu & Category</th> 
+                                            <th>Product</th> 
+                                            <th>Price</th> 
+                                            <th>Quantity</th> 
                                             <th>Total Sales</th>
                                         </tr>
                                     </thead>

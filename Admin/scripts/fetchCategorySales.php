@@ -5,20 +5,20 @@ header('Content-Type: application/json');
 
 try {
     // Get the menuID from the GET request
-    $menuID = 1;
+    $menuID = isset($_GET['menuID']) ? intval($_GET['menuID']) : 0;
 
     if ($menuID > 0) {
         // Query to fetch categories and their total orders
         $query = "
             SELECT 
-                c.categoryName,
-                COUNT(oi.orderItemID) AS totalOrders
+            c.categoryName,
+            SUM(oi.productTotal) AS totalOrders
             FROM tbl_categories c
             LEFT JOIN tbl_menu m ON c.categoryID = m.categoryID
             LEFT JOIN tbl_orderitems oi ON m.productID = oi.productID
             WHERE c.menuID = :menuID
             GROUP BY c.categoryName
-            ORDER BY totalOrders DESC
+            ORDER BY totalOrders DESC;
         ";
 
         $stmt = $conn->prepare($query);
