@@ -717,6 +717,17 @@ INSERT INTO `tbl_variations` (`variationID`, `variationName`, `variationPrice`, 
 	(65, '12oz', 160.00, 46),
 	(66, '16oz', 180.00, 46);
 
+CREATE TABLE IF NOT EXISTS `tbl_actualcashamount` (
+  `cashAmountID` int(11) NOT NULL AUTO_INCREMENT,
+  `cashAmountValue` decimal(13,2) DEFAULT NULL,
+  `cashAmountDate` date DEFAULT NULL,
+  PRIMARY KEY (`cashAmountID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table austingastropub.tbl_actualcashamount: ~1 rows (approximately)
+INSERT INTO `tbl_actualcashamount` (`cashAmountID`, `cashAmountValue`, `cashAmountDate`) VALUES
+	(2, 300.00, '2025-05-03');
+
 -- Inventory Tables
 
 
